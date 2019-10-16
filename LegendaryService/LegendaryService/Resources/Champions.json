@@ -1,0 +1,170 @@
+{
+	"name": "Champions",
+	"packageType": "SmallExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Totally Awesome Hulk",
+			"team": "Champions",
+			"classes": [
+				"Strength",
+				"Tech"
+			],
+			"abilities": [
+				"Size-Changing",
+				"Cheering Crowds"
+			]
+		},
+		{
+			"name": "Ms. Marvel",
+			"team": "Champions",
+			"classes": [
+				"Covert",
+				"Strength"
+			],
+			"abilities": [
+				"Size-Changing",
+				"Versatile",
+				"Cheering Crowds"
+			]
+		},
+		{
+			"name": "Nova",
+			"team": "Champions",
+			"classes": [
+				"Ranged",
+				"Strength"
+			],
+			"abilities": [
+				"Size-Changing",
+				"Versatile",
+				"Cheering Crowds"
+			]
+		},
+		{
+			"name": "Viv Vision",
+			"team": "Champions",
+			"classes": [
+				"Tech",
+				"Ranged"
+			],
+			"abilities": [
+				"Size-Changing",
+				"Versatile",
+				"Cheering Crowds"
+			]
+		},
+		{
+			"name": "Gwenpool",
+			"team": "Champions",
+			"classes": [
+				"Instinct",
+				"Covert"
+			],
+			"abilities": [
+				"Demolish",
+				"Size-Changing",
+				"Versatile",
+				"Cheering Crowds"
+			]
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Monsters Unleashed",
+			"abilities": [
+				"Size-Changing",
+				"Demolish"
+			]
+		},
+		{
+			"name": "Wrecking Crew",
+			"abilities": [
+				"Demolish"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Fin Fang Foom",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Monsters Unleashed"
+					]
+				}
+			],
+			"abilities": [
+				"Demolish",
+				"Size-Changing"
+			]
+		},
+		{
+			"name": "Pagliacci",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Wrecking Crew"
+					]
+				}
+			],
+			"abilities": [
+				"Demolish",
+				"Versatile"
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Clash of the Monsters Unleashed",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 10
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalAdversaryCount": 1,
+					"requiredAdversaries": [
+						"Monsters Unleashed"
+					]
+				}
+			]
+		},
+		{
+			"name": "Hypnotize Every Human",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalHenchmanCount": 1
+				}
+			]
+		},
+		{
+			"name": "Divide and Conquer",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalAllyCount": 2
+				}
+			]
+		},
+		{
+			"name": "Steal All Oxygen on Earth",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		}
+	]
+}

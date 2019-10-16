@@ -1,0 +1,163 @@
+{
+	"name": "Guardians of the Galaxy",
+	"packageType": "SmallExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Drax the Destroyer",
+			"team": "GuardiansOfTheGalaxy",
+			"classes": [
+				"Instinct",
+				"Strength"
+			],
+			"abilities": [
+				"Artifact"
+			]
+		},
+		{
+			"name": "Gamora",
+			"team": "GuardiansOfTheGalaxy",
+			"classes": [
+				"Covert",
+				"Instinct"
+			],
+			"abilities": [
+				"Artifact"
+			]
+		},
+		{
+			"name": "Groot",
+			"team": "GuardiansOfTheGalaxy",
+			"classes": [
+				"Strength",
+				"Covert"
+			]
+		},
+		{
+			"name": "Rocket Raccoon",
+			"team": "GuardiansOfTheGalaxy",
+			"classes": [
+				"Ranged",
+				"Tech",
+				"Instinct"
+			],
+			"abilities": [
+				"Artifact"
+			]
+		},
+		{
+			"name": "Star-Lord",
+			"team": "GuardiansOfTheGalaxy",
+			"classes": [
+				"Ranged",
+				"Covert",
+				"Tech"
+			],
+			"abilities": [
+				"Artifact"
+			]
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Infinity Gems",
+			"abilities": [
+				"Artifact"
+			]
+		},
+		{
+			"name": "Kree Starforce"
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Supreme Intelligence of the Kree",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Kree Starforce"
+					]
+				}
+			]
+		},
+		{
+			"name": "Thanos",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Infinity Gems"
+					]
+				}
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Forge the Infinity Gauntlet",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Infinity Gems"
+					]
+				}
+			]
+		},
+		{
+			"name": "Intergalactic Kree Mega-Bomb",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "The Kree-Skrull War",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Skrulls"
+					],
+					"requiredMasterminds": [
+						"Kree Starforce"
+					]
+				}
+			]
+		},
+		{
+			"name": "Unite the Shards",
+			"schemeTwistRequirements": [
+				{
+					"playerCount": 1,
+					"schemeTwistCount": 6
+				},
+				{
+					"playerCount": 2,
+					"schemeTwistCount": 7
+				},
+				{
+					"playerCount": 3,
+					"schemeTwistCount": 8
+				},
+				{
+					"playerCount": 4,
+					"schemeTwistCount": 9
+				},
+				{
+					"playerCount": 5,
+					"schemeTwistCount": 10
+				}
+			]
+		}
+	]
+}

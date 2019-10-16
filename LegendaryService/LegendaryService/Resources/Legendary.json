@@ -1,0 +1,377 @@
+{
+	"name": "Legendary",
+	"packageType": "Base",
+	"baseMap": "Legendary",
+	"coverImage": "https://vignette.wikia.nocookie.net/marveldatabase/images/d/d2/Legendary_A_Marvel_Deck_Building_Game_Cover.jpg/revision/latest?cb=20130926190912",
+	"teams": [
+		{
+			"Name": "Avengers"
+		},
+		{
+			"Name": "X-Men"
+		},
+		{
+			"Name": "Spider Friends"
+		},
+		{
+			"Name": "S.H.I.E.L.D."
+		},
+		{
+			"Name": "None"
+		}
+	],
+	"allies": [
+		{
+			"name": "Captain America",
+			"team": {
+				"Name": "Avengers"
+			},
+			"classes": [
+				"Strength",
+				"Instinct",
+				"Tech",
+				"Covert"
+			]
+		},
+		{
+			"name": "Black Widow",
+			"team": {
+				"Name": "Avengers"
+			},
+			"classes": [
+				"Covert",
+				"Tech"
+			]
+		},
+		{
+			"name": "Hawkeye",
+			"team": {
+				"Name": "Avengers"
+			},
+			"classes": [
+				"Tech",
+				"Instinct"
+			]
+		},
+		{
+			"name": "Hulk",
+			"team": {
+				"Name": "Avengers"
+			},
+			"classes": [
+				"Strength",
+				"Instinct"
+			]
+		},
+		{
+			"name": "Iron Man",
+			"team": {
+				"Name": "Avengers"
+			},
+			"classes": [
+				"Tech",
+				"Ranged"
+			]
+		},
+		{
+			"name": "Thor",
+			"team": {
+				"Name": "Avengers"
+			},
+			"classes": [
+				"Ranged",
+				"Strength"
+			]
+		},
+		{
+			"name": "Cyclops",
+			"team": {
+				"Name": "X-Men"
+			},
+			"classes": [
+				"Ranged",
+				"Strength"
+			]
+		},
+		{
+			"name": "Emma Frost",
+			"team": {
+				"Name": "X-Men"
+			},
+			"classes": [
+				"Covert",
+				"Ranged",
+				"Instinct",
+				"Strength"
+			]
+		},
+		{
+			"name": "Storm",
+			"team": {
+				"Name": "X-Men"
+			},
+			"classes": [
+				"Ranged",
+				"Covert"
+			]
+		},
+		{
+			"name": "Rogue",
+			"team": {
+				"Name": "X-Men"
+			},
+			"classes": [
+				"Covert",
+				"Strength"
+			]
+		},
+		{
+			"name": "Gambit",
+			"team": {
+				"Name": "X-Men"
+			},
+			"classes": [
+				"Covert",
+				"Ranged",
+				"Instinct"
+			]
+		},
+		{
+			"name": "Wolverine (X-Men)",
+			"team": {
+				"Name": "X-Men"
+			},
+			"classes": [
+				"Instinct"
+			]
+		},
+		{
+			"name": "Spider-Man",
+			"team": {
+				"Name": "Spider Friends"
+			},
+				"classes": [
+					"Strength",
+					"Instinct",
+					"Tech",
+					"Covert"
+				]
+			},
+		{
+			"name": "Nick Fury",
+			"team": {
+				"Name": "S.H.I.E.L.D."
+			},
+			"classes": [
+				"Tech",
+				"Covert",
+				"Strength"
+			]
+		},
+		{
+			"name": "Deadpool",
+			"team": {
+				"Name": "None"
+			},
+			"classes": [
+				"Tech",
+				"Covert",
+				"Instinct"
+			]
+		}
+	],
+	"henchmen": [
+		{
+			"name": "Sentinel"
+		},
+		{
+			"name": "Doombot Legion"
+		},
+		{
+			"name": "Hand Ninjas"
+		},
+		{
+			"name": "Savage Land Mutates "
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Brotherhood"
+		},
+		{
+			"name": "HYDRA"
+		},
+		{
+			"name": "Enemies of Asgard"
+		},
+		{
+			"name": "Masters of Evil"
+		},
+		{
+			"name": "Radiation"
+		},
+		{
+			"name": "Spider-Foes"
+		},
+		{
+			"name": "Skrulls"
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Red Skull",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						{
+							"name": "HYDRA"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Magneto",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						{
+							"name": "Brotherhood"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Dr. Doom",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						{
+							"name": "Doombot Legion"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Loki",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						{
+							"name": "Enemies of Asgard"
+						}
+					]
+				}
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "The Legacy Virus",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Midtown Bank Robbery",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Negative Zone Prison Breakout",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"extraHenchmenGroups": "1"
+		},
+		{
+			"name": "Portals to the Dark Dimension",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 7
+				}
+			]
+		},
+		{
+			"name": "Replace Earth's Leaders with Killbots",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Secret Invasion of the Skrull Shapeshifters",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						{
+							"name": "Skrulls"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Super Hero Civil War",
+			"schemeTwistRequirements": [
+				{
+					"playerCount": 1,
+					"schemeTwistCount": 0
+				},
+				{
+					"playerCount": 2,
+					"schemeTwistCount": 8
+				},
+				{
+					"playerCount": 3,
+					"schemeTwistCount": 8
+				},
+				{
+					"playerCount": 4,
+					"schemeTwistCount": 5
+				},
+				{
+					"playerCount": 5,
+					"schemeTwistCount": 5
+				}
+			]
+		},
+		{
+			"name": "Unleash the Power of the Cosmic Cube",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		}
+	],
+	"neutral": [
+		{
+			"name": "Player Cards (S.H.I.E.L.D.)"
+		},
+		{
+			"name": "Wounds"
+		},
+		{
+			"name": "Bystanders"
+		},
+		{
+			"name": "S.H.I.E.L.D. Officer"
+		}
+	]
+}

@@ -1,0 +1,131 @@
+{
+	"name": "Fear Itself",
+	"packageType": "SmallExpansion",
+	"baseMap": "LegendaryVillains",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Nul, Breaker of Worlds",
+			"team": "FoesOfAsgard",
+			"classes": [
+				"Strength",
+				"Instinct"
+			],
+			"abilities": [
+				"Demolish",
+				"Thrown Artifact"
+			]
+		},
+		{
+			"name": "Kuurth, Breaker of Stone",
+			"team": "FoesOfAsgard",
+			"classes": [
+				"Strength",
+				"Ranged"
+			],
+			"abilities": [
+				"Thrown Artifact"
+			]
+		},
+		{
+			"name": "Greithoth, Breaker of Wills",
+			"team": "FoesOfAsgard",
+			"classes": [
+				"Covert",
+				"Instinct",
+				"Strength"
+			],
+			"abilities": [
+				"Thrown Artifact"
+			]
+		},
+		{
+			"name": "Skirn, Breaker of Men",
+			"team": "FoesOfAsgard",
+			"classes": [
+				"Covert",
+				"Instinct",
+				"Ranged",
+				"Strength"
+			],
+			"abilities": [
+				"Thrown Artifact"
+			]
+		},
+		{
+			"name": "Nerkkod, Breaker of Oceans",
+			"team": "FoesOfAsgard",
+			"classes": [
+				"Strength",
+				"Covert",
+				"Ranged",
+				"Instinct"
+			],
+			"abilities": [
+				"Thrown Artifact"
+			]
+		},
+		{
+			"name": "Skadi",
+			"team": "Shield",
+			"requires": "Madame HYDRA",
+			"classes": [
+				"Tech",
+				"Strength",
+				"Covert"
+			],
+			"abilities": [
+				"Thrown Artifact"
+			]
+		}
+	],
+	"adversaries": [
+		{
+			"name": "The Mighty",
+			"abilities": [
+				"Uru-Enchanted Weapon"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Uru-Enchanted Iron Man",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"The Mighty"
+					]
+				}
+			],
+			"abilities": [
+				"Demolish"
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Fear Itself",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 10
+				}
+			]
+		},
+		{
+			"name": "Last Stand at Avengers Tower",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 6
+				}
+			]
+		},
+		{
+			"name": "The Traitor",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 9
+				}
+			]
+		}
+	]
+}

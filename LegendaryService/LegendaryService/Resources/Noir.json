@@ -1,0 +1,158 @@
+{
+	"name": "Noir",
+	"packageType": "SmallExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Angel Noir",
+			"team": "XMen",
+			"classes": [
+				"Instinct",
+				"Strength",
+				"Covert"
+			],
+			"abilities": [
+				"Investigate"
+			]
+		},
+		{
+			"name": "Daredevil Noir",
+			"team": "MarvelKnights",
+			"classes": [
+				"Covert",
+				"Instinct"
+			],
+			"abilities": [
+				"Investigate"
+			]
+		},
+		{
+			"name": "Iron Man Noir",
+			"team": "Avengers",
+			"classes": [
+				"Tech",
+				"Ranged"
+			],
+			"abilities": [
+				"Investigate"
+			]
+		},
+		{
+			"name": "Luke Cage Noir",
+			"team": "MarvelKnights",
+			"classes": [
+				"Strength",
+				"Covert"
+			],
+			"abilities": [
+				"Investigate"
+			]
+		},
+		{
+			"name": "Spider-Man Noir",
+			"team": "SpiderFriends",
+			"classes": [
+				"Tech",
+				"Ranged",
+				"Instinct",
+				"Strength"
+			],
+			"abilities": [
+				"Investigate"
+			]
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Goblin's Freak Show",
+			"abilities": [
+				"Hidden Witness"
+			]
+		},
+		{
+			"name": "X-Men Noir",
+			"abilities": [
+				"Investigate"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Charles Xavier, Professor of Crime",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"X-Men Noir"
+					]
+				}
+			],
+			"abilities": [
+				"Hidden Witness",
+				"Investigate"
+			]
+		},
+		{
+			"name": "The Goblin, Underworld Boss",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Goblin's Freak Show"
+					]
+				}
+			],
+			"abilities": [
+				"Hidden Witness",
+				"Investigate"
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Silence the Witnesses",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 6
+				}
+			],
+			"abilities": [
+				"Hidden Witness"
+			]
+		},
+		{
+			"name": "Hidden Heart of Darkness",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"abilities": [
+				"Investigate"
+			]
+		},
+		{
+			"name": "Five Families of Crime",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalAdversaryCount": 2
+				}
+			],
+		},
+		{
+			"name": "Find the Split Personality Killer",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"abilities": [
+				"Investigate"
+			]
+		}
+	]
+}

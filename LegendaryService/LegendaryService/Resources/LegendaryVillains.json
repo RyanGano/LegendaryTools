@@ -1,0 +1,340 @@
+{
+	"name": "Legendary Villains",
+	"packageType": "Base",
+	"baseMap": "LegendaryVillains",
+	"coverImage": "https://cf.geekdo-images.com/imagepage/img/3HeLRURTg-ynF4U2xxMi0Qn5plc=/fit-in/900x600/filters:no_upscale()/pic2081108.jpg",
+	"allies": [
+		{
+			"name": "Bullseye",
+			"team": "CrimeSyndicate",
+			"classes": [
+				"Ranged",
+				"Instinct",
+				"Covert"
+			],
+			"abilities": [
+				"Dodge"
+			]
+		},
+		{
+			"name": "Dr. Octopus",
+			"team": "SinisterSix",
+			"classes": [
+				"Tech",
+				"Strength"
+			]
+		},
+		{
+			"name": "Electro",
+			"team": "SinisterSix",
+			"classes": [
+				"Ranged",
+				"Instinct"
+			],
+			"abilities": [
+				"Dodge"
+			]
+		},
+		{
+			"name": "Enchantress",
+			"team": "FoesOfAsgard",
+			"classes": [
+				"Covert",
+				"Ranged"
+			]
+		},
+		{
+			"name": "Green Goblin",
+			"team": "SinisterSix",
+			"classes": [
+				"Tech",
+				"Instinct"
+			],
+			"abilities": [
+				"Dodge"
+			]
+		},
+		{
+			"name": "Juggernaut",
+			"team": "Brotherhood",
+			"classes": [
+				"Strength"
+			]
+		},
+		{
+			"name": "Kingpin",
+			"team": "CrimeSyndicate",
+			"classes": [
+				"Strength",
+				"Covert",
+				"Tech"
+			]
+		},
+		{
+			"name": "Kraven",
+			"team": "SinisterSix",
+			"classes": [
+				"Instinct",
+				"Covert",
+				"Strength"
+			],
+			"abilities": [
+				"Dodge"
+			]
+		},
+		{
+			"name": "Loki",
+			"team": "FoesOfAsgard",
+			"classes": [
+				"Covert",
+				"Ranged"
+			]
+		},
+		{
+			"name": "Magneto",
+			"team": "Brotherhood",
+			"classes": [
+				"Ranged",
+				"Strength"
+			],
+			"abilities": [
+				"Dodge"
+			]
+		},
+		{
+			"name": "Mysterio",
+			"team": "SinisterSix",
+			"classes": [
+				"Ranged",
+				"Covert",
+				"Tech",
+				"Instinct"
+			],
+			"abilities": [
+				"Dodge"
+			]
+		},
+		{
+			"name": "Mystique",
+			"team": "Brotherhood",
+			"classes": [
+				"Covert",
+				"Tech",
+				"Instinct"
+			],
+			"abilities": [
+				"Dodge"
+			]
+		},
+		{
+			"name": "Sabretooth",
+			"team": "Brotherhood",
+			"classes": [
+				"Instinct",
+				"Covert",
+				"Tech"
+			]
+		},
+		{
+			"name": "Ultron",
+			"team": "None",
+			"classes": [
+				"Tech"
+			],
+			"abilities": [
+				"Dodge"
+			]
+		},
+		{
+			"name": "Venom (SinisterSix)",
+			"team": "SinisterSix",
+			"classes": [
+				"Strength",
+				"Instinct"
+			]
+		}
+	],
+	"henchmen": [
+		{
+			"name": "Asgardian Warrior"
+		},
+		{
+			"name": "Cops"
+		},
+		{
+			"name": "Multiple Man"
+		},
+		{
+			"name": "S.H.I.E.L.D. Assault Squad"
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Avengers",
+			"abilities": [
+				"Elusive"
+			]
+		},
+		{
+			"name": "Defenders"
+		},
+		{
+			"name": "Marvel Knights"
+		},
+		{
+			"name": "Spider-Friends",
+			"abilities": [
+				"Elusive"
+			]
+		},
+		{
+			"name": "Uncanny Avengers",
+			"abilities": [
+				"X-Treme Attack"
+			]
+		},
+		{
+			"name": "Uncanny X-Men",
+			"abilities": [
+				"X-Treme Attack"
+			]
+		},
+		{
+			"name": "X-Men First Class",
+			"abilities": [
+				"X-Treme Attack"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Dr. Strange",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Defenders"
+					]
+				}
+			]
+		},
+		{
+			"name": "Nick Fury",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Avengers"
+					]
+				}
+			],
+			"abilities": [
+				"Demolish"
+			]
+		},
+		{
+			"name": "Odin",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Asgardian Warrior"
+					]
+				}
+			]
+		},
+		{
+			"name": "Professor X",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"X-Men First Class"
+					]
+				}
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Cage Villains in Power-Suppressing Cells",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Graduation at Xavier's X-Academy",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Mass Produce War Machine Armor",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Resurrect Heroes with the Norn Stones",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Crown Thor King of Asgard",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Build an Undertround Mega-Vault Prison",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Infiltrate the Lair with Spies",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Crush Hydra",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		}
+	],
+	"neutral": [
+		{
+			"name": "Player Cards (HYDRA)"
+		},
+		{
+			"name": "Bindings"
+		},
+		{
+			"name": "Bystanders"
+		},
+		{
+			"name": "Special Bystanders"
+		},
+		{
+			"name": "Madame HYDRA"
+		},
+		{
+			"name": "New Recruits"
+		}
+	]
+}

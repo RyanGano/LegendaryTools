@@ -1,0 +1,159 @@
+{
+	"name": "Venom",
+	"packageType": "SmallExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Carnage",
+			"team": "Venomverse",
+			"classes": [
+				"Instinct",
+				"Strength",
+				"Covert"
+			],
+			"abilities": [
+				"Digest",
+				"Indigestion",
+				"Excessive Violence"
+			]
+		},
+		{
+			"name": "Venomized Dr. Strange",
+			"team": "Venomverse",
+			"classes": [
+				"Strength",
+				"Tech",
+				"Instinct"
+			],
+			"abilities": [
+				"Digest"
+			]
+		},
+		{
+			"name": "Venompool",
+			"team": "Venomverse",
+			"classes": [
+				"Ranged",
+				"Instinct"
+			],
+			"abilities": [
+				"Digest",
+				"Indigestion",
+				"Excessive Violence"
+			]
+		},
+		{
+			"name": "Venom (Venomverse)",
+			"team": "Venomverse",
+			"classes": [
+				"Instinct",
+				"Tech",
+				"Ranged"
+			],
+			"abilities": [
+				"Digest",
+				"Indigestion",
+				"Excessive Violence"
+			]
+		},
+		{
+			"name": "Venom Rocket",
+			"team": "Venomverse",
+			"classes": [
+				"Instinct",
+				"Strength"
+			],
+			"abilities": [
+				"Digest",
+				"Excessive Violence"
+			]
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Life Foundation",
+			"abilities": [
+				"Symbiote Bonds"
+			]
+		},
+		{
+			"name": "Poisons",
+			"abilities": [
+				"Symbiote Bonds"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Hybrid",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Life Foundation"
+					]
+				}
+			],
+			"abilities": [
+				"Symbiote Bonds"
+			]
+		},
+		{
+			"name": "Poison Thanos",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Poisons"
+					]
+				}
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Invasion of the Venom Symbiotes",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalHenchmanCount": 1
+				}
+			],
+			"abilities": [
+				"Symbiote Bonds"
+			]
+		},
+		{
+			"name": "Maximum Carnage",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 10
+				}
+			]
+		},
+		{
+			"name": "Paralyzing Venom",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 6
+				}
+			]
+		},
+		{
+			"name": "Symbiotic Absorption",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 11
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalMastermindCount": 1
+				}
+			]
+		}
+	]
+}

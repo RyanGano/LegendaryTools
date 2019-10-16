@@ -1,0 +1,331 @@
+{
+	"name": "Dark City",
+	"packageType": "LargeExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Angel",
+			"team": "XMen",
+			"classes": [
+				"Strength",
+				"Covert",
+				"Instinct"
+			]
+		},
+		{
+			"name": "Bishop",
+			"team": "XMen",
+			"classes": [
+				"Ranged",
+				"Covert",
+				"Tech"
+			]
+		},
+		{
+			"name": "Blade",
+			"team": "MarvelKnights",
+			"classes": [
+				"Strength",
+				"Covert",
+				"Tech",
+				"Instinct"
+			]
+		},
+		{
+			"name": "Cable",
+			"team": "XForce",
+			"classes": [
+				"Ranged",
+				"Tech",
+				"Covert"
+			],
+			"abilities": [
+				"Teleport"
+			]
+		},
+		{
+			"name": "Colossus",
+			"team": "XForce",
+			"classes": [
+				"Strength",
+				"Covert"
+			]
+		},
+		{
+			"name": "Daredevil (Marvel Knights)",
+			"team": "MarvelKnights",
+			"classes": [
+				"Instinct",
+				"Strength",
+				"Covert"
+			]
+		},
+		{
+			"name": "Domino",
+			"team": "XForce",
+			"classes": [
+				"Tech",
+				"Instinct",
+				"Covert"
+			],
+			"abilities": [
+				"Versatile"
+			]
+		},
+		{
+			"name": "Elektra",
+			"team": "MarvelKnights",
+			"classes": [
+				"Ranged",
+				"Instinct"
+			]
+		},
+		{
+			"name": "Forge",
+			"team": "XForce",
+			"classes": [
+				"Tech"
+			],
+			"abilities": [
+				"Versatile"
+			]
+		},
+		{
+			"name": "Ghost Rider",
+			"team": "MarvelKnights",
+			"classes": [
+				"Ranged",
+				"Tech",
+				"Strength"
+			]
+		},
+		{
+			"name": "Iceman",
+			"team": "XMen",
+			"classes": [
+				"Ranged",
+				"Strength"
+			]
+		},
+		{
+			"name": "Iron Fist",
+			"team": "MarvelKnights",
+			"classes": [
+				"Strength",
+				"Instinct"
+			],
+			"abilities": [
+				"Versatile"
+			]
+		},
+		{
+			"name": "Jean Grey",
+			"team": "XMen",
+			"classes": [
+				"Covert",
+				"Ranged"
+			]
+		},
+		{
+			"name": "Nightcrawler",
+			"team": "XMen",
+			"classes": [
+				"Instinct",
+				"Covert"
+			],
+			"abilities": [
+				"Teleport"
+			]
+		},
+		{
+			"name": "Professor X",
+			"team": "XMen",
+			"classes": [
+				"Ranged",
+				"Instinct",
+				"Covert"
+			]
+		},
+		{
+			"name": "Punisher",
+			"team": "MarvelKnights",
+			"classes": [
+				"Tech",
+				"Strength"
+			]
+		},
+		{
+			"name": "Wolverine (X-Force)",
+			"team": "XForce",
+			"classes": [
+				"Covert",
+				"Instinct",
+				"Strength"
+			]
+		}
+	],
+	"henchmen": [
+		{
+			"name": "Maggia Goons",
+			"abilities": [
+				"Bribe"
+			]
+		},
+		{
+			"name": "Phalanx"
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Emissaries of Evil"
+		},
+		{
+			"name": "Four Horsemen"
+		},
+		{
+			"name": "Marauders"
+		},
+		{
+			"name": "MLF"
+		},
+		{
+			"name": "Streets of New York",
+			"abilities": [
+				"Bribe"
+			]
+		},
+		{
+			"name": "Underworld",
+			"abilities": [
+				"Teleport"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Apocalypse",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Four Horsemen"
+					]
+				}
+			]
+		},
+		{
+			"name": "Kingpin",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Streets of New York"
+					]
+				}
+			],
+			"abilities": [
+				"Bribe"
+			]
+		},
+		{
+			"name": "Mephisto",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Underworld"
+					]
+				}
+			]
+		},
+		{
+			"name": "Mr. Sinister",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Marauders"
+					]
+				}
+			]
+		},
+		{
+			"name": "Stryfe",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"MLF"
+					]
+				}
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "X-Cutioner's Song",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Transform Citizens into Demons",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Steal the Weaponized Plutonium",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalAdversaryCount": 1
+				}
+			]
+		},
+		{
+			"name": "Organized Crime Wave",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Massive Earthquake Generator",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Save Humanity",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Detonate the Helicarrier",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Capture Baby Hope",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,137 @@
+{
+	"name": "Fantastic Four",
+	"packageType": "SmallExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Human Torch",
+			"team": "FantasticFour",
+			"classes": [
+				"Ranged",
+				"Instinct"
+			],
+			"abilities": [
+				"Focus"
+			]
+		},
+		{
+			"name": "Invisible Woman",
+			"team": "FantasticFour",
+			"classes": [
+				"Covert",
+				"Ranged"
+			],
+			"abilities": [
+				"Focus"
+			]
+		},
+		{
+			"name": "Mr. Fantastic",
+			"team": "FantasticFour",
+			"classes": [
+				"Tech",
+				"Instinct"
+			],
+			"abilities": [
+				"Focus"
+			]
+		},
+		{
+			"name": "Silver Surfer",
+			"team": "None",
+			"classes": [
+				"Strength",
+				"Covert",
+				"Ranged"
+			],
+			"abilities": [
+				"Focus"
+			]
+		},
+		{
+			"name": "Thing",
+			"team": "FantasticFour",
+			"classes": [
+				"Strength",
+				"Instinct"
+			],
+			"abilities": [
+				"Focus"
+			]
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Subterranea",
+			"abilities": [
+				"Burrow"
+			]
+		},
+		{
+			"name": "Heralds of Galactus",
+			"abilities": [
+				"Cosmic Threat"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Mole Man",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Subterranea"
+					]
+				}
+			]
+		},
+		{
+			"name": "Galactus",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Heralds of Galactus"
+					]
+				}
+			],
+			"abilities": [
+				"Cosmic Threat"
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Bathe Earth in Cosmic Rays",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 6
+				}
+			]
+		},
+		{
+			"name": "Flood the Planet with Melted Glass",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Invincible Force Field",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 7
+				}
+			]
+		},
+		{
+			"name": "Pull Reality into the Negative Zone",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		}
+	]
+}

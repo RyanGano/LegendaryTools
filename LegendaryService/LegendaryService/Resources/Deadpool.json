@@ -1,0 +1,221 @@
+{
+	"name": "Deadpool",
+	"packageType": "SmallExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Bob, Agent of HYDRA",
+			"team": "HYDRA",
+			"classes": [
+				"Covert",
+				"Tech"
+			],
+			"abilities": [
+				"Excessive Violence"
+			]
+		},
+		{
+			"name": "Deadpool (Deadpool)",
+			"team": "MercsForMoney",
+			"classes": [
+				"Tech",
+				"Instinct",
+				"Covert",
+				"Strength"
+			],
+			"abilities": [
+				"Excessive Violence"
+			]
+		},
+		{
+			"name": "Slapstick",
+			"team": "MercsForMoney",
+			"classes": [
+				"Ranged",
+				"Strength"
+			],
+			"abilities": [
+				"Excessive Violence"
+			]
+		},
+		{
+			"name": "Solo",
+			"team": "MercsForMoney",
+			"classes": [
+				"Tech",
+				"Instinct"
+			],
+			"abilities": [
+				"Excessive Violence"
+			]
+		},
+		{
+			"name": "Stingray",
+			"team": "MercsForMoney",
+			"classes": [
+				"Tech",
+				"Ranged"
+			],
+			"abilities": [
+				"Excessive Violence"
+			]
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Deadpool's \"Friends\"",
+			"abilities": [
+				"Revenge",
+				"Excessive Violence"
+			]
+		},
+		{
+			"name": "Evil Deadpool Corpse",
+			"abilities": [
+				"Revenge",
+				"Excessive Violence"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Evil Deadpool",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Evil Deadpool Corpse"
+					]
+				}
+			],
+			"abilities": [
+				"Revenge"
+			]
+		},
+		{
+			"name": "Macho Gomez",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Deadpool's \"Friends\""
+					]
+				}
+			],
+			"abilities": [
+				"Revenge"
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Deadpool Kills the Marvel Universe",
+			"schemeTwistRequirements": [
+				{
+					"playerCount": 1,
+					"schemeTwistCount": 6
+				},
+				{
+					"playerCount": 2,
+					"schemeTwistCount": 6
+				},
+				{
+					"playerCount": 3,
+					"schemeTwistCount": 6
+				},
+				{
+					"playerCount": 4,
+					"schemeTwistCount": 5
+				},
+				{
+					"playerCount": 5,
+					"schemeTwistCount": 5
+				}
+			],
+			"cardRequirements": [
+				{
+					"playerCount": 1,
+					"additionalAllyCount": 0
+				},
+				{
+					"playerCount": 2,
+					"additionalAllyCount": -1
+				},
+				{
+					"playerCount": 3,
+					"additionalAllyCount": 0
+				},
+				{
+					"playerCount": 4,
+					"additionalAllyCount": 0
+				},
+				{
+					"playerCount": 5,
+					"additionalAllyCount": 0
+				}
+			],
+			"requiresOneOf": [
+				"Deadpool (Deadpool)"
+			]
+		},
+		{
+			"name": "Deadpool Wants a Chimichanga",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 6
+				}
+			],
+			"cardRequirements": [
+				{
+					"playerCount": 1,
+					"additionalAdversaryCount": 0,
+					"additionalBystanderCount": 11
+				},
+				{
+					"playerCount": 2,
+					"additionalAdversaryCount": 0,
+					"additionalBystanderCount": 10
+				},
+				{
+					"playerCount": 3,
+					"additionalAdversaryCount": 0,
+					"additionalBystanderCount": 4
+				},
+				{
+					"playerCount": 4,
+					"additionalAdversaryCount": 1,
+					"additionalBystanderCount": 4
+				},
+				{
+					"playerCount": 5,
+					"additionalAdversaryCount": 1,
+					"additionalBystanderCount": 0
+				}
+			]
+		},
+		{
+			"name": "Deadpool Writes a Scheme",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 6
+				}
+			],
+			"requiresOneOf": [
+				"Deadpool (Deadpool)"
+			]
+		},
+		{
+			"name": "Everybody Hates Deadpool",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 6
+				}
+			],
+			"requiredTeams": [
+				"Deadpool"
+			],
+			"abilities": [
+				"Revenge"
+			]
+		}
+	]
+}

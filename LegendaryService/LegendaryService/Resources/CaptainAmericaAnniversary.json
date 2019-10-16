@@ -1,0 +1,156 @@
+{
+	"name": "Captain America 75th Anniversary",
+	"packageType": "SmallExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Captain America (Falcon)",
+			"team": "Avengers",
+			"classes": [
+				"Instinct",
+				"Covert",
+				"Ranged",
+				"Tech"
+			],
+			"abilities": [
+				"Savior"
+			]
+		},
+		{
+			"name": "Steve Rogers, Director of S.H.I.E.L.D.",
+			"team": "Avengers",
+			"classes": [
+				"Instinct",
+				"Covert",
+				"Strength",
+				"Tech"
+			],
+			"abilities": [
+				"Savior",
+				"Man (and Woman) Out of Time"
+			]
+		},
+		{
+			"name": "Winter Soldier",
+			"team": "None",
+			"classes": [
+				"Tech",
+				"Covert",
+				"Strength"
+			],
+			"abilities": [
+				"Man (and Woman) Out of Time"
+			]
+		},
+		{
+			"name": "Captain America 1941",
+			"team": "Avengers",
+			"classes": [
+				"Tech",
+				"Strength",
+				"Covert",
+				"Instinct"
+			],
+			"abilities": [
+				"Savior",
+				"Man (and Woman) Out of Time"
+			]
+		},
+		{
+			"name": "Agent X-13",
+			"team": "Shield",
+			"classes": [
+				"Tech",
+				"Ranged",
+				"Covert",
+				"Instinct"
+			],
+			"abilities": [
+				"Man (and Woman) Out of Time",
+				"Savior"
+			]
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Zola's Creations",
+			"abilities": [
+				"Abomination"
+			]
+		},
+		{
+			"name": "Masters of Evil (WWII)",
+			"abilities": [
+				"Savior"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Arnim Zola",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Zola's Creations"
+					]
+				}
+			],
+			"abilities": [
+				"Abomination"
+			]
+		},
+		{
+			"name": "Baron Heinrich Zemo",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Masters of Evil (WWII)"
+					]
+				}
+			],
+			"abilities": [
+				"Savior"
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Change the Outcome of WWII",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 7
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalAdversaryCount": 1
+				}
+			]
+		},
+		{
+			"name": "Brainwash the Military",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 7
+				}
+			]
+		},
+		{
+			"name": "Go Back in Time to Slay Heroes' Ancestors",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 9
+				}
+			]
+		},
+		{
+			"name": "The Unbreakable Enigma Code",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 6
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,197 @@
+{
+	"name": "Ant-Man",
+	"packageType": "SmallExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "https://cf.geekdo-images.com/imagepage/img/-MGGhmwwXKqHXSDtYr7mHP_ePSI=/fit-in/900x600/filters:no_upscale()/pic4410573.jpg",
+	"allies": [
+		{
+			"name": "Ant-Man",
+			"team": "Avengers",
+			"classes": [
+				"Tech",
+				"Strength"
+			],
+			"abilities": [
+				"Size-Changing",
+				"Microscopic Size-Changing"
+			]
+		},
+		{
+			"name": "Wasp",
+			"team": "Avengers",
+			"classes": [
+				"Covert",
+				"Ranged"
+			],
+			"abilities": [
+				"Size-Changing",
+				"Microscopic Size-Changing"
+			]
+		},
+		{
+			"name": "Jocasta",
+			"team": "Avengers",
+			"classes": [
+				"Tech",
+				"Ranged"
+			],
+			"abilities": [
+				"Size-Changing",
+				"Empowered"
+			]
+		},
+		{
+			"name": "Wonder Man",
+			"team": "Avengers",
+			"classes": [
+				"Ranged",
+				"Strength"
+			],
+			"abilities": [
+				"Size-Changing",
+				"Empowered"
+			]
+		},
+		{
+			"name": "Black Knight",
+			"team": "Avengers",
+			"classes": [
+				"Instinct",
+				"Strength",
+				"Covert"
+			],
+			"abilities": [
+				"Empowered"
+			]
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Ultron's Legacy",
+			"abilities": [
+				"Size-Changing",
+				"Microscopic Size-Changing",
+				"Empowered"
+			]
+		},
+		{
+			"name": "Queen's Vengeance",
+			"abilities": [
+				"Microscopic Size-Changing",
+				"Chivalrous Duel"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Ultron",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Ultron's Legacy"
+					]
+				}
+			],
+			"abilities": [
+				"Empowered"
+			]
+		},
+		{
+			"name": "Morgan le Fay",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Queen's Vengeance"
+					]
+				}
+			],
+			"abilities": [
+				"Chivalrous Duel"
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Transform Commuters into Giant Ants",
+			"schemeTwistRequirements": [
+				{
+					"playerCount": 1,
+					"schemeTwistCount": 7
+				},
+				{
+					"playerCount": 2,
+					"schemeTwistCount": 8
+				},
+				{
+					"playerCount": 3,
+					"schemeTwistCount": 9
+				},
+				{
+					"playerCount": 4,
+					"schemeTwistCount": 10
+				},
+				{
+					"playerCount": 5,
+					"schemeTwistCount": 11
+				}
+			]
+		},
+		{
+			"name": "Age of Ultron",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 11
+				}
+			],
+			"cardRequirements": [
+				{
+					"playerCount": 1,
+					"additionalAllyCount": 0
+				},
+				{
+					"playerCount": 2,
+					"additionalAllyCount": 0
+				},
+				{
+					"playerCount": 3,
+					"additionalAllyCount": 0
+				},
+				{
+					"playerCount": 4,
+					"additionalAllyCount": 1
+				},
+				{
+					"playerCount": 5,
+					"additionalAllyCount": 1
+				}
+			]
+		},
+		{
+			"name": "Pull Earth into Medieval Times",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 9
+				}
+			],
+			"abilities": [
+				"Chivalrous Duel"
+			]
+		},
+		{
+			"name": "Trap Heroes in the Microverse",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 11
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalAllyCount": 1
+				}
+			],
+			"abilities": [
+				"Size-Changing"
+			]
+		}
+	]
+}

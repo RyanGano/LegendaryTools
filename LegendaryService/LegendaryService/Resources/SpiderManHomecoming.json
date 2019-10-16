@@ -1,0 +1,157 @@
+{
+	"name": "Spider-Man Homecoming",
+	"packageType": "SmallExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Happy Hogan",
+			"team": "None",
+			"classes": [
+				"Instinct",
+				"Tech"
+			],
+			"abilities": [
+				"Coordinate",
+				"Striker",
+				"Danger Sense"
+			]
+		},
+		{
+			"name": "High Tech Spider-Man",
+			"team": "SpiderFriends",
+			"classes": [
+				"Tech",
+				"Covert"
+			],
+			"abilities": [
+				"Wall-Crawl",
+				"Danger Sense",
+				"Coordinate"
+			]
+		},
+		{
+			"name": "Peter Parker, Homecoming",
+			"team": "SpiderFriends",
+			"classes": [
+				"Covert",
+				"Instinct",
+				"Tech",
+				"Strength"
+			],
+			"abilities": [
+				"Wall-Crawl",
+				"Danger Sense",
+				"Coordinate"
+			]
+		},
+		{
+			"name": "Peter's Allies",
+			"team": "SpiderFriends",
+			"classes": [
+				"Covert",
+				"Instinct"
+			],
+			"abilities": [
+				"Coordinate"
+			]
+		},
+		{
+			"name": "Tony Stark",
+			"team": "Avengers",
+			"classes": [
+				"Tech",
+				"Ranged"
+			],
+			"abilities": [
+				"Coordinate",
+				"Danger Sense"
+			]
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Salvagers",
+			"abilities": [
+				"Striker"
+			]
+		},
+		{
+			"name": "Vulture Tech",
+			"abilities": [
+				"Striker",
+				"Wall-Crawl",
+				"Danger Sense"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Adrian Toomes",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Salvagers"
+					]
+				}
+			],
+			"hasEpicSide": true,
+			"abilities": [
+				"Striker",
+				"Danger Sense"
+			]
+		},
+		{
+			"name": "Vulture",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Vulture Tech"
+					]
+				}
+			],
+			"hasEpicSide": true,
+			"abilities": [
+				"Striker",
+				"Danger Sense"
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Distract the Hero",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Explosion at the Washington Monument",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Ferry Disaster",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 9
+				}
+			]
+		},
+		{
+			"name": "Scavenge Alien Weaponry",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 7
+				}
+			],
+			"abilities": [
+				"Striker"
+			]
+		}
+	]
+}

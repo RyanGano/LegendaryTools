@@ -1,0 +1,300 @@
+{
+	"name": "Legendary Marvel Studios",
+	"packageType": "Base",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Captain America (Marvel 10th)",
+			"team": "Avengers",
+			"classes": [
+				"Strength",
+				"Instinct",
+				"Tech",
+				"Covert"
+			]
+		},
+		{
+			"name": "Black Widow (Marvel 10th)",
+			"team": "Avengers",
+			"classes": [
+				"Covert",
+				"Tech"
+			]
+		},
+		{
+			"name": "Hawkeye (Marvel 10th)",
+			"team": "Avengers",
+			"classes": [
+				"Tech",
+				"Instinct"
+			]
+		},
+		{
+			"name": "Hulk (Marvel 10th)",
+			"team": "Avengers",
+			"classes": [
+				"Strength",
+				"Instinct"
+			]
+		},
+		{
+			"name": "Iron Man (Marvel 10th)",
+			"team": "Avengers",
+			"classes": [
+				"Tech",
+				"Ranged"
+			]
+		},
+		{
+			"name": "Thor (Marvel 10th)",
+			"team": "Avengers",
+			"classes": [
+				"Ranged",
+				"Strength"
+			]
+		}
+	],
+	"henchmen": [
+		{
+			"name": "Hammer Drone Army"
+		},
+		{
+			"name": "HYDRA Spies"
+		},
+		{
+			"name": "HYDRA Pilots"
+		},
+		{
+			"name": "Ten Rings Fanatics"
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Chitauri",
+			"abilities": [
+				"Conqueror",
+				"Ambush"
+			]
+		},
+		{
+			"name": "Gamma Hunters",
+			"abilities": [
+				"Conqueror",
+				"Ambush"
+			]
+		},
+		{
+			"name": "Enemies of Asgard (Marvel 10th)",
+			"abilities": [
+				"Ambush"
+			]
+		},
+		{
+			"name": "HYDRA (Marvel 10th)"
+		},
+		{
+			"name": "Iron Foes",
+			"abilities": [
+				"Conqueror",
+				"Ambush"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Iron Monger",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Iron Foes"
+					]
+				}
+			],
+			"abilities": [
+				"Conqueror"
+			]
+		},
+		{
+			"name": "Loki (Marvel 10th)",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Enemies of Asgard (Marvel 10th)"
+					]
+				}
+			]
+		},
+		{
+			"name": "Red Skull (Marvel 10th)",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"HYDRA (Marvel 10th)"
+					]
+				}
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Asgard Under Siege",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalHenchmanCount": 1
+				}
+			]
+		},
+		{
+			"name": "Destroy the Cities of Earth!",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Enslave Minds with the Chitauri Scepter",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"playerCount": 1,
+					"additionalAllyCount": 3,
+					"requiredAdversaries": [
+						"Chitauri"
+					]
+				},
+				{
+					"playerCount": 2,
+					"additionalAllyCount": 1,
+					"requiredAdversaries": [
+						"Chitauri"
+					]
+				},
+				{
+					"playerCount": 3,
+					"additionalAllyCount": 1,
+					"requiredAdversaries": [
+						"Chitauri"
+					]
+				},
+				{
+					"playerCount": 4,
+					"additionalAllyCount": 1,
+					"requiredAdversaries": [
+						"Chitauri"
+					]
+				},
+				{
+					"playerCount": 5,
+					"additionalAllyCount": 0,
+					"requiredAdversaries": [
+						"Chitauri"
+					]
+				}
+			]
+		},
+		{
+			"name": "Radioactive Palladium Poisoning",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Invade Asgard",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 7
+				}
+			]
+		},
+		{
+			"name": "Replace Earth's Leaders with HYDRA",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 5
+				}
+			]
+		},
+		{
+			"name": "Super Hero Civil War (Marvel 10th)",
+			"schemeTwistRequirements": [
+				{
+					"playerCount": 1,
+					"schemeTwistCount": 0
+				},
+				{
+					"playerCount": 2,
+					"schemeTwistCount": 8
+				},
+				{
+					"playerCount": 3,
+					"schemeTwistCount": 8
+				},
+				{
+					"playerCount": 4,
+					"schemeTwistCount": 5
+				},
+				{
+					"playerCount": 5,
+					"schemeTwistCount": 5
+				}
+			],
+			"cardRequirements": [
+				{
+					"playerCount": 1,
+					"additionalAllyCount": 0
+				},
+				{
+					"playerCount": 2,
+					"additionalAllyCount": -1
+				},
+				{
+					"playerCount": 3,
+					"additionalAllyCount": 0
+				},
+				{
+					"playerCount": 4,
+					"additionalAllyCount": 0
+				},
+				{
+					"playerCount": 5,
+					"additionalAllyCount": 0
+				}
+			]
+		},
+		{
+			"name": "Unleash the Power of the Cosmic Cube (Marvel 10th)",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		}
+	],
+	"neutral": [
+		{
+			"name": "Player Cards (S.H.I.E.L.D.)"
+		},
+		{
+			"name": "Wounds"
+		},
+		{
+			"name": "Bystanders"
+		},
+		{
+			"name": "S.H.I.E.L.D. Officer"
+		}
+	]
+}

@@ -1,0 +1,395 @@
+{
+	"name": "Civil War",
+	"packageType": "LargeExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Storm & Black Panther",
+			"team": "XMen|Avengers",
+			"classes": [
+				"Ranged",
+				"Instinct",
+				"Covert",
+				"Tech"
+			]
+		},
+		{
+			"name": "Captain America, Secret Avenger & Battlestar",
+			"team": "Avengers",
+			"classes": [
+				"Instinct",
+				"Covert",
+				"Strength",
+				"Tech",
+				"Ranged"
+			]
+		},
+		{
+			"name": "Cloak & Dagger",
+			"team": "Avengers|MarvelKnights",
+			"classes": [
+				"Ranged",
+				"Covert"
+			],
+			"abilities": [
+				"Phasing"
+			]
+		},
+		{
+			"name": "Daredevil & Iron Fist",
+			"team": "Avengers|MarvelKnights",
+			"classes": [
+				"Instinct",
+				"Covert",
+				"Strength"
+			]
+		},
+		{
+			"name": "Falcon & Redwing",
+			"team": "Avengers",
+			"classes": [
+				"Ranged",
+				"Instinct",
+				"Tech"
+			]
+		},
+		{
+			"name": "Goliath",
+			"team": "Avengers",
+			"classes": [
+				"Tech",
+				"Strength"
+			],
+			"abilities": [
+				"Size-Changing"
+			]
+		},
+		{
+			"name": "Hercules & Amadeus Cho",
+			"team": "Avengers",
+			"classes": [
+				"Strength",
+				"Instinct",
+				"Tech"
+			]
+		},
+		{
+			"name": "Hulkling",
+			"team": "Avengers",
+			"classes": [
+				"Strength",
+				"Covert"
+			],
+			"abilities": [
+				"Size-Changing"
+			]
+		},
+		{
+			"name": "Luke Cage & Jessica Jones",
+			"team": "Avengers|MarvelKnights",
+			"classes": [
+				"Strength",
+				"Instinct"
+			],
+			"abilities": [
+				"Fortify"
+			]
+		},
+		{
+			"name": "Patriot & Hawkeye",
+			"team": "Avengers",
+			"classes": [
+				"Strength",
+				"Instinct",
+				"Tech",
+				"Covert"
+			]
+		},
+		{
+			"name": "Speedball & Namorrita",
+			"team": "NewWarriors",
+			"classes": [
+				"Ranged",
+				"Covert"
+			]
+		},
+		{
+			"name": "Peter Parker & Aunt May",
+			"team": "Avengers|SpiderFriends",
+			"classes": [
+				"Instinct",
+				"Tech"
+			]
+		},
+		{
+			"name": "Stature & Iron Lad",
+			"team": "Avengers",
+			"classes": [
+				"Tech",
+				"Strength"
+			],
+			"abilities": [
+				"Size-Changing"
+			]
+		},
+		{
+			"name": "Tigra",
+			"team": "Avengers",
+			"classes": [
+				"Instinct",
+				"Covert"
+			]
+		},
+		{
+			"name": "Vision",
+			"team": "Avengers",
+			"classes": [
+				"Tech",
+				"Ranged"
+			],
+			"abilities": [
+				"Size-Changing",
+				"Phasing"
+			]
+		},
+		{
+			"name": "Wiccan & Speed",
+			"team": "Avengers",
+			"classes": [
+				"Covert",
+				"Ranged"
+			],
+			"abilities": [
+				"Phasing"
+			]
+		}
+	],
+	"henchmen": [
+		{
+			"name": "Capekillers",
+			"abilities": [
+				"S.H.I.E.L.D. Clearance"
+			]
+		},
+		{
+			"name": "Mandroids"
+		}
+	],
+	"adversaries": [
+		{
+			"name": "CSA Special Marshals",
+			"abilities": [
+				"Size-Changing",
+				"Fortify"
+			]
+		},
+		{
+			"name": "Great Lakes Avengers",
+			"abilities": [
+				"Size-Changing",
+				"Fortify"
+			]
+		},
+		{
+			"name": "Heroes for Hire",
+			"abilities": [
+				"Bribe",
+				"Fortify"
+			]
+		},
+		{
+			"name": "Registration Enforcers",
+			"abilities": [
+				"Size-Changing"
+			]
+		},
+		{
+			"name": "S.H.I.E.L.D. Elite",
+			"abilities": [
+				"S.H.I.E.L.D. Clearance",
+				"Fortify"
+			]
+		},
+		{
+			"name": "Superhuman Registration Act",
+			"abilities": [
+				"Size-Changing",
+				"Fortify"
+			]
+		},
+		{
+			"name": "Thunderbolts",
+			"abilities": [
+				"Fortify"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Authoritarian Iron Man",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Superhuman Registration Act"
+					]
+				}
+			],
+			"abilities": [
+				"Fortify"
+			]
+		},
+		{
+			"name": "Baron Helmut Zemo",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Thunderbolts"
+					]
+				}
+			]
+		},
+		{
+			"name": "Maria Hill Director of S.H.I.E.L.D.",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"S.H.I.E.L.D. Elite"
+					]
+				}
+			],
+			"abilities": [
+				"S.H.I.E.L.D. Clearance"
+			]
+		},
+		{
+			"name": "Misty Knight",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Heroes for Hire"
+					]
+				}
+			],
+			"abilities": [
+				"Bribe",
+				"Fortify"
+			]
+		},
+		{
+			"name": "Ragnarok",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Registration Enforcers"
+					]
+				}
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Avengers vs X-Men",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 9
+				}
+			]
+		},
+		{
+			"name": "Reveal the Heroes' Secret Identities",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 6
+				}
+			]
+		},
+		{
+			"name": "Predict Future Crime",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 6
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalAdversaryCount": 1
+				}
+			]
+		},
+		{
+			"name": "United States Split by Civil War",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 10
+				}
+			]
+		},
+		{
+			"name": "Nitro The Supervillain Threatens Crowds",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Imprison Unregistered Superhumans",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 11
+				}
+			],
+			"abilities": [
+				"Fortify"
+			]
+		},
+		{
+			"name": "Epic Super Hero Civil War",
+			"schemeTwistRequirements": [
+				{
+					"playerCount": 1,
+					"schemeTwistCount": 9
+				},
+				{
+					"playerCount": 2,
+					"schemeTwistCount": 9
+				},
+				{
+					"playerCount": 3,
+					"schemeTwistCount": 9
+				},
+				{
+					"playerCount": 4,
+					"schemeTwistCount": 6
+				},
+				{
+					"playerCount": 5,
+					"schemeTwistCount": 6
+				}
+			]
+		},
+		{
+			"name": "Dark Reign of the H.A.M.M.E.R. Officers",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 7
+				}
+			],
+			"abilities": [
+				"S.H.I.E.L.D. Clearance"
+			]
+		}
+	],
+	"neutral": [
+		{
+			"name": "Grievous Wounds"
+		},
+		{
+			"name": "Special Bystanders"
+		},
+		{
+			"name": "Sidekicks"
+		}
+	]
+}

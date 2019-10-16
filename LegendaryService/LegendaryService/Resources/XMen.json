@@ -1,0 +1,446 @@
+{
+	"name": "X-Men",
+	"packageType": "LargeExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Aurora & Northstar",
+			"team": "XMen",
+			"classes": [
+				"Covert",
+				"Strength",
+				"Ranged",
+				"Instinct"
+			],
+			"abilities": [
+				"Soaring Flight",
+				"Lightshow",
+				"Berserk"
+			]
+		},
+		{
+			"name": "Banshee",
+			"team": "XMen",
+			"classes": [
+				"Ranged",
+				"Covert"
+			],
+			"abilities": [
+				"Piercing Energy",
+				"Soaring Flight",
+				"X-Gene"
+			]
+		},
+		{
+			"name": "Beast (X-Men)",
+			"team": "XMen",
+			"classes": [
+				"Tech",
+				"Strength"
+			],
+			"abilities": [
+				"Berserk",
+				"X-Gene"
+			]
+		},
+		{
+			"name": "Cannonball",
+			"team": "XMen",
+			"classes": [
+				"Strength",
+				"Instinct"
+			],
+			"abilities": [
+				"Soaring Flight"
+			]
+		},
+		{
+			"name": "Colossus & Wolverine",
+			"team": "XForce",
+			"classes": [
+				"Instinct",
+				"Strength"
+			],
+			"abilities": [
+				"Berserk",
+				"Soaring Flight",
+				"X-Gene"
+			]
+		},
+		{
+			"name": "Dazzler",
+			"team": "XMen",
+			"classes": [
+				"Covert",
+				"Instinct",
+				"Tech"
+			],
+			"abilities": [
+				"Piercing Energy",
+				"Lightshow"
+			]
+		},
+		{
+			"name": "Havok",
+			"team": "XMen",
+			"classes": [
+				"Ranged",
+				"Tech"
+			],
+			"abilities": [
+				"Berserk",
+				"X-Gene",
+				"Lightshow"
+			]
+		},
+		{
+			"name": "Jubalee",
+			"team": "XMen",
+			"classes": [
+				"Ranged",
+				"Covert",
+				"Instinct"
+			],
+			"abilities": [
+				"Lightshow"
+			]
+		},
+		{
+			"name": "Kitty Pryde",
+			"team": "XMen",
+			"classes": [
+				"Covert",
+				"Instinct",
+				"Tech",
+				"Ranged"
+			],
+			"abilities": [
+				"Soaring Flight",
+				"X-Gene"
+			]
+		},
+		{
+			"name": "Legion",
+			"team": "XMen",
+			"classes": [
+				"Covert",
+				"Strength",
+				"Ranged",
+				"Instinct",
+				"Tech"
+			],
+			"abilities": [
+				"Soaring Flight",
+				"Piercing Energy",
+				"Berserk",
+				"Lightshow"
+			]
+		},
+		{
+			"name": "Longshot",
+			"team": "XMen",
+			"classes": [
+				"Tech",
+				"Instinct",
+				"Covert"
+			],
+			"abilities": [
+				"Berserk"
+			]
+		},
+		{
+			"name": "Phoenix",
+			"team": "XMen",
+			"classes": [
+				"Strength",
+				"Ranged",
+				"Covert"
+			],
+			"abilities": [
+				"Soaring Flight",
+				"Piercing Energy",
+				"Berserk"
+			]
+		},
+		{
+			"name": "Polaris",
+			"team": "XMen",
+			"classes": [
+				"Covert",
+				"Ranged"
+			],
+			"abilities": [
+				"Soaring Flight",
+				"X-Gene",
+				"Piercing Energy"
+			]
+		},
+		{
+			"name": "Psylocke",
+			"team": "XMen",
+			"classes": [
+				"Covert",
+				"Instinct"
+			],
+			"abilities": [
+				"Piercing Energy",
+				"X-Gene"
+			]
+		},
+		{
+			"name": "X-23",
+			"team": "XMen",
+			"classes": [
+				"Tech",
+				"Instinct",
+				"Covert"
+			],
+			"abilities": [
+				"X-Gene",
+				"Berserk"
+			]
+		}
+	],
+	"henchmen": [
+		{
+			"name": "Sapien League"
+		},
+		{
+			"name": "Shi'ar Patrol Craft",
+			"abilities": [
+				"Soaring Flight"
+			]
+		},
+		{
+			"name": "Shi'ar Death Commandos",
+			"abilities": [
+				"Human Shield"
+			]
+		},
+		{
+			"name": "The Brood"
+		},
+		{
+			"name": "Hellfire Cult"
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Sisterhood of Mutants",
+			"abilities": [
+				"Trap",
+				"Dominate"
+			]
+		},
+		{
+			"name": "Shadow-X",
+			"abilities": [
+				"Trap",
+				"X-Gene",
+				"Dominate",
+				"Soaring Flight"
+			]
+		},
+		{
+			"name": "Shi'ar Imperial Guard",
+			"abilities": [
+				"Trap",
+				"Dominate"
+			]
+		},
+		{
+			"name": "Mojoverse",
+			"abilities": [
+				"Human Shield",
+				"Trap"
+			]
+		},
+		{
+			"name": "Murderworld",
+			"abilities": [
+				"Trap",
+				"Human Shield"
+			]
+		},
+		{
+			"name": "Dark Descendants",
+			"abilities": [
+				"Dominate",
+				"X-Gene",
+				"Trap"
+			]
+		},
+		{
+			"name": "Hellfire Club",
+			"abilities": [
+				"Trap",
+				"Dominate"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Arcade",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Murderworld"
+					]
+				}
+			],
+			"hasEpicSide": true,
+			"abilities": [
+				"Human Shield"
+			]
+		},
+		{
+			"name": "Dark Phoenix",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Hellfire Club"
+					]
+				}
+			],
+			"hasEpicSide": true
+		},
+		{
+			"name": "Deathbird",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Shi'ar Imperial Guard"
+					],
+					"requireSingleHenchman": [
+						"Shi'ar Patrol Craft",
+						"Shi'ar Death Commandos"
+					]
+				}
+			],
+			"hasEpicSide": true
+		},
+		{
+			"name": "Mojo",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Mojoverse"
+					]
+				}
+			],
+			"hasEpicSide": true,
+			"abilities": [
+				"Human Shield"
+			]
+		},
+		{
+			"name": "Onslaught",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Dark Descendants"
+					]
+				}
+			],
+			"hasEpicSide": true,
+			"abilities": [
+				"Dominate"
+			]
+		},
+		{
+			"name": "Shadow King",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Shadow-X"
+					]
+				}
+			],
+			"hasEpicSide": true,
+			"abilities": [
+				"Dominate"
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "X-Men Danger Room Goes Berserk",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"abilities": [
+				"Trap"
+			]
+		},
+		{
+			"name": "The Dark Phoenix Saga",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 10
+				}
+			]
+		},
+		{
+			"name": "Nuclear Armageddon",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 5
+				}
+			]
+		},
+		{
+			"name": "Mutant-Hunting Super Sentinels",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 9
+				}
+			]
+		},
+		{
+			"name": "Horror of Horrors",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 6
+				}
+			]
+		},
+		{
+			"name": "Televised Deathtraps of Mojoworld",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 11
+				}
+			]
+		},
+		{
+			"name": "Anti-Mutant Hatred",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 11
+				}
+			]
+		},
+		{
+			"name": "Alien Brood Encounters",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		}
+	],
+	"neutral": [
+		{
+			"name": "Tokens"
+		},
+		{
+			"name": "Special Bystanders"
+		},
+		{
+			"name": "Horrors"
+		}
+	]
+}

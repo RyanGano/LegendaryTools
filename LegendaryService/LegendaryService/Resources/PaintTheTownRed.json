@@ -1,0 +1,149 @@
+{
+	"name": "Paint the Town Red (Spider-Man)",
+	"packageType": "SmallExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Black Cat",
+			"team": "SpiderFriends",
+			"classes": [
+				"Covert",
+				"Instinct"
+			],
+			"abilities": [
+				"Wall-Crawl"
+			]
+		},
+		{
+			"name": "Moon Night",
+			"team": "MarvelKnights",
+			"classes": [
+				"Tech",
+				"Instinct"
+			],
+			"abilities": [
+				"Wall-Crawl"
+			]
+		},
+		{
+			"name": "Scarlet Spider",
+			"team": "SpiderFriends",
+			"classes": [
+				"Strength",
+				"Instinct",
+				"Covert"
+			],
+			"abilities": [
+				"Wall-Crawl"
+			]
+		},
+		{
+			"name": "Spider-Woman",
+			"team": "SpiderFriends",
+			"classes": [
+				"Ranged",
+				"Strength",
+				"Covert"
+			],
+			"abilities": [
+				"Wall-Crawl"
+			]
+		},
+		{
+			"name": "Symbiote Spider-Man",
+			"team": "SpiderFriends",
+			"classes": [
+				"Strength",
+				"Instinct",
+				"Covert",
+				"Ranged"
+			],
+			"abilities": [
+				"Wall-Crawl"
+			]
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Maximum Carnage",
+			"abilities": [
+				"Feast"
+			]
+		},
+		{
+			"name": "Sinister Six"
+		}
+	],
+	"masterminds": [
+		{
+			"name": "Carnage",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Maximum Carnage"
+					]
+				}
+			],
+			"abilities": [
+				"Feast"
+			]
+		},
+		{
+			"name": "Mysterio",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Sinister Six"
+					]
+				}
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Invade the Daily Bugle News HQ",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalHenchmanCount": 1
+				}
+			]
+		},
+		{
+			"name": "Splice Humans with Spider DNA",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Sinister Six"
+					]
+				}
+			]
+		},
+		{
+			"name": "The Clone Saga",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			]
+		},
+		{
+			"name": "Weave a Web of Lies",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 7
+				}
+			]
+		}
+	]
+}
