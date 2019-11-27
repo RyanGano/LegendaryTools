@@ -37,7 +37,8 @@ drop table packagetypes;
 -- Create the packagetypes table
 create table packagetypes (
 	PackageTypeId int auto_increment primary key,
-    Name varchar(25) not null
+    Name varchar(25) not null,
+    unique index packagetypes_Name (Name)
 ) engine=INNODB;
 
 insert into packagetypes (Name) values ("BaseGame"), ("LargeExpansion"), ("SmallExpansion");
@@ -45,7 +46,8 @@ insert into packagetypes (Name) values ("BaseGame"), ("LargeExpansion"), ("Small
 -- Create the basemaps table
 create table basemaps (
 	BaseMapId int auto_increment primary key,
-    Name varchar(25) not null
+    Name varchar(25) not null,
+    unique index basemaps_Name (Name)
 ) engine=INNODB;
 
 insert into basemaps (Name) values ("Legendary"), ("Villains");
@@ -68,7 +70,8 @@ insert into classes (Name, ImagePath) values
 create table teams (
 	TeamId int auto_increment primary key,
     Name varchar(50) not null,
-    ImagePath varchar(250) not null
+    ImagePath varchar(250) not null,
+    unique index teams_Name (Name)
 ) engine=INNODB;
 
 insert into teams (Name, ImagePath) values
@@ -96,38 +99,44 @@ create table allies (
 	AllyId int auto_increment primary key,
     Name varchar(50) not null,
     TeamId int not null,
+    unique index allies_Name_TeamId (Name, TeamId),
 	constraint ally_TeamId foreign key (TeamId) references teams(TeamId) on update cascade on delete cascade
 ) engine=INNODB; 
 
 -- Create the henchmen table
 create table henchmen (
 	HenchmanId int auto_increment primary key,
-    Name varchar(50) not null
+    Name varchar(50) not null,
+    unique index henchmen_Name (Name)
 ) engine=INNODB;
 
 -- Create the adversaries table
 create table adversaries (
 	AdversaryId int auto_increment primary key,
-    Name varchar(50) not null
+    Name varchar(50) not null,
+    unique index adversaries_Name (Name)
 ) engine=INNODB;
 
 -- Create the masterminds table
 create table masterminds (
 	MastermindId int auto_increment primary key,
     Name varchar(50) not null,
-    HasEpicSide bool
+    HasEpicSide bool,
+    unique index masterminds_Name (Name)
 ) engine=INNODB;
 
 -- Create the schemes table
 create table schemes (
 	SchemeId int auto_increment primary key,
-    Name varchar(100) not null
+    Name varchar(100) not null,
+    unique index schemes_Name (Name)
 ) engine=INNODB;
 
 -- Create the neutrals table
 create table neutrals (
 	NeutralId int auto_increment primary key,
-    Name varchar(50) not null
+    Name varchar(50) not null,
+    unique index neutrals_Name (Name)
 ) engine=INNODB;
 
 -- Create the cardrequirements table
@@ -168,6 +177,7 @@ create table abilities (
     Name varchar(50) not null,
     Description text not null,
     GamePackageId int,
+    unique index abilites_Name_GamePackageId (Name, GamePackageId),
 	constraint ability_GamePackageId foreign key (GamePackageId) references gamepackages(GamePackageId) on update cascade on delete cascade
 ) engine=INNODB;
 
