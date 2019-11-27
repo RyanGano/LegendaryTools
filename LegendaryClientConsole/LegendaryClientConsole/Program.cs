@@ -16,6 +16,7 @@ namespace LegendaryClientConsole
 			var client = new GameServiceClient(channel);
 
 			bool init = false;
+			// init = true;
 
 			if (init)
 			{
@@ -24,19 +25,24 @@ namespace LegendaryClientConsole
 			}
 
 			var request = new GetGamePackagesRequest();
-			request.Fields.AddRange(new[] { GamePackageField.Id, GamePackageField.Name, GamePackageField.CoverImage, GamePackageField.PackageType, GamePackageField.Allies });
+			request.Fields.AddRange(new[] { GamePackageField.Id, GamePackageField.Name, GamePackageField.CoverImage, GamePackageField.PackageType, GamePackageField.Allies, GamePackageField.Abilities });
 			var reply = await client.GetGamePackagesAsync(request);
 
 			foreach (var gameData in reply.Packages.OrderBy(x => x.BaseMap).ThenBy(x => x.PackageType).ThenBy(x => x.Name))
 			{
-				Console.WriteLine(gameData);
-				// Console.WriteLine($"ID: {gameData.Id}");
-				// Console.WriteLine($"Name: {gameData.Name}");
-				// Console.WriteLine($"CoverImage: {gameData.CoverImage}");
-				//Console.WriteLine($"Base Map: {gameData.BaseMap}");
-				//Console.WriteLine($"Package Type: {gameData.PackageType}");
-				// Console.WriteLine();
+				var abilitiesRequest = new GetAbilitiesRequest
+				{
+					GamePackageId = gameData.Id
+				};
+
+				abilitiesRequest.AbilityFields.AddRange(new[] { AbilityField.Id, AbilityField.Name, AbilityField.GamePackageName });
+
+				var abilities = await client.GetAbilitiesAsync(abilitiesRequest);
+
+				foreach (var ability in abilities.Abilities)
+					Console.WriteLine(ability);
 			}
+
 			// Console.WriteLine("Available Packages: " + reply.Packages.Select(x => x.CoverImage).Aggregate((left, right) => left + ", " + right));
 			Console.WriteLine("Press any key to exit...");
 			Console.ReadKey();

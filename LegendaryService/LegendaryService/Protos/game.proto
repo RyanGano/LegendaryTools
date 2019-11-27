@@ -9,6 +9,7 @@ service GameService {
 	// Get a listing of the available game packages
   rpc GetGamePackages (GetGamePackagesRequest) returns (GetGamePackagesReply);
   rpc CreateGamePackage (CreateGamePackageRequest) returns (CreateGamePackageReply);
+  rpc GetAbilities (GetAbilitiesRequest) returns (GetAbilitiesReply);
   rpc CreateAbilities (CreateAbilitiesRequest) returns (CreateAbilitiesReply);
 }
 
@@ -27,6 +28,18 @@ message CreateGamePackageRequest {
 	GamePackageType packageType = 2;
 	GameBaseMap baseMap = 3;
 	string coverImage = 4;
+}
+
+message GetAbilitiesRequest {
+	repeated AbilityField abilityFields = 1;
+	repeated int32 abilityIds = 2;
+	repeated string names = 3;
+	int32 gamePackageId = 4;
+}
+
+message GetAbilitiesReply {
+	Status status = 1;
+	repeated Ability abilities = 2;
 }
 
 message CreateGamePackageReply {
@@ -57,6 +70,7 @@ message GamePackage {
 	repeated Mastermind masterminds = 10;
 	repeated Scheme schemes = 11;
 	repeated Neutral neutrals = 12;
+	repeated int32 abilitieIds = 13;
 }
 
 message Ally {
@@ -158,6 +172,7 @@ enum GamePackageField {
 	masterminds = 9;
 	schemes = 10;
 	neutral = 11;
+	abilities = 12;
 }
 
 enum GameBaseMap {
@@ -169,6 +184,14 @@ enum GameBaseMap {
 enum CreateOptions {
 	/// Rather than inform the client of existing duplicates, return an error and perform none of the operation.
 	ErrorOnDuplicates = 0;
+}
+
+enum AbilityField {
+	Id = 0;
+	Name = 1;
+	Description = 2;
+	GamePackageId = 3;
+	GamePackageName = 4;
 }
 
 message Status {

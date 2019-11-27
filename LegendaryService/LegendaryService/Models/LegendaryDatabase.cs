@@ -20,5 +20,10 @@ namespace LegendaryService.Models
 		{
 			Connection.Close();
 		}
+
+		internal static string Encode(string input)
+		{
+			return input.Replace("(", ".(").Replace(")", ".)");
+		}
 	}
 }
