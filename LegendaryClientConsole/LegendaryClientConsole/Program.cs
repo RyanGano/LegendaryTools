@@ -40,7 +40,7 @@ namespace LegendaryClientConsole
 				var abilities = await client.GetAbilitiesAsync(abilitiesRequest);
 
 				foreach (var ability in abilities.Abilities)
-					Console.WriteLine(ability);
+					Console.WriteLine($"{ability.GamePackage.Name} - {ability.Name}");
 			}
 
 			// Console.WriteLine("Available Packages: " + reply.Packages.Select(x => x.CoverImage).Aggregate((left, right) => left + ", " + right));

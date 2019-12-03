@@ -10,6 +10,7 @@ using Google.Protobuf.Collections;
 using Faithlife.Data;
 using System.Data;
 using System.Text;
+using LegendaryService.Database;
 
 namespace LegendaryService
 {
@@ -20,6 +21,7 @@ namespace LegendaryService
 		public Game(ILogger<Game> logger)
 		{
 			_logger = logger;
+			m_abilityDatabaseDefinition = new AbilityDatabaseDefinition();
 		}
 
 		public override async Task<GetGamePackagesReply> GetGamePackages(GetGamePackagesRequest request, ServerCallContext context)
@@ -93,13 +95,13 @@ namespace LegendaryService
 
 			List<Ability> abilities = new List<Ability>();
 
-			var select = request.AbilityFields.Select(x => AbilitySqlMap[x]).Join(", ");
-			
+			var select = m_abilityDatabaseDefinition.BuildSelectStatement(request.AbilityFields.OfType<object>().ToList());
+
 			if (request.GamePackageId > 0)
 				reply.Abilities.AddRange(await connector
 					.Command($@"select {select} from abilities inner join gamepackages on abilities.GamePackageId = gamepackages.GamePackageId where abilities.GamePackageId = @GamePackageId;",
 						("GamePackageId", request.GamePackageId))
-					.QueryAsync(x => MapAbility(x, request.AbilityFields, null)));
+					.QueryAsync(x => MapAbility(x, request.AbilityFields.OfType<object>().ToList(), null)));
 
 			return reply;
 		}
@@ -147,7 +149,7 @@ namespace LegendaryService
 		}
 		private async ValueTask<IReadOnlyList<Ability>> GetAllAbilities(IReadOnlyList<GamePackage> gamePackages, DbConnector connector)
 		{
-			var test = (await connector.Command(@"select * from abilities;").QueryAsync(x => MapAbility(x, BasicAbilityFields, gamePackages))).ToList();
+			var test = (await connector.Command($@"select {m_abilityDatabaseDefinition.BuildSelectStatement(null)} from abilities;").QueryAsync(x => MapAbility(x, m_abilityDatabaseDefinition.BasicFields, gamePackages))).ToList();
 			return test;
 		}
 
@@ -159,54 +161,40 @@ namespace LegendaryService
 
 			foreach (var gamePackageAbilities in abilities.GroupBy(x => x.GamePackage.Id))
 			{
-				foundAbilities.AddRange(await connector.Command(@"select * from abilities where name REGEXP @Names and GamePackageId = @GamePackageId;",
+				foundAbilities.AddRange(await connector.Command($@"select {m_abilityDatabaseDefinition.BuildSelectStatement(null)} from abilities where name REGEXP @Names and GamePackageId = @GamePackageId;",
 					("Names", gamePackageAbilities.Select(x => LegendaryDatabase.Encode(x.Name)).Join("|")),
 					("GamePackageId", gamePackageAbilities.Key))
-					.QueryAsync(x => MapAbility(x, BasicAbilityFields, gamePackages)));
+					.QueryAsync(x => MapAbility(x, m_abilityDatabaseDefinition.BasicFields, gamePackages)));
 			}
 
 			return foundAbilities;
 		}
 
-		static readonly IReadOnlyList<AbilityField> BasicAbilityFields = new[]
+		private Ability MapAbility(IDataRecord data, IReadOnlyList<object> fields, IReadOnlyList<GamePackage> gamePackages)
 		{
-			AbilityField.Id,
-			AbilityField.Name,
-			AbilityField.Description,
-			AbilityField.GamePackageId
-		};
-
-		private Ability MapAbility(IDataRecord data, IReadOnlyList<AbilityField> fields, IReadOnlyList<GamePackage> gamePackages)
-		{
-			var gamePackage = gamePackages?.FirstOrDefault(x => x.Id == data.Get<int>("GamePackageId"));
+			var gamePackage = gamePackages?.FirstOrDefault(x => x.Id == data.Get<int>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.GamePackageId)));
 
 			if (gamePackage == null && (fields.Contains(AbilityField.GamePackageId) || fields.Contains(AbilityField.GamePackageName)))
 			{
 				gamePackage = new GamePackage();
 
 				if (fields.Contains(AbilityField.GamePackageId))
-					gamePackage.Id = data.Get<int>("gamepackages.GamePackageId");
+					gamePackage.Id = data.Get<int>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.GamePackageId));
+
+				if (fields.Contains(AbilityField.GamePackageName))
+					gamePackage.Name = data.Get<string>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.GamePackageName));
 			}
 
 
 			return new Ability
 			{
-				Id = fields.Contains(AbilityField.Id) ? data.Get<int>("AbilityId") : 0,
-				Name = fields.Contains(AbilityField.Name) ? data.Get<string>("Name") : "",
-				Description = fields.Contains(AbilityField.Description) ? data.Get<string>("Description") : "",
+				Id = fields.Contains(AbilityField.Id) ? data.Get<int>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.Id)) : 0,
+				Name = fields.Contains(AbilityField.Name) ? data.Get<string>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.Name)) : "",
+				Description = fields.Contains(AbilityField.Description) ? data.Get<string>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.Description)) : "",
 				GamePackage = gamePackage
 			};
 		}
 
-		readonly List<GamePackage> m_gamePackages = new List<GamePackage>();
-
-		private readonly Dictionary<AbilityField, string> AbilitySqlMap = new Dictionary<AbilityField, string>
-		{
-			{ AbilityField.Id, "abilities.AbilityId" },
-			{ AbilityField.Name, "abilities.Name" },
-			{ AbilityField.Description, "abilities.Description" },
-			{ AbilityField.GamePackageId, "abilities.GamePackageId" },
-			{ AbilityField.GamePackageName, "gamepackages.Name" },
-		};
+		IDatabaseDefinition m_abilityDatabaseDefinition;
 	}
 }
