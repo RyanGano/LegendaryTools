@@ -95,13 +95,13 @@ namespace LegendaryService
 
 			List<Ability> abilities = new List<Ability>();
 
-			var select = m_abilityDatabaseDefinition.BuildSelectStatement(request.AbilityFields.OfType<object>().ToList());
+			var select = m_abilityDatabaseDefinition.BuildSelectStatement(request.AbilityFields);
 
 			if (request.GamePackageId > 0)
 				reply.Abilities.AddRange(await connector
 					.Command($@"select {select} from abilities inner join gamepackages on abilities.GamePackageId = gamepackages.GamePackageId where abilities.GamePackageId = @GamePackageId;",
 						("GamePackageId", request.GamePackageId))
-					.QueryAsync(x => MapAbility(x, request.AbilityFields.OfType<object>().ToList(), null)));
+					.QueryAsync(x => MapAbility(x, request.AbilityFields, null)));
 
 			return reply;
 		}
@@ -170,7 +170,7 @@ namespace LegendaryService
 			return foundAbilities;
 		}
 
-		private Ability MapAbility(IDataRecord data, IReadOnlyList<object> fields, IReadOnlyList<GamePackage> gamePackages)
+		private Ability MapAbility(IDataRecord data, IReadOnlyList<AbilityField> fields, IReadOnlyList<GamePackage> gamePackages)
 		{
 			var gamePackage = gamePackages?.FirstOrDefault(x => x.Id == data.Get<int>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.GamePackageId)));
 
@@ -195,6 +195,6 @@ namespace LegendaryService
 			};
 		}
 
-		IDatabaseDefinition m_abilityDatabaseDefinition;
+		IDatabaseDefinition<AbilityField> m_abilityDatabaseDefinition;
 	}
 }

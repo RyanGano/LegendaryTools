@@ -2,13 +2,13 @@
 
 namespace LegendaryService.Database
 {
-	public class AbilityDatabaseDefinition : IDatabaseDefinition
+	public class AbilityDatabaseDefinition : IDatabaseDefinition<AbilityField>
 	{
-		IReadOnlyList<object> IDatabaseDefinition.BasicFields { get => BasicAbilityFields; }
-		IReadOnlyDictionary<object, string> IDatabaseDefinition.SqlTableMap { get => AbilitySqlTableMap; }
-		IReadOnlyDictionary<object, string> IDatabaseDefinition.SqlColumnMap { get => AbilitySqlColumnMap; }
+		IReadOnlyList<AbilityField> IDatabaseDefinition<AbilityField>.BasicFields { get => BasicAbilityFields; }
+		IReadOnlyDictionary<AbilityField, string> IDatabaseDefinition<AbilityField>.SqlTableMap { get => AbilitySqlTableMap; }
+		IReadOnlyDictionary<AbilityField, string> IDatabaseDefinition<AbilityField>.SqlColumnMap { get => AbilitySqlColumnMap; }
 
-		static readonly IReadOnlyList<object> BasicAbilityFields = new object[]
+		static readonly IReadOnlyList<AbilityField> BasicAbilityFields = new AbilityField[]
 		{
 			AbilityField.Id,
 			AbilityField.Name,
@@ -16,7 +16,7 @@ namespace LegendaryService.Database
 			AbilityField.GamePackageId
 		};
 
-		static readonly Dictionary<object, string> AbilitySqlColumnMap = new Dictionary<object, string>
+		static readonly Dictionary<AbilityField, string> AbilitySqlColumnMap = new Dictionary<AbilityField, string>
 		{
 			{ AbilityField.Id, "AbilityId" },
 			{ AbilityField.Name, "Name" },
@@ -25,7 +25,7 @@ namespace LegendaryService.Database
 			{ AbilityField.GamePackageName, "Name" }
 		};
 
-		static readonly Dictionary<object, string> AbilitySqlTableMap = new Dictionary<object, string>
+		static readonly Dictionary<AbilityField, string> AbilitySqlTableMap = new Dictionary<AbilityField, string>
 		{
 			{ AbilityField.Id, "abilities" },
 			{ AbilityField.Name, "abilities" },
