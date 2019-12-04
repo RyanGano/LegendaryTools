@@ -6,20 +6,30 @@ namespace LegendaryService.Database
 {
 	public interface IDatabaseDefinition<T>
 	{
-		public IReadOnlyList<T> BasicFields { get; }
+		public string GetSelectStatement(T field) => $"{TableName[field]}.{ColumnName[field]} as {GetSelectResult(field)}";
+		public string GetSelectResult(T field) => $"{TableName[field]}_{ColumnName[field]}";
+		public string GetWhereStatement(T field) => $"{TableName[field]}.{ColumnName[field]}";
 
-		public IReadOnlyDictionary<T, string> SqlTableMap { get; }
-		public IReadOnlyDictionary<T, string> SqlColumnMap { get; }
+		public string DefaultTableName { get; }
+		public IReadOnlyList<T> BasicFields { get; }
+		public IReadOnlyDictionary<T, string> TableName { get; }
+		public IReadOnlyDictionary<T, string> ColumnName { get; }
+		public IReadOnlyDictionary<T, string> JoinStatement { get; }
 
 		public string BuildSelectStatement(IReadOnlyList<T> fields)
 		{
 			if ((fields?.Count ?? 0) == 0)
 				fields = BasicFields;
 
-			return fields.Select(x => MapFieldToSelectStatement(x)).Join(", ");
+			return fields.Select(x => GetSelectStatement(x)).Join(", ");
 		}
 
-		public string MapFieldToSelectStatement(T field) => $"{SqlTableMap[field]}.{SqlColumnMap[field]} as {MapTableFieldToSelectResult(field)}";
-		public string MapTableFieldToSelectResult(T field) => $"{SqlTableMap[field]}_{SqlColumnMap[field]}";
+		public string BuildRequiredJoins(IReadOnlyList<T> fields)
+		{
+			if ((fields?.Count ?? 0) == 0)
+				fields = BasicFields;
+
+			return fields.Select(x => JoinStatement?.GetValueOrDefault(x, () => null)).Distinct().WhereNotNull().Join(" ") ?? "";
+		}
 	}
 }

@@ -4,9 +4,11 @@ namespace LegendaryService.Database
 {
 	public class AbilityDatabaseDefinition : IDatabaseDefinition<AbilityField>
 	{
+		string IDatabaseDefinition<AbilityField>.DefaultTableName => TableNames.Abilities;
 		IReadOnlyList<AbilityField> IDatabaseDefinition<AbilityField>.BasicFields { get => BasicAbilityFields; }
-		IReadOnlyDictionary<AbilityField, string> IDatabaseDefinition<AbilityField>.SqlTableMap { get => AbilitySqlTableMap; }
-		IReadOnlyDictionary<AbilityField, string> IDatabaseDefinition<AbilityField>.SqlColumnMap { get => AbilitySqlColumnMap; }
+		IReadOnlyDictionary<AbilityField, string> IDatabaseDefinition<AbilityField>.TableName { get => AbilitySqlTableMap; }
+		IReadOnlyDictionary<AbilityField, string> IDatabaseDefinition<AbilityField>.ColumnName { get => AbilitySqlColumnMap; }
+		IReadOnlyDictionary<AbilityField, string> IDatabaseDefinition<AbilityField>.JoinStatement { get => AbilitySqlJoinMap; }
 
 		static readonly IReadOnlyList<AbilityField> BasicAbilityFields = new AbilityField[]
 		{
@@ -27,11 +29,16 @@ namespace LegendaryService.Database
 
 		static readonly Dictionary<AbilityField, string> AbilitySqlTableMap = new Dictionary<AbilityField, string>
 		{
-			{ AbilityField.Id, "abilities" },
-			{ AbilityField.Name, "abilities" },
-			{ AbilityField.Description, "abilities" },
-			{ AbilityField.GamePackageId, "abilities" },
-			{ AbilityField.GamePackageName, "gamepackages" }
+			{ AbilityField.Id, TableNames.Abilities },
+			{ AbilityField.Name, TableNames.Abilities },
+			{ AbilityField.Description, TableNames.Abilities },
+			{ AbilityField.GamePackageId, TableNames.Abilities },
+			{ AbilityField.GamePackageName, TableNames.GamePackages }
+		};
+
+		static readonly Dictionary<AbilityField, string> AbilitySqlJoinMap = new Dictionary<AbilityField, string>
+		{
+			{ AbilityField.GamePackageName, $"inner join {TableNames.GamePackages} on {TableNames.GamePackages}.{AbilitySqlColumnMap[AbilityField.GamePackageId]} = {TableNames.Abilities}.{AbilitySqlColumnMap[AbilityField.GamePackageId]}" }
 		};
 	}
 }

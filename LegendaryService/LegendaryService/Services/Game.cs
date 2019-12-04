@@ -22,6 +22,7 @@ namespace LegendaryService
 		{
 			_logger = logger;
 			m_abilityDatabaseDefinition = new AbilityDatabaseDefinition();
+			m_gamePackageDatabaseDefinition = new GamePackageDatabaseDefinition();
 		}
 
 		public override async Task<GetGamePackagesReply> GetGamePackages(GetGamePackagesRequest request, ServerCallContext context)
@@ -29,18 +30,18 @@ namespace LegendaryService
 			using var db = new LegendaryDatabase();
 			var connector = DbConnector.Create(db.Connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
 
-			var gamePackages = await connector.Command(@"
-				select gp.GamePackageId, gp.Name, gp.CoverImage, pt.Name as PackageType, bm.Name as BaseMap
-					from gamepackages as gp
-						inner join packagetypes as pt on pt.PackageTypeId = gp.PackageTypeId
-						inner join basemaps as bm on bm.BaseMapId = gp.BaseMapId;").QueryAsync(
+			var select = m_gamePackageDatabaseDefinition.BuildSelectStatement(null);
+			var joins = m_gamePackageDatabaseDefinition.BuildRequiredJoins(null);
+
+			var gamePackages = await connector.Command($@"
+				select {select} from {m_gamePackageDatabaseDefinition.DefaultTableName} {joins};").QueryAsync(
 						x => new GamePackage
 						{
-							Id = x.Get<int>("GamePackageId"),
-							Name = x.Get<string>("Name"),
-							CoverImage = x.Get<string>("CoverImage"),
-							PackageType = (GamePackageType)Enum.Parse(typeof(GamePackageType), x.Get<string>("PackageType")),
-							BaseMap = (GameBaseMap)Enum.Parse(typeof(GameBaseMap), x.Get<string>("BaseMap"))
+							Id = x.Get<int>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Id)),
+							Name = x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Name)),
+							CoverImage = x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.CoverImage)),
+							PackageType = (GamePackageType)Enum.Parse(typeof(GamePackageType), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.PackageType))),
+							BaseMap = (GameBaseMap)Enum.Parse(typeof(GameBaseMap), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.BaseMap)))
 						});
 
 			if (request.Fields.Contains(GamePackageField.Abilities))
@@ -96,11 +97,12 @@ namespace LegendaryService
 			List<Ability> abilities = new List<Ability>();
 
 			var select = m_abilityDatabaseDefinition.BuildSelectStatement(request.AbilityFields);
+			var joins = m_abilityDatabaseDefinition.BuildRequiredJoins(request.AbilityFields);
 
 			if (request.GamePackageId > 0)
 				reply.Abilities.AddRange(await connector
-					.Command($@"select {select} from abilities inner join gamepackages on abilities.GamePackageId = gamepackages.GamePackageId where abilities.GamePackageId = @GamePackageId;",
-						("GamePackageId", request.GamePackageId))
+					.Command($@"select {select} from {m_abilityDatabaseDefinition.DefaultTableName} {joins} where {m_abilityDatabaseDefinition.GetWhereStatement(AbilityField.GamePackageId)} = @{m_abilityDatabaseDefinition.ColumnName[AbilityField.GamePackageId]};",
+						(m_abilityDatabaseDefinition.ColumnName[AbilityField.GamePackageId], request.GamePackageId))
 					.QueryAsync(x => MapAbility(x, request.AbilityFields, null)));
 
 			return reply;
@@ -172,29 +174,30 @@ namespace LegendaryService
 
 		private Ability MapAbility(IDataRecord data, IReadOnlyList<AbilityField> fields, IReadOnlyList<GamePackage> gamePackages)
 		{
-			var gamePackage = gamePackages?.FirstOrDefault(x => x.Id == data.Get<int>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.GamePackageId)));
+			var gamePackage = gamePackages?.FirstOrDefault(x => x.Id == data.Get<int>(m_abilityDatabaseDefinition.GetSelectResult(AbilityField.GamePackageId)));
 
 			if (gamePackage == null && (fields.Contains(AbilityField.GamePackageId) || fields.Contains(AbilityField.GamePackageName)))
 			{
 				gamePackage = new GamePackage();
 
 				if (fields.Contains(AbilityField.GamePackageId))
-					gamePackage.Id = data.Get<int>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.GamePackageId));
+					gamePackage.Id = data.Get<int>(m_abilityDatabaseDefinition.GetSelectResult(AbilityField.GamePackageId));
 
 				if (fields.Contains(AbilityField.GamePackageName))
-					gamePackage.Name = data.Get<string>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.GamePackageName));
+					gamePackage.Name = data.Get<string>(m_abilityDatabaseDefinition.GetSelectResult(AbilityField.GamePackageName));
 			}
 
 
 			return new Ability
 			{
-				Id = fields.Contains(AbilityField.Id) ? data.Get<int>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.Id)) : 0,
-				Name = fields.Contains(AbilityField.Name) ? data.Get<string>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.Name)) : "",
-				Description = fields.Contains(AbilityField.Description) ? data.Get<string>(m_abilityDatabaseDefinition.MapTableFieldToSelectResult(AbilityField.Description)) : "",
+				Id = fields.Contains(AbilityField.Id) ? data.Get<int>(m_abilityDatabaseDefinition.GetSelectResult(AbilityField.Id)) : 0,
+				Name = fields.Contains(AbilityField.Name) ? data.Get<string>(m_abilityDatabaseDefinition.GetSelectResult(AbilityField.Name)) : "",
+				Description = fields.Contains(AbilityField.Description) ? data.Get<string>(m_abilityDatabaseDefinition.GetSelectResult(AbilityField.Description)) : "",
 				GamePackage = gamePackage
 			};
 		}
 
 		IDatabaseDefinition<AbilityField> m_abilityDatabaseDefinition;
+		IDatabaseDefinition<GamePackageField> m_gamePackageDatabaseDefinition;
 	}
 }
