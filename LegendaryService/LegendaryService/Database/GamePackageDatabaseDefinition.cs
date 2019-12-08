@@ -28,7 +28,8 @@ namespace LegendaryService.Database
 			{ GamePackageField.Name, "Name" },
 			{ GamePackageField.CoverImage, "CoverImage" },
 			{ GamePackageField.PackageType, "Name" },
-			{ GamePackageField.BaseMap, "Name" }
+			{ GamePackageField.BaseMap, "Name" },
+			{ GamePackageField.Allies, "AllyId" }
 		};
 
 		static readonly Dictionary<GamePackageField, string> GamePackageSqlTableMap = new Dictionary<GamePackageField, string>
@@ -37,13 +38,15 @@ namespace LegendaryService.Database
 			{ GamePackageField.Name, TableNames.GamePackages },
 			{ GamePackageField.CoverImage, TableNames.GamePackages },
 			{ GamePackageField.PackageType, TableNames.PackageTypes },
+			{ GamePackageField.Allies, TableNames.GamePackageAllies },
 			{ GamePackageField.BaseMap, TableNames.BaseMaps }
 		};
 
 		static readonly Dictionary<GamePackageField, string> GamePackageSqlJoinMap = new Dictionary<GamePackageField, string>
 		{
 			{ GamePackageField.PackageType, $"inner join {TableNames.PackageTypes} on {TableNames.PackageTypes}.PackageTypeId = {TableNames.GamePackages}.PackageTypeId" },
-			{ GamePackageField.BaseMap, $"inner join {TableNames.BaseMaps} on {TableNames.BaseMaps}.BaseMapId = {TableNames.GamePackages}.BaseMapId" }
+			{ GamePackageField.BaseMap, $"inner join {TableNames.BaseMaps} on {TableNames.BaseMaps}.BaseMapId = {TableNames.GamePackages}.BaseMapId" },
+			{ GamePackageField.Allies, $"left join {TableNames.GamePackageAllies} on {TableNames.GamePackageAllies}.GamePackageId = {TableNames.GamePackages}.GamePackageId" }
 		};
 	}
 }

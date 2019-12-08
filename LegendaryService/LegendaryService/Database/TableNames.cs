@@ -6,5 +6,6 @@
 		public const string GamePackages = "gamepackages";
 		public const string PackageTypes = "packagetypes";
 		public const string BaseMaps = "basemaps";
+		public const string GamePackageAllies = "gamepackageallies";
 	}
 }
