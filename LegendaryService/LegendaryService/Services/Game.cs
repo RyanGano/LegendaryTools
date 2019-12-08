@@ -30,19 +30,27 @@ namespace LegendaryService
 			using var db = new LegendaryDatabase();
 			var connector = DbConnector.Create(db.Connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
 
-			var select = m_gamePackageDatabaseDefinition.BuildSelectStatement(null);
-			var joins = m_gamePackageDatabaseDefinition.BuildRequiredJoins(null);
+			var select = m_gamePackageDatabaseDefinition.BuildSelectStatement(request.Fields);
+			var joins = m_gamePackageDatabaseDefinition.BuildRequiredJoins(request.Fields);
 
 			var gamePackages = await connector.Command($@"
 				select {select} from {m_gamePackageDatabaseDefinition.DefaultTableName} {joins};").QueryAsync(
-						x => new GamePackage
+						x => 
 						{
-							Id = x.Get<int>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Id)),
-							Name = x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Name)),
-							CoverImage = x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.CoverImage)),
-							PackageType = (GamePackageType)Enum.Parse(typeof(GamePackageType), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.PackageType))),
-							BaseMap = (GameBaseMap)Enum.Parse(typeof(GameBaseMap), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.BaseMap)))
-						});
+							var gamePackage = new GamePackage();
+							if (request.Fields.Contains(GamePackageField.Id))
+								gamePackage.Id = x.Get<int>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Id));
+							if (request.Fields.Contains(GamePackageField.Name))
+								gamePackage.Name = x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Name));
+							if (request.Fields.Contains(GamePackageField.CoverImage))
+								gamePackage.CoverImage = x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.CoverImage));
+							if (request.Fields.Contains(GamePackageField.PackageType))
+								gamePackage.PackageType = (GamePackageType)Enum.Parse(typeof(GamePackageType), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.PackageType)));
+							if (request.Fields.Contains(GamePackageField.BaseMap))
+								gamePackage.BaseMap = (GameBaseMap)Enum.Parse(typeof(GameBaseMap), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.BaseMap)));
+
+							return gamePackage;
+						}); ;
 
 			if (request.Fields.Contains(GamePackageField.Abilities))
 			{
