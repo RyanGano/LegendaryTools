@@ -1,5 +1,3 @@
-use RJAyr1TXyH;
-
 -- Clear out existing data
 drop table info;
 drop table gamepackageneutrals; 
