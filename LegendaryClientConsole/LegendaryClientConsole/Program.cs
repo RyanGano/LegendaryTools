@@ -87,7 +87,16 @@ namespace LegendaryClientConsole
 				Console.WriteLine(reply.Status.Message);
 
 			foreach (var package in reply.Packages)
-				Console.WriteLine(package);
+			{
+				var packageRequest = new GetGamePackageRequest();
+				packageRequest.GamePackageId = package.Id;
+				packageRequest.Fields.AddRange(new[] { GamePackageField.Id, GamePackageField.Name , GamePackageField.PackageType, GamePackageField.BaseMap });
+				var packageReply = await client.GetGamePackageAsync(packageRequest);
+				if (packageReply.Status.Code != 200)
+					Console.WriteLine(packageReply.Status.Message);
+
+				Console.WriteLine(packageReply.Package);
+			}
 		}
 
 		private static void WriteHelp()

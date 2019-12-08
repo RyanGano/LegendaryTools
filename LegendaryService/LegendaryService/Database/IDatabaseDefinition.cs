@@ -31,5 +31,10 @@ namespace LegendaryService.Database
 
 			return fields.Select(x => JoinStatement?.GetValueOrDefault(x, () => null)).Distinct().WhereNotNull().Join(" ") ?? "";
 		}
+
+		public string BuildWhereStatement(T field)
+		{
+			return $"{GetWhereStatement(field)} = @{GetSelectResult(field)}";
+		}
 	}
 }

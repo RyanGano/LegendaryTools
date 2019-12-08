@@ -8,6 +8,7 @@ package Game;
 service GameService {
 	// Get a listing of the available game packages
   rpc GetGamePackages (GetGamePackagesRequest) returns (GetGamePackagesReply);
+  rpc GetGamePackage (GetGamePackageRequest) returns (GetGamePackageReply);
   rpc CreateGamePackage (CreateGamePackageRequest) returns (CreateGamePackageReply);
   rpc GetAbilities (GetAbilitiesRequest) returns (GetAbilitiesReply);
   rpc CreateAbilities (CreateAbilitiesRequest) returns (CreateAbilitiesReply);
@@ -21,6 +22,17 @@ message GetGamePackagesRequest {
 message GetGamePackagesReply {
 	Status status = 1;
 	repeated GamePackage packages = 2;
+}
+
+message GetGamePackageRequest {
+	int32 GamePackageId = 1;
+	repeated GamePackageField fields = 2;
+}
+
+	// The response message containing the available base packages
+message GetGamePackageReply {
+	Status status = 1;
+	GamePackage package = 2;
 }
 
 message CreateGamePackageRequest {
