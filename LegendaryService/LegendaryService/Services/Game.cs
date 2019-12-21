@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using Google.Protobuf.Collections;
 using Faithlife.Data;
 using System.Data;
-using System.Text;
 using LegendaryService.Database;
 
 namespace LegendaryService
