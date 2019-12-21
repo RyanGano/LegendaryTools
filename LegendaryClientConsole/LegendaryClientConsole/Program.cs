@@ -4,6 +4,7 @@ using LegendaryService;
 using Grpc.Net.Client;
 using System.Linq;
 using static LegendaryService.GameService;
+using System.Collections.Generic;
 
 namespace LegendaryClientConsole
 {
@@ -19,13 +20,18 @@ namespace LegendaryClientConsole
 
 			while (appStatus == AppStatus.Continue)
 			{
-				Console.Write("What do you want to do? ('h' for Help): ");
-				var input = Console.ReadLine();
+				string input = GetUserInput("What do you want to do? ('h' for Help): ");
 
 				appStatus = HandleInput(input, client);
 			}
 
 			return;
+		}
+
+		private static string GetUserInput(string message)
+		{
+			Console.Write(message);
+			return Console.ReadLine();
 		}
 
 		private static AppStatus HandleInput(string input, GameServiceClient client)
@@ -42,6 +48,10 @@ namespace LegendaryClientConsole
 				"gamepackages" => (GameServiceClient client) => { DisplayGamePackagesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"a" => (GameServiceClient client) => { DisplayAbilitiesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"abilities" => (GameServiceClient client) => { DisplayAbilitiesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
+				"t" => (GameServiceClient client) => { DisplayTeamsAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
+				"teams" => (GameServiceClient client) => { DisplayTeamsAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
+				"c" => (GameServiceClient client) => { CreateItemAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
+				"create" => (GameServiceClient client) => { CreateItemAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"i" => (GameServiceClient client) => {	 InitializeDatabase(client).Wait(); return AppStatus.Continue; },
 				"init" => (GameServiceClient client) => { InitializeDatabase(client).Wait(); return AppStatus.Continue; },
 				"q" => (GameServiceClient client) => AppStatus.Quit,
@@ -63,7 +73,7 @@ namespace LegendaryClientConsole
 			if (args.FirstOrDefault() == null)
 				await DisplayAllAbilitiesAsync(client);
 			else if (int.TryParse(args.FirstOrDefault(), out int id))
-				await DisplayAbilitiesAsync(client, id, null);
+				await DisplayAbilitiesAsync(client, args.Select(x => int.Parse(x)).ToList(), null);
 			else
 				await DisplayAbilitiesAsync(client, null, args.FirstOrDefault());
 		}
@@ -90,11 +100,11 @@ namespace LegendaryClientConsole
 			}
 		}
 
-		private static async Task DisplayAbilitiesAsync(GameServiceClient client, int? id, string name)
+		private static async Task DisplayAbilitiesAsync(GameServiceClient client, IReadOnlyList<int> ids, string name)
 		{
 			var abilitiesRequest = new GetAbilitiesRequest();
-			if (id.HasValue)
-				abilitiesRequest.AbilityId = id.Value;
+			if (ids != null && ids.Count() != 0)
+				abilitiesRequest.AbilityIds.AddRange(ids);
 			else if (name != null)
 				abilitiesRequest.Name = name;
 
@@ -111,7 +121,7 @@ namespace LegendaryClientConsole
 			if (args.FirstOrDefault() == null)
 				await DisplayAllGamePackagesAsync(client);
 			else if (int.TryParse(args.FirstOrDefault(), out int id))
-				await DisplayGamePackageAsync(client, id, null);
+				await DisplayGamePackageAsync(client, args.Select(x => int.Parse(x)).ToList(), null);
 			else
 				await DisplayGamePackageAsync(client, null, args.FirstOrDefault());
 		}
@@ -125,14 +135,14 @@ namespace LegendaryClientConsole
 				Console.WriteLine(reply.Status.Message);
 
 			foreach (var package in reply.Packages)
-				await DisplayGamePackageAsync(client, package.Id, null);
+				await DisplayGamePackageAsync(client, new[] { package.Id }, null);
 		}
 
-		private static async Task DisplayGamePackageAsync(GameServiceClient client, int? packageId, string name)
+		private static async Task DisplayGamePackageAsync(GameServiceClient client, IReadOnlyList<int> packageIds, string name)
 		{
 			var packagesRequest = new GetGamePackagesRequest();
-			if (packageId.HasValue)
-				packagesRequest.GamePackageId = packageId.Value;
+			if (packageIds != null && packageIds.Count() != 0)
+				packagesRequest.GamePackageIds.AddRange(packageIds);
 			else if (!string.IsNullOrWhiteSpace(name))
 				packagesRequest.Name = name;
 			else
@@ -143,7 +153,60 @@ namespace LegendaryClientConsole
 			if (packagesReply.Status.Code != 200)
 				Console.WriteLine(packagesReply.Status.Message);
 
-			Console.WriteLine(packagesReply.Packages?.First());
+			foreach (var gamePackage in packagesReply.Packages)
+				Console.WriteLine(gamePackage);
+		}
+
+		private static async Task DisplayTeamsAsync(GameServiceClient client, string[] args)
+		{
+			if (args.FirstOrDefault() == null)
+				await DisplayTeamsAsync(client);
+			else if (int.TryParse(args.FirstOrDefault(), out int id))
+				await DisplayTeamsAsync(client, teamIds:args.Select(x => int.Parse(x)).ToList());
+			else
+				await DisplayTeamsAsync(client, name:args.FirstOrDefault(), allowCloseNameMatches:true);
+		}
+
+		private static async Task DisplayTeamsAsync(GameServiceClient client, IReadOnlyList<int> teamIds = null, string name = null, bool allowCloseNameMatches = false)
+		{
+			var request = new GetTeamsRequest();
+
+			if (teamIds != null && teamIds.Count() != 0)
+				request.TeamIds.AddRange(teamIds);
+			else if (!string.IsNullOrWhiteSpace(name))
+				request.Name = name;
+
+			request.AllowCloseNameMatches = allowCloseNameMatches;
+
+			var teams = await client.GetTeamsAsync(request);
+
+				foreach (var team in teams.Teams)
+					Console.WriteLine($"{team}");
+		}
+
+		private static async Task CreateItemAsync(GameServiceClient client, string[] args)
+		{
+			if (args.FirstOrDefault() == null)
+				Console.WriteLine("Must supply the type of item you want to create. (t)");
+			else if (args.FirstOrDefault() == "t")
+				await CreateTeamAsync(client);
+		}
+
+		private static async Task CreateTeamAsync(GameServiceClient client)
+		{
+			var teamName = GetUserInput("Team Name: ");
+			var imagePath = GetUserInput("Path to Image (on OneDrive): ");
+
+			var createRequest = new CreateTeamsRequest();
+			createRequest.Teams.Add(new Team { Name = teamName, ImagePath = imagePath });
+			createRequest.CreateOptions.Add(CreateOptions.ErrorOnDuplicates);
+
+			var reply = await client.CreateTeamsAsync(createRequest);
+
+			if (reply.Status.Code != 200)
+				Console.WriteLine(reply.Status.Message);
+			else
+				Console.WriteLine($"Team {reply.Teams.First().Name} was created with Id {reply.Teams.First().Id}");
 		}
 
 		private static void WriteHelp()
@@ -153,8 +216,10 @@ namespace LegendaryClientConsole
 			Console.WriteLine("Use this client to get information about cards in the Legendary Deck Building Game");
 			Console.WriteLine("");
 			Console.WriteLine("  help (h) - Display command help.");
-			Console.WriteLine("  abilities (a) - Display all abilities.");
-			Console.WriteLine("  gamepackages (gp) - Display all Game Packages.");
+			Console.WriteLine("  abilities (a) [id/name] - Display all abilities (or limit to id/name matches).");
+			Console.WriteLine("  gamepackages (gp) [id/name] - Display all Game Packages (or limit to id/name matches).");
+			Console.WriteLine("  teams (t) [id/name] - Display all teams (or limit to id/name matches).");
+			Console.WriteLine("  create (c) t - Create a new team.");
 			Console.WriteLine("  quit (q) - Quit application.");
 			Console.WriteLine("");
 		}

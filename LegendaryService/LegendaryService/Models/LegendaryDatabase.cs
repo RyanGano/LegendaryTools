@@ -1,4 +1,5 @@
 ﻿using Faithlife.Data;
+using Faithlife.Utility;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -33,9 +34,21 @@ namespace LegendaryService.Models
 			if (whereMatch.Count() == 0)
 				return await connector.Command(query).QueryAsync(x => handleResult(x));
 
-			if (whereMatch.Count() == 1)
-			return await connector.Command(query, (whereMatch.First().Item1, whereMatch.First().Item2)).QueryAsync(x => handleResult(x));
-
+			foreach (var match in whereMatch)
+			{
+				if (match.Item2 is int[])
+				{
+					string items = ((int[])match.Item2).Select(x => x.ToString()).Join(", ");
+					query = query.Replace($"@{match.Item1}", $"({items})");
+				}
+				else
+				{
+					query = query.Replace($"@{match.Item1}", $"({match.Item2.ToString()})");
+				}
+			}
+			
+			return await connector.Command(query).QueryAsync(x => handleResult(x));
+			
 			throw new ArgumentException($"Can't handle {whereMatch.Count()} match count yet.");
 		}
 	}

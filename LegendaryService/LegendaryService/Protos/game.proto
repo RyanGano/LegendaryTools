@@ -11,11 +11,13 @@ service GameService {
   rpc CreateGamePackage (CreateGamePackageRequest) returns (CreateGamePackageReply);
   rpc GetAbilities (GetAbilitiesRequest) returns (GetAbilitiesReply);
   rpc CreateAbilities (CreateAbilitiesRequest) returns (CreateAbilitiesReply);
+  rpc GetTeams (GetTeamsRequest) returns (GetTeamsReply);
+  rpc CreateTeams (CreateTeamsRequest) returns (CreateTeamsReply);
 }
 
 message GetGamePackagesRequest {
-	int32 GamePackageId = 1;
-	string Name = 2;
+	repeated int32 gamePackageIds = 1;
+	string name = 2;
 	repeated GamePackageField fields = 3;
 }
 
@@ -34,7 +36,7 @@ message CreateGamePackageRequest {
 
 message GetAbilitiesRequest {
 	repeated AbilityField abilityFields = 1;
-	int32 abilityId = 2;
+	repeated int32 abilityIds = 2;
 	string name = 3;
 	int32 gamePackageId = 4;
 }
@@ -58,6 +60,35 @@ message CreateAbilitiesReply {
 	Status status = 1;
 	repeated Ability abilities = 2;
 }
+
+message GetTeamsRequest {
+	repeated int32 teamIds = 1;
+	string name = 2;
+	bool allowCloseNameMatches = 3;
+	repeated TeamField fields = 4;
+}
+
+message GetTeamsReply {
+	Status status = 1;
+	repeated Team teams = 2;
+}
+
+message CreateTeamsRequest {
+	repeated Team teams = 1;
+	repeated CreateOptions createOptions = 2;
+}
+
+message CreateTeamsReply {
+	Status status = 1;
+	repeated Team teams = 2;
+}
+
+enum TeamField {
+	TeamId = 0;
+	TeamName = 1;
+	TeamImagePath = 2;
+}
+
 
 message GamePackage {
 	int32 id = 1;

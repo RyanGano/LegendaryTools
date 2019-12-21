@@ -22,6 +22,7 @@ namespace LegendaryService
 			_logger = logger;
 			m_abilityDatabaseDefinition = new AbilityDatabaseDefinition();
 			m_gamePackageDatabaseDefinition = new GamePackageDatabaseDefinition();
+			m_teamDatabaseDefinition = new TeamDatabaseDefinition();
 		}
 
 		public override async Task<GetGamePackagesReply> GetGamePackages(GetGamePackagesRequest request, ServerCallContext context)
@@ -33,13 +34,13 @@ namespace LegendaryService
 
 			var select = m_gamePackageDatabaseDefinition.BuildSelectStatement(request.Fields);
 			var joins = m_gamePackageDatabaseDefinition.BuildRequiredJoins(request.Fields);
-			var where = request.GamePackageId != 0 ?
-				$"where { m_gamePackageDatabaseDefinition.BuildWhereStatement(GamePackageField.Id, WhereStatementType.Equals)}" :
+			var where = request.GamePackageIds.Count() != 0 ?
+				$"where { m_gamePackageDatabaseDefinition.BuildWhereStatement(GamePackageField.Id, WhereStatementType.Includes)}" :
 				!string.IsNullOrWhiteSpace(request.Name) ?
 					$"where { m_gamePackageDatabaseDefinition.BuildWhereStatement(GamePackageField.Name, WhereStatementType.Like)}" :
 					"";
-			var whereMatch = request.GamePackageId != 0 ?
-				new (string, object)[] { (m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Id), request.GamePackageId) } :
+			var whereMatch = request.GamePackageIds.Count() != 0 ?
+				new (string, object)[] { (m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Id), request.GamePackageIds.ToArray()) } :
 				!string.IsNullOrWhiteSpace(request.Name) ?
 					new (string, object)[] { (m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Name), $"%{request.Name}%") } :
 					new (string, object)[] { };
@@ -119,16 +120,16 @@ namespace LegendaryService
 			var joins = m_abilityDatabaseDefinition.BuildRequiredJoins(request.AbilityFields);
 			var where = request.GamePackageId != 0 ?
 				$"where { m_abilityDatabaseDefinition.BuildWhereStatement(AbilityField.GamePackageId, WhereStatementType.Equals)}" :
-				request.AbilityId != 0 ?
-					$"where { m_abilityDatabaseDefinition.BuildWhereStatement(AbilityField.Id, WhereStatementType.Equals)}" :
+				request.AbilityIds.Count() != 0 ?
+					$"where { m_abilityDatabaseDefinition.BuildWhereStatement(AbilityField.Id, WhereStatementType.Includes)}" :
 					!string.IsNullOrWhiteSpace(request.Name) ?
 						$"where { m_abilityDatabaseDefinition.BuildWhereStatement(AbilityField.Name, WhereStatementType.Like)}" :
 						throw new Exception("Not sure how to handle this request");
 			
 			var whereMatch = request.GamePackageId != 0 ?
 				new (string, object)[] { (m_abilityDatabaseDefinition.GetSelectResult(AbilityField.GamePackageId), request.GamePackageId) } :
-				request.AbilityId != 0 ?
-					new (string, object)[] { (m_abilityDatabaseDefinition.GetSelectResult(AbilityField.Id), request.AbilityId) } :
+				request.AbilityIds.Count() != 0 ?
+					new (string, object)[] { (m_abilityDatabaseDefinition.GetSelectResult(AbilityField.Id), request.AbilityIds.ToArray()) } :
 					!string.IsNullOrWhiteSpace(request.Name) ?
 						new (string, object)[] { (m_abilityDatabaseDefinition.GetSelectResult(AbilityField.Name), $"%{request.Name}%") } :
 						throw new Exception("Not sure how to handle this request");
@@ -182,6 +183,7 @@ namespace LegendaryService
 			reply.Abilities.AddRange(existingAbilities);
 			return reply;
 		}
+
 		private async ValueTask<IReadOnlyList<Ability>> GetAllAbilities(IReadOnlyList<GamePackage> gamePackages, DbConnector connector)
 		{
 			var test = (await connector.Command($@"select {m_abilityDatabaseDefinition.BuildSelectStatement(null)} from abilities;").QueryAsync(x => MapAbility(x, m_abilityDatabaseDefinition.BasicFields, gamePackages))).ToList();
@@ -220,7 +222,6 @@ namespace LegendaryService
 					gamePackage.Name = data.Get<string>(m_abilityDatabaseDefinition.GetSelectResult(AbilityField.GamePackageName));
 			}
 
-
 			return new Ability
 			{
 				Id = fields.Contains(AbilityField.Id) ? data.Get<int>(m_abilityDatabaseDefinition.GetSelectResult(AbilityField.Id)) : 0,
@@ -230,7 +231,92 @@ namespace LegendaryService
 			};
 		}
 
+		public override async Task<GetTeamsReply> GetTeams(GetTeamsRequest request, ServerCallContext context)
+		{
+			using var db = new LegendaryDatabase();
+			var connector = DbConnector.Create(db.Connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
+
+			var reply = new GetTeamsReply { Status = new Status { Code = 200 } };
+
+			var select = m_teamDatabaseDefinition.BuildSelectStatement(request.Fields);
+			var joins = m_teamDatabaseDefinition.BuildRequiredJoins(request.Fields);
+
+			var where = !string.IsNullOrWhiteSpace(request.Name) ?
+					$"where { m_teamDatabaseDefinition.BuildWhereStatement(TeamField.TeamName, WhereStatementType.Like)}" :
+					request.TeamIds.Count() != 0 ?
+						$"where { m_teamDatabaseDefinition.BuildWhereStatement(TeamField.TeamId, WhereStatementType.Includes)}" :
+						"";
+
+			var whereMatch = !string.IsNullOrWhiteSpace(request.Name) ?
+					new (string, object)[] { (m_teamDatabaseDefinition.GetSelectResult(TeamField.TeamName), $"%{request.Name}%") } :
+					request.TeamIds.Count() != 0 ?
+						new (string, object)[] { (m_teamDatabaseDefinition.GetSelectResult(TeamField.TeamId), request.TeamIds.ToArray()) } :
+						new (string, object)[] { };
+
+			reply.Teams.AddRange(await db.RunCommand(connector,
+				$@"select {select} from {m_teamDatabaseDefinition.DefaultTableName} {joins} {where};",
+				whereMatch,
+				x => MapTeam(x, request.Fields)));
+
+			return reply;
+		}
+
+		public override async Task<CreateTeamsReply> CreateTeams(CreateTeamsRequest request, ServerCallContext context)
+		{
+			using var db = new LegendaryDatabase();
+			var connector = DbConnector.Create(db.Connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
+
+			var reply = new CreateTeamsReply { Status = new Status { Code = 200 } };
+
+			var teams = await GetTeams(new GetTeamsRequest(), context);
+
+			var teamsToAdd = request.Teams.Where(x => !teams.Teams.Any(y => y.Name == x.Name)).ToList();
+
+			if (teamsToAdd.Count != request.Teams.Count() && request.CreateOptions.Contains(CreateOptions.ErrorOnDuplicates))
+			{
+				reply.Status.Code = 400;
+				reply.Status.Message = $"Cannot add duplicate teams ({request.Teams.Except(teamsToAdd).Select(x => x.Name).Join(", ")}).";
+			}
+
+			List<int> insertIds = request.Teams.Except(teamsToAdd).Select(x => x.Id).ToList();
+			
+			foreach (var team in teamsToAdd)
+			{
+				insertIds.Add(await connector.Command($@"
+					insert
+						into {m_teamDatabaseDefinition.DefaultTableName}
+							({m_teamDatabaseDefinition.ColumnName[TeamField.TeamName]}, {m_teamDatabaseDefinition.ColumnName[TeamField.TeamImagePath]})
+						values ({team.Name}, {team.ImagePath});
+					select last_insert_id();").QuerySingleAsync<int>());
+			}
+
+			var finalTeamsList = new GetTeamsRequest();
+			finalTeamsList.TeamIds.AddRange(insertIds);
+			var createdTeams = await GetTeams(finalTeamsList, context);
+
+			reply.Teams.AddRange(createdTeams.Teams);
+			return reply;
+		}
+
+		private Team MapTeam(IDataRecord data, IReadOnlyList<TeamField> fields)
+		{
+			var team = new Team();
+
+			if (fields.Count == 0)
+				fields = m_teamDatabaseDefinition.BasicFields;
+
+			if (fields.Contains(TeamField.TeamId))
+				team.Id = data.Get<int>(m_teamDatabaseDefinition.GetSelectResult(TeamField.TeamId));
+			if (fields.Contains(TeamField.TeamName))
+				team.Name = data.Get<string>(m_teamDatabaseDefinition.GetSelectResult(TeamField.TeamName));
+			if (fields.Contains(TeamField.TeamImagePath))
+				team.ImagePath = data.Get<string>(m_teamDatabaseDefinition.GetSelectResult(TeamField.TeamImagePath));
+
+			return team;
+		}
+
 		IDatabaseDefinition<AbilityField> m_abilityDatabaseDefinition;
 		IDatabaseDefinition<GamePackageField> m_gamePackageDatabaseDefinition;
+		IDatabaseDefinition<TeamField> m_teamDatabaseDefinition;
 	}
 }
