@@ -32,14 +32,16 @@ namespace LegendaryClientConsole
 		{
 			input = input?.ToLower() ?? "h";
 
-			Func<GameServiceClient, AppStatus> handler = input switch
+			var splitInput = input.Split(" ");
+
+			Func<GameServiceClient, AppStatus> handler = splitInput[0] switch
 			{
 				"h" => (GameServiceClient client) => { WriteHelp(); return AppStatus.Continue; },
 				"help" => (GameServiceClient client) => { WriteHelp(); return AppStatus.Continue; },
-				"gp" => (GameServiceClient client) => { DisplayGamePackagesAsync(client).Wait(); return AppStatus.Continue; },
-				"gamepackages" => (GameServiceClient client) => { DisplayGamePackagesAsync(client).Wait(); return AppStatus.Continue; },
-				"a" => (GameServiceClient client) => { DisplayAbilitiesAsync(client).Wait(); return AppStatus.Continue; },
-				"abilities" => (GameServiceClient client) => { DisplayAbilitiesAsync(client).Wait(); return AppStatus.Continue; },
+				"gp" => (GameServiceClient client) => { DisplayGamePackagesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
+				"gamepackages" => (GameServiceClient client) => { DisplayGamePackagesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
+				"a" => (GameServiceClient client) => { DisplayAbilitiesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
+				"abilities" => (GameServiceClient client) => { DisplayAbilitiesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"i" => (GameServiceClient client) => {	 InitializeDatabase(client).Wait(); return AppStatus.Continue; },
 				"init" => (GameServiceClient client) => { InitializeDatabase(client).Wait(); return AppStatus.Continue; },
 				"q" => (GameServiceClient client) => AppStatus.Quit,
@@ -56,7 +58,17 @@ namespace LegendaryClientConsole
 			await DatabaseInitializer.InitializeDatabase(client);
 		}
 
-		private static async Task DisplayAbilitiesAsync(GameServiceClient client)
+		private static async Task DisplayAbilitiesAsync(GameServiceClient client, string[] args)
+		{
+			if (args.FirstOrDefault() == null)
+				await DisplayAllAbilitiesAsync(client);
+			else if (int.TryParse(args.FirstOrDefault(), out int id))
+				await DisplayAbilitiesAsync(client, id, null);
+			else
+				await DisplayAbilitiesAsync(client, null, args.FirstOrDefault());
+		}
+
+		private static async Task DisplayAllAbilitiesAsync(GameServiceClient client)
 		{
 			var request = new GetGamePackagesRequest();
 			request.Fields.AddRange(new[] { GamePackageField.Id, GamePackageField.Name, GamePackageField.PackageType, GamePackageField.BaseMap });
@@ -78,7 +90,33 @@ namespace LegendaryClientConsole
 			}
 		}
 
-		private static async Task DisplayGamePackagesAsync(GameServiceClient client)
+		private static async Task DisplayAbilitiesAsync(GameServiceClient client, int? id, string name)
+		{
+			var abilitiesRequest = new GetAbilitiesRequest();
+			if (id.HasValue)
+				abilitiesRequest.AbilityId = id.Value;
+			else if (name != null)
+				abilitiesRequest.Name = name;
+
+			abilitiesRequest.AbilityFields.AddRange(new[] { AbilityField.Id, AbilityField.Name, AbilityField.Description, AbilityField.GamePackageName });
+
+			var abilities = await client.GetAbilitiesAsync(abilitiesRequest);
+
+			foreach (var ability in abilities.Abilities)
+				Console.WriteLine($"{ability.GamePackage.Name} - {ability.Name} - {ability.Description}");
+		}
+
+		private static async Task DisplayGamePackagesAsync(GameServiceClient client, string[] args)
+		{
+			if (args.FirstOrDefault() == null)
+				await DisplayAllGamePackagesAsync(client);
+			else if (int.TryParse(args.FirstOrDefault(), out int id))
+				await DisplayGamePackageAsync(client, id, null);
+			else
+				await DisplayGamePackageAsync(client, null, args.FirstOrDefault());
+		}
+
+		private static async Task DisplayAllGamePackagesAsync(GameServiceClient client)
 		{
 			var request = new GetGamePackagesRequest();
 			request.Fields.AddRange(new[] { GamePackageField.Id });
@@ -87,16 +125,25 @@ namespace LegendaryClientConsole
 				Console.WriteLine(reply.Status.Message);
 
 			foreach (var package in reply.Packages)
-			{
-				var packagesRequest = new GetGamePackagesRequest();
-				packagesRequest.GamePackageIds.Add(package.Id);
-				packagesRequest.Fields.AddRange(new[] { GamePackageField.Id, GamePackageField.Name , GamePackageField.PackageType, GamePackageField.BaseMap });
-				var packagesReply = await client.GetGamePackagesAsync(packagesRequest);
-				if (packagesReply.Status.Code != 200)
-					Console.WriteLine(packagesReply.Status.Message);
+				await DisplayGamePackageAsync(client, package.Id, null);
+		}
 
-				Console.WriteLine(packagesReply.Packages?.First());
-			}
+		private static async Task DisplayGamePackageAsync(GameServiceClient client, int? packageId, string name)
+		{
+			var packagesRequest = new GetGamePackagesRequest();
+			if (packageId.HasValue)
+				packagesRequest.GamePackageId = packageId.Value;
+			else if (!string.IsNullOrWhiteSpace(name))
+				packagesRequest.Name = name;
+			else
+				throw new ArgumentException("Either 'packageId' or 'name' must be non-null");
+
+			packagesRequest.Fields.AddRange(new[] { GamePackageField.Id, GamePackageField.Name, GamePackageField.PackageType, GamePackageField.BaseMap });
+			var packagesReply = await client.GetGamePackagesAsync(packagesRequest);
+			if (packagesReply.Status.Code != 200)
+				Console.WriteLine(packagesReply.Status.Message);
+
+			Console.WriteLine(packagesReply.Packages?.First());
 		}
 
 		private static void WriteHelp()

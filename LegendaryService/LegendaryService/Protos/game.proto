@@ -14,8 +14,9 @@ service GameService {
 }
 
 message GetGamePackagesRequest {
-	repeated int32 GamePackageIds = 1;
-	repeated GamePackageField fields = 2;
+	int32 GamePackageId = 1;
+	string Name = 2;
+	repeated GamePackageField fields = 3;
 }
 
 	// The response message containing the available base packages
@@ -33,8 +34,8 @@ message CreateGamePackageRequest {
 
 message GetAbilitiesRequest {
 	repeated AbilityField abilityFields = 1;
-	repeated int32 abilityIds = 2;
-	repeated string names = 3;
+	int32 abilityId = 2;
+	string name = 3;
 	int32 gamePackageId = 4;
 }
 

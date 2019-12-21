@@ -28,38 +28,26 @@ namespace LegendaryService
 		{
 			var reply = new GetGamePackagesReply();
 
-			if (request.GamePackageIds.Count > 1)
-			{
-				reply.Status = new Status { Code = 400, Message = "Muliple Game Package Ids not supported yet." };
-				return reply;
-			}
 			using var db = new LegendaryDatabase();
 			var connector = DbConnector.Create(db.Connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
 
 			var select = m_gamePackageDatabaseDefinition.BuildSelectStatement(request.Fields);
 			var joins = m_gamePackageDatabaseDefinition.BuildRequiredJoins(request.Fields);
-			var where = (request.GamePackageIds?.Count() ?? 0) != 0 ? $"where { m_gamePackageDatabaseDefinition.BuildWhereStatement(GamePackageField.Id, WhereStatementType.Equals)}" : "";
-			var whereMatch = ((request.GamePackageIds?.Count() ?? 0) != 0) ? new (string, object)[] { (m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Id), request.GamePackageIds.First()) } : new (string, object)[] { };
+			var where = request.GamePackageId != 0 ?
+				$"where { m_gamePackageDatabaseDefinition.BuildWhereStatement(GamePackageField.Id, WhereStatementType.Equals)}" :
+				!string.IsNullOrWhiteSpace(request.Name) ?
+					$"where { m_gamePackageDatabaseDefinition.BuildWhereStatement(GamePackageField.Name, WhereStatementType.Like)}" :
+					"";
+			var whereMatch = request.GamePackageId != 0 ?
+				new (string, object)[] { (m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Id), request.GamePackageId) } :
+				!string.IsNullOrWhiteSpace(request.Name) ?
+					new (string, object)[] { (m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Name), $"%{request.Name}%") } :
+					new (string, object)[] { };
 			
 			var gamePackages = await db.RunCommand(connector,
 				$@"select {select} from {m_gamePackageDatabaseDefinition.DefaultTableName} {joins} {where};",
-				whereMatch, 
-						x => 
-						{
-							var gamePackage = new GamePackage();
-							if (request.Fields.Contains(GamePackageField.Id))
-								gamePackage.Id = x.Get<int>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Id));
-							if (request.Fields.Contains(GamePackageField.Name))
-								gamePackage.Name = x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Name));
-							if (request.Fields.Contains(GamePackageField.CoverImage))
-								gamePackage.CoverImage = x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.CoverImage));
-							if (request.Fields.Contains(GamePackageField.PackageType))
-								gamePackage.PackageType = (GamePackageType)Enum.Parse(typeof(GamePackageType), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.PackageType)));
-							if (request.Fields.Contains(GamePackageField.BaseMap))
-								gamePackage.BaseMap = (GameBaseMap)Enum.Parse(typeof(GameBaseMap), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.BaseMap)));
-
-							return gamePackage;
-						});
+				whereMatch,
+				x => MapGamePackage(request.Fields, x));
 
 			if (request.Fields.Contains(GamePackageField.Abilities))
 			{
@@ -74,6 +62,23 @@ namespace LegendaryService
 			reply.Status = new Status { Code = 200 };
 
 			return reply;
+		}
+
+		private GamePackage MapGamePackage(RepeatedField<GamePackageField> fields, IDataRecord x)
+		{
+			var gamePackage = new GamePackage();
+			if (fields.Contains(GamePackageField.Id))
+				gamePackage.Id = x.Get<int>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Id));
+			if (fields.Contains(GamePackageField.Name))
+				gamePackage.Name = x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Name));
+			if (fields.Contains(GamePackageField.CoverImage))
+				gamePackage.CoverImage = x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.CoverImage));
+			if (fields.Contains(GamePackageField.PackageType))
+				gamePackage.PackageType = (GamePackageType)Enum.Parse(typeof(GamePackageType), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.PackageType)));
+			if (fields.Contains(GamePackageField.BaseMap))
+				gamePackage.BaseMap = (GameBaseMap)Enum.Parse(typeof(GameBaseMap), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.BaseMap)));
+
+			return gamePackage;
 		}
 
 		public override async Task<CreateGamePackageReply> CreateGamePackage(CreateGamePackageRequest request, ServerCallContext context)
@@ -110,16 +115,28 @@ namespace LegendaryService
 			var connector = DbConnector.Create(db.Connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
 			var reply = new GetAbilitiesReply { Status = new Status { Code = 200 } };
 
-			List<Ability> abilities = new List<Ability>();
-
 			var select = m_abilityDatabaseDefinition.BuildSelectStatement(request.AbilityFields);
 			var joins = m_abilityDatabaseDefinition.BuildRequiredJoins(request.AbilityFields);
+			var where = request.GamePackageId != 0 ?
+				$"where { m_abilityDatabaseDefinition.BuildWhereStatement(AbilityField.GamePackageId, WhereStatementType.Equals)}" :
+				request.AbilityId != 0 ?
+					$"where { m_abilityDatabaseDefinition.BuildWhereStatement(AbilityField.Id, WhereStatementType.Equals)}" :
+					!string.IsNullOrWhiteSpace(request.Name) ?
+						$"where { m_abilityDatabaseDefinition.BuildWhereStatement(AbilityField.Name, WhereStatementType.Like)}" :
+						throw new Exception("Not sure how to handle this request");
+			
+			var whereMatch = request.GamePackageId != 0 ?
+				new (string, object)[] { (m_abilityDatabaseDefinition.GetSelectResult(AbilityField.GamePackageId), request.GamePackageId) } :
+				request.AbilityId != 0 ?
+					new (string, object)[] { (m_abilityDatabaseDefinition.GetSelectResult(AbilityField.Id), request.AbilityId) } :
+					!string.IsNullOrWhiteSpace(request.Name) ?
+						new (string, object)[] { (m_abilityDatabaseDefinition.GetSelectResult(AbilityField.Name), $"%{request.Name}%") } :
+						throw new Exception("Not sure how to handle this request");
 
-			if (request.GamePackageId > 0)
-				reply.Abilities.AddRange(await connector
-					.Command($@"select {select} from {m_abilityDatabaseDefinition.DefaultTableName} {joins} where {m_abilityDatabaseDefinition.GetWhereStatement(AbilityField.GamePackageId)} = @{m_abilityDatabaseDefinition.ColumnName[AbilityField.GamePackageId]};",
-						(m_abilityDatabaseDefinition.ColumnName[AbilityField.GamePackageId], request.GamePackageId))
-					.QueryAsync(x => MapAbility(x, request.AbilityFields, null)));
+			reply.Abilities.AddRange(await db.RunCommand(connector,
+				$@"select {select} from {m_abilityDatabaseDefinition.DefaultTableName} {joins} {where};",
+				whereMatch,
+				x => MapAbility(x, request.AbilityFields, null)));
 
 			return reply;
 		}

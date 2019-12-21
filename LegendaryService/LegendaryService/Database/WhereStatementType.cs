@@ -4,6 +4,7 @@
 	{
 		NotEquals,
 		Equals,
-		Includes
+		Includes,
+		Like
 	}
 }
