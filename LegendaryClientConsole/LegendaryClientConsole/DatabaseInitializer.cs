@@ -50,6 +50,7 @@ namespace LegendaryClientConsole
 				new GamePackage { Name = "Secret Wars Volume 1", PackageType = GamePackageType.LargeExpansion, BaseMap = GameBaseMap.Legendary },
 				new GamePackage { Name = "Secret Wars Volume 2", PackageType = GamePackageType.LargeExpansion, BaseMap = GameBaseMap.Legendary },
 				new GamePackage { Name = "Civil War", PackageType = GamePackageType.LargeExpansion, BaseMap = GameBaseMap.Legendary },
+				new GamePackage { Name = "Revelations", PackageType = GamePackageType.LargeExpansion, BaseMap = GameBaseMap.Legendary },
 				new GamePackage { Name = "Dark City", PackageType = GamePackageType.LargeExpansion, BaseMap = GameBaseMap.Legendary },
 
 				new GamePackage { Name = "Venom", PackageType = GamePackageType.SmallExpansion, BaseMap = GameBaseMap.Legendary },
@@ -62,6 +63,7 @@ namespace LegendaryClientConsole
 				new GamePackage { Name = "Champions", PackageType = GamePackageType.SmallExpansion, BaseMap = GameBaseMap.Legendary },
 				new GamePackage { Name = "Captain America 75th Anniversary", PackageType = GamePackageType.SmallExpansion, BaseMap = GameBaseMap.Legendary },
 				new GamePackage { Name = "Ant-Man", PackageType = GamePackageType.SmallExpansion, BaseMap = GameBaseMap.Legendary },
+				new GamePackage { Name = "Dimensions", PackageType = GamePackageType.SmallExpansion, BaseMap = GameBaseMap.Legendary },
 				new GamePackage { Name = "Fear Itself", PackageType = GamePackageType.SmallExpansion, BaseMap = GameBaseMap.Villains },
 			};
 
