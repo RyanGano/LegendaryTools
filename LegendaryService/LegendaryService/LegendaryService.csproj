@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Faithlife.Data" Version="0.300.0" />
+    <PackageReference Include="Faithlife.Data" Version="1.0.0" />
     <PackageReference Include="Faithlife.Utility" Version="0.8.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.23.2" />
     <PackageReference Include="MySqlConnector" Version="0.59.2" />
