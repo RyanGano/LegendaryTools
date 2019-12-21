@@ -6,9 +6,9 @@ namespace LegendaryService.Database
 {
 	public interface IDatabaseDefinition<T>
 	{
-		public string GetSelectStatement(T field) => $"{TableName[field]}.{ColumnName[field]} as {GetSelectResult(field)}";
-		public string GetSelectResult(T field) => $"{TableName[field]}_{ColumnName[field]}";
-		public string GetWhereStatement(T field) => $"{TableName[field]}.{ColumnName[field]}";
+		public string GetSelectStatement(T field) => $"{TableName.GetValueOrDefault(field, () => "[Field not found]")}.{ColumnName[field]} as {GetSelectResult(field)}";
+		public string GetSelectResult(T field) => $"{TableName.GetValueOrDefault(field, () => "[Field not found]")}_{ColumnName.GetValueOrDefault(field, () => "[Field not found]")}";
+		public string GetWhereStatement(T field) => $"{TableName.GetValueOrDefault(field, () => "[Field not found]")}.{ColumnName.GetValueOrDefault(field, () => "[Field not found]")}";
 
 		public string DefaultTableName { get; }
 		public IReadOnlyList<T> BasicFields { get; }
@@ -32,9 +32,14 @@ namespace LegendaryService.Database
 			return fields.Select(x => JoinStatement?.GetValueOrDefault(x, () => null)).Distinct().WhereNotNull().Join(" ") ?? "";
 		}
 
-		public string BuildWhereStatement(T field)
+		public string BuildWhereStatement(T field, WhereStatementType type)
 		{
-			return $"{GetWhereStatement(field)} = @{GetSelectResult(field)}";
+			if (type == WhereStatementType.NotEquals)
+				return $"{GetWhereStatement(field)} != @{GetSelectResult(field)}";
+			if (type == WhereStatementType.Equals)
+				return $"{GetWhereStatement(field)} = @{GetSelectResult(field)}";
+			else
+				return $"{GetWhereStatement(field)} in @{GetSelectResult(field)}";
 		}
 	}
 }

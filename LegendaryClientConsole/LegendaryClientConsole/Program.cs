@@ -88,14 +88,14 @@ namespace LegendaryClientConsole
 
 			foreach (var package in reply.Packages)
 			{
-				var packageRequest = new GetGamePackageRequest();
-				packageRequest.GamePackageId = package.Id;
-				packageRequest.Fields.AddRange(new[] { GamePackageField.Id, GamePackageField.Name , GamePackageField.PackageType, GamePackageField.BaseMap });
-				var packageReply = await client.GetGamePackageAsync(packageRequest);
-				if (packageReply.Status.Code != 200)
-					Console.WriteLine(packageReply.Status.Message);
+				var packagesRequest = new GetGamePackagesRequest();
+				packagesRequest.GamePackageIds.Add(package.Id);
+				packagesRequest.Fields.AddRange(new[] { GamePackageField.Id, GamePackageField.Name , GamePackageField.PackageType, GamePackageField.BaseMap });
+				var packagesReply = await client.GetGamePackagesAsync(packagesRequest);
+				if (packagesReply.Status.Code != 200)
+					Console.WriteLine(packagesReply.Status.Message);
 
-				Console.WriteLine(packageReply.Package);
+				Console.WriteLine(packagesReply.Packages?.First());
 			}
 		}
 

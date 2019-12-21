@@ -27,14 +27,24 @@ namespace LegendaryService
 
 		public override async Task<GetGamePackagesReply> GetGamePackages(GetGamePackagesRequest request, ServerCallContext context)
 		{
+			var reply = new GetGamePackagesReply();
+
+			if (request.GamePackageIds.Count > 1)
+			{
+				reply.Status = new Status { Code = 400, Message = "Muliple Game Package Ids not supported yet." };
+				return reply;
+			}
 			using var db = new LegendaryDatabase();
 			var connector = DbConnector.Create(db.Connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
 
 			var select = m_gamePackageDatabaseDefinition.BuildSelectStatement(request.Fields);
 			var joins = m_gamePackageDatabaseDefinition.BuildRequiredJoins(request.Fields);
-
-			var gamePackages = await connector.Command($@"
-				select {select} from {m_gamePackageDatabaseDefinition.DefaultTableName} {joins};").QueryAsync(
+			var where = (request.GamePackageIds?.Count() ?? 0) != 0 ? $"where { m_gamePackageDatabaseDefinition.BuildWhereStatement(GamePackageField.Id, WhereStatementType.Equals)}" : "";
+			var whereMatch = ((request.GamePackageIds?.Count() ?? 0) != 0) ? new (string, object)[] { (m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Id), request.GamePackageIds.First()) } : new (string, object)[] { };
+			
+			var gamePackages = await db.RunCommand(connector,
+				$@"select {select} from {m_gamePackageDatabaseDefinition.DefaultTableName} {joins} {where};",
+				whereMatch, 
 						x => 
 						{
 							var gamePackage = new GamePackage();
@@ -50,7 +60,7 @@ namespace LegendaryService
 								gamePackage.BaseMap = (GameBaseMap)Enum.Parse(typeof(GameBaseMap), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.BaseMap)));
 
 							return gamePackage;
-						}); ;
+						});
 
 			if (request.Fields.Contains(GamePackageField.Abilities))
 			{
@@ -60,53 +70,8 @@ namespace LegendaryService
 					gamePackage.AbilitieIds.AddRange(abilities.Where(x => x.GamePackage.Id == gamePackage.Id).Select(x => x.Id));
 			}
 
-			var reply = new GetGamePackagesReply();
 			if (gamePackages.Count() != 0)
 				reply.Packages.AddRange(gamePackages);
-			reply.Status = new Status { Code = 200 };
-
-			return reply;
-		}
-
-
-		public override async Task<GetGamePackageReply> GetGamePackage(GetGamePackageRequest request, ServerCallContext context)
-		{
-			using var db = new LegendaryDatabase();
-			var connector = DbConnector.Create(db.Connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
-
-			var select = m_gamePackageDatabaseDefinition.BuildSelectStatement(request.Fields);
-			var joins = m_gamePackageDatabaseDefinition.BuildRequiredJoins(request.Fields);
-
-			var gamePackage = await connector.Command($@"
-				select {select} from {m_gamePackageDatabaseDefinition.DefaultTableName} {joins} where {m_gamePackageDatabaseDefinition.BuildWhereStatement(GamePackageField.Id)};",
-				(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Id), request.GamePackageId))
-				.QuerySingleAsync(
-						x =>
-						{
-							var gamePackage = new GamePackage();
-							if (request.Fields.Contains(GamePackageField.Id))
-								gamePackage.Id = x.Get<int>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Id));
-							if (request.Fields.Contains(GamePackageField.Name))
-								gamePackage.Name = x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.Name));
-							if (request.Fields.Contains(GamePackageField.CoverImage))
-								gamePackage.CoverImage = x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.CoverImage));
-							if (request.Fields.Contains(GamePackageField.PackageType))
-								gamePackage.PackageType = (GamePackageType)Enum.Parse(typeof(GamePackageType), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.PackageType)));
-							if (request.Fields.Contains(GamePackageField.BaseMap))
-								gamePackage.BaseMap = (GameBaseMap)Enum.Parse(typeof(GameBaseMap), x.Get<string>(m_gamePackageDatabaseDefinition.GetSelectResult(GamePackageField.BaseMap)));
-
-							return gamePackage;
-						}); ;
-
-			if (request.Fields.Contains(GamePackageField.Abilities))
-			{
-				IReadOnlyList<Ability> abilities = await GetAllAbilities(new[] { gamePackage }, connector);
-
-				gamePackage.AbilitieIds.AddRange(abilities.Where(x => x.GamePackage.Id == gamePackage.Id).Select(x => x.Id));
-			}
-
-			var reply = new GetGamePackageReply();
-			reply.Package = gamePackage;
 			reply.Status = new Status { Code = 200 };
 
 			return reply;
