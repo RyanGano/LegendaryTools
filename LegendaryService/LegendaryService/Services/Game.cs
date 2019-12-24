@@ -276,18 +276,22 @@ namespace LegendaryService
 			{
 				reply.Status.Code = 400;
 				reply.Status.Message = $"Cannot add duplicate teams ({request.Teams.Except(teamsToAdd).Select(x => x.Name).Join(", ")}).";
+				return reply;
 			}
 
 			List<int> insertIds = request.Teams.Except(teamsToAdd).Select(x => x.Id).ToList();
 			
 			foreach (var team in teamsToAdd)
 			{
-				insertIds.Add(await connector.Command($@"
+				insertIds.Add((int)(await connector.Command($@"
 					insert
 						into {m_teamDatabaseDefinition.DefaultTableName}
 							({m_teamDatabaseDefinition.ColumnName[TeamField.TeamName]}, {m_teamDatabaseDefinition.ColumnName[TeamField.TeamImagePath]})
-						values ({team.Name}, {team.ImagePath});
-					select last_insert_id();").QuerySingleAsync<int>());
+						values (@TeamName, @ImagePath);
+					select last_insert_id();",
+					("TeamName", team.Name),
+					("ImagePath", team.ImagePath))
+					.QuerySingleAsync<ulong>()));
 			}
 
 			var finalTeamsList = new GetTeamsRequest();

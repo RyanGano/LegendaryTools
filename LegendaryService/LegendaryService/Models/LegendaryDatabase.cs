@@ -41,6 +41,10 @@ namespace LegendaryService.Models
 					string items = ((int[])match.Item2).Select(x => x.ToString()).Join(", ");
 					query = query.Replace($"@{match.Item1}", $"({items})");
 				}
+				if (match.Item2 is string) 
+				{
+					query = query.Replace($"@{match.Item1}", $"\"{match.Item2.ToString()}\"");
+				}
 				else
 				{
 					query = query.Replace($"@{match.Item1}", $"({match.Item2.ToString()})");

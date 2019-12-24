@@ -68,7 +68,7 @@ insert into classes (Name, ImagePath) values
 create table teams (
 	TeamId int auto_increment primary key,
     Name varchar(50) not null,
-    ImagePath varchar(250) not null,
+    ImagePath varchar(500) not null,
     unique index teams_Name (Name)
 ) engine=INNODB;
 

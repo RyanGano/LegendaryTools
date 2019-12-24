@@ -206,7 +206,7 @@ namespace LegendaryClientConsole
 			if (reply.Status.Code != 200)
 				Console.WriteLine(reply.Status.Message);
 			else
-				Console.WriteLine($"Team {reply.Teams.First().Name} was created with Id {reply.Teams.First().Id}");
+				Console.WriteLine($"Team '{reply.Teams.First().Name}' was created with Id '{reply.Teams.First().Id}'");
 		}
 
 		private static void WriteHelp()
