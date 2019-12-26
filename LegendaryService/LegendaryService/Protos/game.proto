@@ -15,6 +15,8 @@ service GameService {
   rpc CreateTeams (CreateTeamsRequest) returns (CreateTeamsReply);
   rpc GetHenchmen (GetHenchmenRequest) returns (GetHenchmenReply);
   rpc CreateHenchmen (CreateHenchmenRequest) returns (CreateHenchmenReply);
+  rpc GetAdversaries (GetAdversariesRequest) returns (GetAdversariesReply);
+  rpc CreateAdversaries (CreateAdversariesRequest) returns (CreateAdversariesReply);
 }
 
 message GetGamePackagesRequest {
@@ -93,7 +95,7 @@ enum TeamField {
 
 message GetHenchmenRequest {
 	repeated HenchmanField fields = 1;
-	repeated int32 henchmenIds = 2;
+	repeated int32 henchmanIds = 2;
 	string name = 3;
 	bool allowCloseNameMatches = 4;
 }
@@ -118,6 +120,35 @@ enum HenchmanField {
 	HenchmanName = 1;
 	HenchmanAbilityIds = 2;
 	HenchmanGamePackageId = 3;
+}
+
+message GetAdversariesRequest {
+	repeated AdversaryField fields = 1;
+	repeated int32 adversaryIds = 2;
+	string name = 3;
+	bool allowCloseNameMatches = 4;
+}
+
+message GetAdversariesReply {
+	Status status = 1;
+	repeated Adversary adversaries = 2;
+}
+
+message CreateAdversariesRequest {
+	repeated Adversary adversaries = 1;
+	repeated CreateOptions createOptions = 2;
+}
+
+message CreateAdversariesReply {
+	Status status = 1;
+	repeated Adversary adversaries = 2;
+}
+
+enum AdversaryField {
+	AdversaryId = 0;
+	AdversaryName = 1;
+	AdversaryAbilityIds = 2;
+	AdversaryGamePackageId = 3;
 }
 
 
@@ -153,8 +184,10 @@ message Henchman {
 }
 
 message Adversary {
-	string name = 1;
-	repeated Ability abilities = 2;
+	int32 id = 1;
+	string name = 2;
+	repeated int32 abilityIds = 3;
+	int32 gamePackageId = 4;
 }
 
 message Mastermind {

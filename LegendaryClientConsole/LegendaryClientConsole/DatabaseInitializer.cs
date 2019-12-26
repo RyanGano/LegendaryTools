@@ -26,6 +26,7 @@ namespace LegendaryClientConsole
 
 			var abilities = await CreateAbilities(client, supportedPackages);
 			var henchmen = await CreateHenchmen(client, supportedPackages, abilities);
+			var adversaries = await CreateAdversaries(client, supportedPackages, abilities);
 		}
 
 		private static async ValueTask CreateTeams(GameServiceClient client)
@@ -115,6 +116,45 @@ namespace LegendaryClientConsole
 						ConsoleUtility.WriteLine($"Success: '{henchman.Name}'");
 
 					result.AddRange(request.Henchmen);
+				}
+			}
+
+			return result;
+		}
+
+		private static async ValueTask<IReadOnlyList<Adversary>> CreateAdversaries(GameServiceClient client, IReadOnlyList<GamePackage> packages, IReadOnlyList<Ability> abilities)
+		{
+			ConsoleUtility.WriteLine("Creating adversaries");
+			List<Adversary> result = new List<Adversary>();
+			
+			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", "*.xml"))
+			{
+				var doc = XDocument.Load(file);
+
+				var name = doc.Element("Set").Attribute("Name").Value;
+				var activeGamePackage = packages.FirstOrDefault(x => x.Name == name);
+				if (activeGamePackage == null)
+					ConsoleUtility.WriteLine($"Failed to find matching game package for {file}");
+
+				foreach (var adversaryElement in doc.Element("Set").Element("Cards").Elements("Card").Where(x => x?.Attribute("Area").Value == "Adversary"))
+				{
+					var request = new CreateAdversariesRequest();
+					request.CreateOptions.Add(CreateOptions.ErrorOnDuplicates);
+
+					var adversary = new Adversary();
+					adversary.Name = adversaryElement.Attribute("Name").Value;
+					adversary.GamePackageId = activeGamePackage.Id;
+					adversary.AbilityIds.AddRange(GetMatchingItems(adversaryElement.Attribute("Abliities")?.Value, name => abilities.First(x => x.Name == name)).Select(x => x.Id));
+					
+					request.Adversaries.Add(adversary);
+
+					var reply = await client.CreateAdversariesAsync(request);
+					if (reply.Status.Code != 200)
+						ConsoleUtility.WriteLine($"Failed to create '{adversary.Name}': {reply.Status.Message}");
+					else
+						ConsoleUtility.WriteLine($"Success: '{adversary.Name}'");
+
+					result.AddRange(request.Adversaries);
 				}
 			}
 

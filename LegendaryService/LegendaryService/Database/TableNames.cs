@@ -11,5 +11,8 @@
 		public const string Henchmen = "henchmen";
 		public const string GamePackageHenchmen = "gamepackagehenchmen";
 		public const string HenchmanAbilities = "henchmanabilities";
+		public const string Adversaries = "adversaries";
+		public const string GamePackageAdversaries = "gamepackageadversaries";
+		public const string AdversaryAbilities = "adversaryabilities";
 	}
 }

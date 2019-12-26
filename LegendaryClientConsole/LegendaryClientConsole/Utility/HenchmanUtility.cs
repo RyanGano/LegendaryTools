@@ -23,7 +23,7 @@ namespace LegendaryClientConsole.Utility
 			var request = new GetHenchmenRequest();
 
 			if (henchmanIds != null && henchmanIds.Count() != 0)
-				request.HenchmenIds.AddRange(henchmanIds);
+				request.HenchmanIds.AddRange(henchmanIds);
 			else if (!string.IsNullOrWhiteSpace(name))
 				request.Name = name;
 

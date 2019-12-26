@@ -24,6 +24,7 @@ namespace LegendaryService
 			m_gamePackageDatabaseDefinition = new GamePackageDatabaseDefinition();
 			m_teamDatabaseDefinition = new TeamDatabaseDefinition();
 			m_henchmanDatabaseDefinition = new HenchmanDatabaseDefinition();
+			m_adversaryDatabaseDefinition = new AdversaryDatabaseDefinition();
 		}
 
 		public override async Task<GetGamePackagesReply> GetGamePackages(GetGamePackagesRequest request, ServerCallContext context)
@@ -407,7 +408,7 @@ namespace LegendaryService
 
 			// Get all of the created henchmen
 			var finalRequest = new GetHenchmenRequest();
-			finalRequest.HenchmenIds.AddRange(newHenchmenIds);
+			finalRequest.HenchmanIds.AddRange(newHenchmenIds);
 			var finalReply = await GetHenchmen(finalRequest, context);
 
 			reply.Status = finalReply.Status;
@@ -433,15 +434,15 @@ namespace LegendaryService
 			var joins = m_henchmanDatabaseDefinition.BuildRequiredJoins(request.Fields);
 
 			var where = !string.IsNullOrWhiteSpace(request.Name) ?
-					$"where { m_henchmanDatabaseDefinition.BuildWhereStatement(HenchmanField.HenchmanName, WhereStatementType.Like)}" :
-					request.HenchmenIds.Count() != 0 ?
+					$"where { m_henchmanDatabaseDefinition.BuildWhereStatement(HenchmanField.HenchmanName, request.AllowCloseNameMatches ? WhereStatementType.Like : WhereStatementType.Equals)}" :
+					request.HenchmanIds.Count() != 0 ?
 						$"where { m_henchmanDatabaseDefinition.BuildWhereStatement(HenchmanField.HenchmanId, WhereStatementType.Includes)}" :
 						"";
 
 			var whereMatch = !string.IsNullOrWhiteSpace(request.Name) ?
-					new (string, object)[] { (m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanName), $"%{request.Name}%") } :
-					request.HenchmenIds.Count() != 0 ?
-						new (string, object)[] { (m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanId), request.HenchmenIds.ToArray()) } :
+					new (string, object)[] { (m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanName), request.AllowCloseNameMatches ? $"%{request.Name}%" : request.Name) } :
+					request.HenchmanIds.Count() != 0 ?
+						new (string, object)[] { (m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanId), request.HenchmanIds.ToArray()) } :
 						new (string, object)[] { };
 
 			reply.Henchmen.AddRange(await db.RunCommand(connector,
@@ -465,24 +466,185 @@ namespace LegendaryService
 
 		private Henchman MapHenchman(IDataRecord data, IReadOnlyList<HenchmanField> fields)
 		{
-			var team = new Henchman();
+			var henchman = new Henchman();
 
 			if (fields.Count == 0)
 				fields = m_henchmanDatabaseDefinition.BasicFields;
 
 			if (fields.Contains(HenchmanField.HenchmanId))
-				team.Id = data.Get<int>(m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanId));
+				henchman.Id = data.Get<int>(m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanId));
 			if (fields.Contains(HenchmanField.HenchmanName))
-				team.Name = data.Get<string>(m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanName));
+				henchman.Name = data.Get<string>(m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanName));
 			if (fields.Contains(HenchmanField.HenchmanGamePackageId))
-				team.GamePackageId = data.Get<int>(m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanGamePackageId));
+				henchman.GamePackageId = data.Get<int>(m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanGamePackageId));
 
-			return team;
+			return henchman;
+		}
+
+
+		public override async Task<CreateAdversariesReply> CreateAdversaries(CreateAdversariesRequest request, ServerCallContext context)
+		{
+			using var db = new LegendaryDatabase();
+			var connector = DbConnector.Create(db.Connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
+
+			var reply = new CreateAdversariesReply { Status = new Status { Code = 200 } };
+
+			List<int> newAdversaryIds = new List<int>();
+
+			foreach (var adversary in request.Adversaries)
+			{
+				// Validate the GamePackageId
+				var packageRequest = new GetGamePackagesRequest();
+				packageRequest.GamePackageIds.Add(adversary.GamePackageId);
+				packageRequest.Fields.Add(GamePackageField.Id);
+				var packageReply = await GetGamePackages(packageRequest, context);
+				if (packageReply.Status.Code != 200)
+				{
+					reply.Status = packageReply.Status;
+					return reply;
+				}
+
+				// Validate the AbilityIds
+				var abilitiesRequest = new GetAbilitiesRequest();
+				abilitiesRequest.AbilityIds.AddRange(adversary.AbilityIds);
+				abilitiesRequest.AbilityFields.Add(AbilityField.Id);
+				var abilitiesReply = await GetAbilities(abilitiesRequest, context);
+				if (abilitiesReply.Status.Code != 200)
+				{
+					reply.Status = abilitiesReply.Status;
+					return reply;
+				}
+
+				// Verify that this adversary doesn't already exist
+				var adversaryRequest = new GetAdversariesRequest();
+				adversaryRequest.Name = adversary.Name;
+				adversaryRequest.Fields.AddRange(new[] { AdversaryField.AdversaryId, AdversaryField.AdversaryName, AdversaryField.AdversaryGamePackageId });
+				adversaryRequest.AllowCloseNameMatches = false;
+				var adversaryReply = await GetAdversaries(adversaryRequest, context);
+				if (adversaryReply.Status.Code == 200 && adversaryReply.Adversaries.Any())
+				{
+					var matchingAdversary = adversaryReply.Adversaries.First();
+					reply.Status = new Status { Code = 400, Message = $"Adversaries {matchingAdversary.Id} with name '{matchingAdversary.Name}' was found in game package '{matchingAdversary.GamePackageId}'" };
+					return reply;
+				}
+
+				// Create the adversary
+				var newAdversaryId = ((int)(await connector.Command($@"
+					insert
+						into {m_adversaryDatabaseDefinition.DefaultTableName}
+							({m_adversaryDatabaseDefinition.ColumnName[AdversaryField.AdversaryName]})
+									values (@AdversaryName);
+								select last_insert_id();",
+				("AdversaryName", adversary.Name))
+				.QuerySingleAsync<ulong>()));
+
+				// Add to game package
+				await connector.Command(
+					$@"
+						insert
+							into {TableNames.GamePackageAdversaries}
+								({m_adversaryDatabaseDefinition.ColumnName[AdversaryField.AdversaryId]}, {m_gamePackageDatabaseDefinition.ColumnName[GamePackageField.Id]})
+							values (@AdversaryId, @GamePackageId);",
+					("AdversaryId", newAdversaryId),
+					("GamePackageId", adversary.GamePackageId))
+				.ExecuteAsync();
+
+				// Link abilities
+				foreach (var abilityId in adversary.AbilityIds)
+				{
+					await connector.Command(
+						$@"
+							insert
+								into {TableNames.AdversaryAbilities}
+									({m_adversaryDatabaseDefinition.ColumnName[AdversaryField.AdversaryId]}, {m_abilityDatabaseDefinition.ColumnName[AbilityField.Id]})
+								values (@AdversaryId, @AbilityId);",
+						("AdversaryId", newAdversaryId),
+						("AbilityId", abilityId))
+					.ExecuteAsync();
+				}
+
+				newAdversaryIds.Add(newAdversaryId);
+			}
+
+			// Get all of the created adversaries
+			var finalRequest = new GetAdversariesRequest();
+			finalRequest.AdversaryIds.AddRange(newAdversaryIds);
+			var finalReply = await GetAdversaries(finalRequest, context);
+
+			reply.Status = finalReply.Status;
+			reply.Adversaries.AddRange(finalReply.Adversaries);
+
+			return reply;
+		}
+
+		public override async Task<GetAdversariesReply> GetAdversaries(GetAdversariesRequest request, ServerCallContext context)
+		{
+			using var db = new LegendaryDatabase();
+			var connector = DbConnector.Create(db.Connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
+
+			var reply = new GetAdversariesReply { Status = new Status { Code = 200 } };
+
+			if (request.Fields.Count() == 0)
+				request.Fields.AddRange(m_adversaryDatabaseDefinition.BasicFields);
+
+			// Need to remove abilityIds field because it's handled separately from the main db request
+			var includeAbilityIds = request.Fields.Remove(AdversaryField.AdversaryAbilityIds);
+
+			var select = m_adversaryDatabaseDefinition.BuildSelectStatement(request.Fields);
+			var joins = m_adversaryDatabaseDefinition.BuildRequiredJoins(request.Fields);
+
+			var where = !string.IsNullOrWhiteSpace(request.Name) ?
+					$"where { m_adversaryDatabaseDefinition.BuildWhereStatement(AdversaryField.AdversaryName, request.AllowCloseNameMatches ? WhereStatementType.Like : WhereStatementType.Equals)}" :
+					request.AdversaryIds.Count() != 0 ?
+						$"where { m_adversaryDatabaseDefinition.BuildWhereStatement(AdversaryField.AdversaryId, WhereStatementType.Includes)}" :
+						"";
+
+			var whereMatch = !string.IsNullOrWhiteSpace(request.Name) ?
+					new (string, object)[] { (m_adversaryDatabaseDefinition.GetSelectResult(AdversaryField.AdversaryName), request.AllowCloseNameMatches ? $"%{request.Name}%" : request.Name) } :
+					request.AdversaryIds.Count() != 0 ?
+						new (string, object)[] { (m_adversaryDatabaseDefinition.GetSelectResult(AdversaryField.AdversaryId), request.AdversaryIds.ToArray()) } :
+						new (string, object)[] { };
+
+			reply.Adversaries.AddRange(await db.RunCommand(connector,
+				$@"select {select} from {m_adversaryDatabaseDefinition.DefaultTableName} {joins} {where};",
+				whereMatch,
+				x => MapAdversary(x, request.Fields)));
+
+			if (includeAbilityIds)
+			{
+				// Lookup the abilities for each adversary
+				foreach (var adversary in reply.Adversaries)
+				{
+					var abilitySelect = "AbilityId";
+					adversary.AbilityIds.AddRange(await connector.Command($@"
+						select {abilitySelect} from {TableNames.AdversaryAbilities} where AdversaryId = @AdversaryId;", ("AdversaryId", adversary.Id)).QueryAsync<int>());
+				}
+			}
+
+			return reply;
+		}
+
+		private Adversary MapAdversary(IDataRecord data, IReadOnlyList<AdversaryField> fields)
+		{
+			var adversary = new Adversary();
+
+			if (fields.Count == 0)
+				fields = m_adversaryDatabaseDefinition.BasicFields;
+
+			if (fields.Contains(AdversaryField.AdversaryId))
+				adversary.Id = data.Get<int>(m_adversaryDatabaseDefinition.GetSelectResult(AdversaryField.AdversaryId));
+			if (fields.Contains(AdversaryField.AdversaryName))
+				adversary.Name = data.Get<string>(m_adversaryDatabaseDefinition.GetSelectResult(AdversaryField.AdversaryName));
+			if (fields.Contains(AdversaryField.AdversaryGamePackageId))
+				adversary.GamePackageId = data.Get<int>(m_adversaryDatabaseDefinition.GetSelectResult(AdversaryField.AdversaryGamePackageId));
+
+			return adversary;
 		}
 
 		IDatabaseDefinition<AbilityField> m_abilityDatabaseDefinition;
 		IDatabaseDefinition<GamePackageField> m_gamePackageDatabaseDefinition;
 		IDatabaseDefinition<TeamField> m_teamDatabaseDefinition;
 		IDatabaseDefinition<HenchmanField> m_henchmanDatabaseDefinition;
+		IDatabaseDefinition<AdversaryField> m_adversaryDatabaseDefinition;
 	}
 }
