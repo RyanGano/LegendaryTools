@@ -7,6 +7,7 @@ using static LegendaryService.GameService;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Faithlife.Utility;
+using LegendaryClientConsole.Utility;
 
 namespace LegendaryClientConsole
 {
@@ -22,18 +23,12 @@ namespace LegendaryClientConsole
 
 			while (appStatus == AppStatus.Continue)
 			{
-				string input = GetUserInput("What do you want to do? ('?' for Help): ");
+				string input = ConsoleUtility.GetUserInput("What do you want to do? ('?' for Help): ");
 
 				appStatus = HandleInput(input, client);
 			}
 
 			return;
-		}
-
-		private static string GetUserInput(string message)
-		{
-			Console.Write(message);
-			return Console.ReadLine();
 		}
 
 		private static AppStatus HandleInput(string input, GameServiceClient client)
@@ -68,7 +63,7 @@ namespace LegendaryClientConsole
 
 		private static async Task InitializeDatabase(GameServiceClient client)
 		{
-			Console.WriteLine("'Initializing Database'");
+			ConsoleUtility.WriteLine("'Initializing Database'");
 			await DatabaseInitializer.InitializeDatabase(client);
 		}
 
@@ -100,7 +95,7 @@ namespace LegendaryClientConsole
 				var abilities = await client.GetAbilitiesAsync(abilitiesRequest);
 
 				foreach (var ability in abilities.Abilities)
-					Console.WriteLine($"{ability.GamePackage.Name} - {ability.Name}");
+					ConsoleUtility.WriteLine($"{ability.GamePackage.Name} - {ability.Name}");
 			}
 		}
 
@@ -117,7 +112,7 @@ namespace LegendaryClientConsole
 			var abilities = await client.GetAbilitiesAsync(abilitiesRequest);
 
 			foreach (var ability in abilities.Abilities)
-				Console.WriteLine($"{ability.GamePackage.Name} - {ability.Name} - {ability.Description}");
+				ConsoleUtility.WriteLine($"{ability.GamePackage.Name} - {ability.Name} - {ability.Description}");
 		}
 
 		private static async Task DisplayGamePackagesAsync(GameServiceClient client, string[] args)
@@ -136,7 +131,7 @@ namespace LegendaryClientConsole
 			request.Fields.AddRange(new[] { GamePackageField.Id });
 			var reply = await client.GetGamePackagesAsync(request);
 			if (reply.Status.Code != 200)
-				Console.WriteLine(reply.Status.Message);
+				ConsoleUtility.WriteLine(reply.Status.Message);
 
 			foreach (var package in reply.Packages)
 				await DisplayGamePackageAsync(client, new[] { package.Id }, null);
@@ -155,10 +150,10 @@ namespace LegendaryClientConsole
 			packagesRequest.Fields.AddRange(new[] { GamePackageField.Id, GamePackageField.Name, GamePackageField.PackageType, GamePackageField.BaseMap });
 			var packagesReply = await client.GetGamePackagesAsync(packagesRequest);
 			if (packagesReply.Status.Code != 200)
-				Console.WriteLine(packagesReply.Status.Message);
+				ConsoleUtility.WriteLine(packagesReply.Status.Message);
 
 			foreach (var gamePackage in packagesReply.Packages)
-				Console.WriteLine(gamePackage);
+				ConsoleUtility.WriteLine(gamePackage.ToString());
 		}
 
 		private static async Task DisplayTeamsAsync(GameServiceClient client, string[] args)
@@ -185,7 +180,7 @@ namespace LegendaryClientConsole
 			var teams = await client.GetTeamsAsync(request);
 
 				foreach (var team in teams.Teams)
-					Console.WriteLine($"{team}");
+				ConsoleUtility.WriteLine($"{team}");
 		}
 
 		private static async Task DisplayHenchmenAsync(GameServiceClient client, string[] args)
@@ -212,13 +207,13 @@ namespace LegendaryClientConsole
 			var henchmen = await client.GetHenchmenAsync(request);
 
 			foreach (var henchman in henchmen.Henchmen)
-				Console.WriteLine($"{henchman}");
+				ConsoleUtility.WriteLine($"{henchman}");
 		}
 
 		private static async Task CreateItemAsync(GameServiceClient client, string[] args)
 		{
 			if (args.FirstOrDefault() == null)
-				Console.WriteLine("Must supply the type of item you want to create. (t|h)");
+				ConsoleUtility.WriteLine("Must supply the type of item you want to create. (t|h)");
 			else if (args.FirstOrDefault() == "t")
 				await CreateTeamAsync(client);
 			else if (args.FirstOrDefault() == "h")
@@ -227,8 +222,8 @@ namespace LegendaryClientConsole
 
 		private static async Task CreateTeamAsync(GameServiceClient client)
 		{
-			var teamName = GetUserInput("Team Name: ");
-			var imagePath = GetUserInput("Path to Image (on OneDrive): ");
+			var teamName = ConsoleUtility.GetUserInput("Team Name: ");
+			var imagePath = ConsoleUtility.GetUserInput("Path to Image (on OneDrive): ");
 
 			var createRequest = new CreateTeamsRequest();
 			createRequest.Teams.Add(new Team { Name = teamName, ImagePath = imagePath });
@@ -237,19 +232,19 @@ namespace LegendaryClientConsole
 			var reply = await client.CreateTeamsAsync(createRequest);
 
 			if (reply.Status.Code != 200)
-				Console.WriteLine(reply.Status.Message);
+				ConsoleUtility.WriteLine(reply.Status.Message);
 			else
-				Console.WriteLine($"Team '{reply.Teams.First().Name}' was created with Id '{reply.Teams.First().Id}'");
+				ConsoleUtility.WriteLine($"Team '{reply.Teams.First().Name}' was created with Id '{reply.Teams.First().Id}'");
 		}
 
 		private static async Task CreateHenchmanAsync(GameServiceClient client)
 		{
 			var henchman = new Henchman();
-			henchman.Name = GetUserInput("Henchman Name: ");
+			henchman.Name = ConsoleUtility.GetUserInput("Henchman Name: ");
 			henchman.GamePackageId = await GetGamePackageId(client);
 			henchman.AbilityIds.AddRange(await GetAbilityIds(client));
 
-			if (!ShouldContinue($"Creating Henchman: '{henchman.Name}', in gamePackage '{henchman.GamePackageId}' with abilities [{henchman.AbilityIds.Select(x => x.ToString()).Join(", ")}]"))
+			if (!ConsoleUtility.ShouldContinue($"Creating Henchman: '{henchman.Name}', in gamePackage '{henchman.GamePackageId}' with abilities [{henchman.AbilityIds.Select(x => x.ToString()).Join(", ")}]"))
 			{
 				await CreateHenchmanAsync(client);
 				return;
@@ -260,9 +255,9 @@ namespace LegendaryClientConsole
 			var createReply = await client.CreateHenchmenAsync(createRequest);
 			
 			if (createReply.Status.Code != 200)
-				Console.WriteLine($"Failed to create henchman: {createReply.Status.Message}");
+				ConsoleUtility.WriteLine($"Failed to create henchman: {createReply.Status.Message}");
 			else
-				Console.WriteLine($"Team '{createReply.Henchmen.First().Name}' was created with Id '{createReply.Henchmen.First().Id}'");
+				ConsoleUtility.WriteLine($"Team '{createReply.Henchmen.First().Name}' was created with Id '{createReply.Henchmen.First().Id}'");
 		}
 
 		private static async ValueTask<int> GetGamePackageId(GameServiceClient client)
@@ -272,7 +267,7 @@ namespace LegendaryClientConsole
 
 			while (gamePackageId == 0)
 			{
-				var input = GetUserInput("What game package is this entry associated with (? to see listing): ");
+				var input = ConsoleUtility.GetUserInput("What game package is this entry associated with (? to see listing): ");
 				if (input == "?")
 				{
 					gamePackages = await DisplayGamePackagesAsync(client, gamePackages);
@@ -285,15 +280,15 @@ namespace LegendaryClientConsole
 					{
 						gamePackageId = gamePackages.Select(x => x.Id).FirstOrDefault(x => x == id, 0);
 						if (gamePackageId == 0)
-							Console.WriteLine($"Game Package Id '{input}' was not found");
+							ConsoleUtility.WriteLine($"Game Package Id '{input}' was not found");
 					}
 					else
 					{
 						var matchingGamePackages = gamePackages.Where(x => Regex.IsMatch(x.Name.ToLower(), input.ToLower())).ToList();
 						if (matchingGamePackages.Count == 0)
-							Console.WriteLine($"Game Package Name '{input}' was not found");
+							ConsoleUtility.WriteLine($"Game Package Name '{input}' was not found");
 						else if (matchingGamePackages.Count != 1)
-							Console.WriteLine($"Game Package Name '{input}' matched multiple GamePackages ({matchingGamePackages.Select(x => x.Name).Join(", ")})");
+							ConsoleUtility.WriteLine($"Game Package Name '{input}' matched multiple GamePackages ({matchingGamePackages.Select(x => x.Name).Join(", ")})");
 						else
 							gamePackageId = matchingGamePackages.First().Id;
 					}
@@ -302,7 +297,7 @@ namespace LegendaryClientConsole
 				if (gamePackageId != 0)
 				{
 					var gamePackage = gamePackages.First(x => x.Id == gamePackageId);
-					if (!ShouldContinue($"Adding entry to game package '{gamePackage.Id}: {gamePackage.Name}':"))
+					if (!ConsoleUtility.ShouldContinue($"Adding entry to game package '{gamePackage.Id}: {gamePackage.Name}':"))
 						gamePackageId = 0;
 				}
 			}
@@ -315,7 +310,7 @@ namespace LegendaryClientConsole
 			gamePackages = await GetGamePackagesAsync(client, gamePackages);
 
 			foreach (var gamePackage in gamePackages)
-				Console.WriteLine($"{gamePackage.Id}: {gamePackage.Name}");
+				ConsoleUtility.WriteLine($"{gamePackage.Id}: {gamePackage.Name}");
 
 			return gamePackages;
 		}
@@ -341,11 +336,11 @@ namespace LegendaryClientConsole
 			{
 				int abilityId = 0;
 				
-				var input = GetUserInput("What ability is this entry associated with (? to see listing, empty to finish): ");
+				var input = ConsoleUtility.GetUserInput("What ability is this entry associated with (? to see listing, empty to finish): ");
 
 				if (input == "")
 				{
-					if (ShouldContinue($"Adding entry to abilities [{abilityIds.Select(x => x.ToString()).Join(", ")}]:"))
+					if (ConsoleUtility.ShouldContinue($"Adding entry to abilities [{abilityIds.Select(x => x.ToString()).Join(", ")}]:"))
 						return abilityIds;
 
 					return await GetAbilityIds(client);
@@ -363,15 +358,15 @@ namespace LegendaryClientConsole
 					{
 						abilityId = abilities.Select(x => x.Id).FirstOrDefault(x => x == id, 0);
 						if (abilityId == 0)
-							Console.WriteLine($"Ability Id '{input}' was not found");
+							ConsoleUtility.WriteLine($"Ability Id '{input}' was not found");
 					}
 					else
 					{
 						var matchingAbilities = abilities.Where(x => Regex.IsMatch(x.Name.ToLower(), input.ToLower())).ToList();
 						if (matchingAbilities.Count == 0)
-							Console.WriteLine($"Ability Name '{input}' was not found");
+							ConsoleUtility.WriteLine($"Ability Name '{input}' was not found");
 						else if (matchingAbilities.Count != 1)
-							Console.WriteLine($"Ability Name '{input}' matched multiple Abilities({matchingAbilities.Select(x => x.Name).Join(", ")})");
+							ConsoleUtility.WriteLine($"Ability Name '{input}' matched multiple Abilities({matchingAbilities.Select(x => x.Name).Join(", ")})");
 						else
 							abilityId = matchingAbilities.First().Id;
 					}
@@ -380,7 +375,7 @@ namespace LegendaryClientConsole
 				if (abilityId != 0)
 				{
 					var ability = abilities.First(x => x.Id == abilityId);
-					if (ShouldContinue($"Adding entry to ability '{ability.Id}: {ability.Name}':"))
+					if (ConsoleUtility.ShouldContinue($"Adding entry to ability '{ability.Id}: {ability.Name}':"))
 						abilityIds.Add(abilityId);
 				}
 			}
@@ -391,7 +386,7 @@ namespace LegendaryClientConsole
 			abilities = await GetAbilitiesAsync(client, abilities);
 
 			foreach (var ability in abilities)
-				Console.WriteLine($"{ability.Id}: {ability.Name}");
+				ConsoleUtility.WriteLine($"{ability.Id}: {ability.Name}");
 
 			return abilities;
 		}
@@ -408,27 +403,20 @@ namespace LegendaryClientConsole
 			return abilities;
 		}
 
-		private static bool ShouldContinue(string message)
-		{
-			Console.WriteLine(message);
-			var input = GetUserInput($"Continue? (Y/n): ");
-			return input == "" || input.ToLower() == "y";
-		}
-
 		private static void WriteHelp()
 		{
-			Console.WriteLine("Legendary Client");
-			Console.WriteLine("");
-			Console.WriteLine("Use this client to get information about cards in the Legendary Deck Building Game");
-			Console.WriteLine("");
-			Console.WriteLine("  help (?) - Display command help.");
-			Console.WriteLine("  abilities (a) [id/name] - Display all abilities (or limit to id/name matches).");
-			Console.WriteLine("  gamepackages (gp) [id/name] - Display all Game Packages (or limit to id/name matches).");
-			Console.WriteLine("  teams (t) [id/name] - Display all teams (or limit to id/name matches).");
-			Console.WriteLine("  henchmen (h) [id/name] - Display all henchmen (or limit to id/name matches).");
-			Console.WriteLine("  create (c) t|h - Create a new team|henchman.");
-			Console.WriteLine("  quit (q) - Quit application.");
-			Console.WriteLine("");
+			ConsoleUtility.WriteLine("Legendary Client");
+			ConsoleUtility.WriteLine("");
+			ConsoleUtility.WriteLine("Use this client to get information about cards in the Legendary Deck Building Game");
+			ConsoleUtility.WriteLine("");
+			ConsoleUtility.WriteLine("  help (?) - Display command help.");
+			ConsoleUtility.WriteLine("  abilities (a) [id/name] - Display all abilities (or limit to id/name matches).");
+			ConsoleUtility.WriteLine("  gamepackages (gp) [id/name] - Display all Game Packages (or limit to id/name matches).");
+			ConsoleUtility.WriteLine("  teams (t) [id/name] - Display all teams (or limit to id/name matches).");
+			ConsoleUtility.WriteLine("  henchmen (h) [id/name] - Display all henchmen (or limit to id/name matches).");
+			ConsoleUtility.WriteLine("  create (c) t|h - Create a new team|henchman.");
+			ConsoleUtility.WriteLine("  quit (q) - Quit application.");
+			ConsoleUtility.WriteLine("");
 		}
 	}
 }

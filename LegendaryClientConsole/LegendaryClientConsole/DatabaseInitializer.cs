@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using LegendaryClientConsole.Utility;
 using LegendaryService;
 using static LegendaryService.GameService;
 
@@ -25,7 +26,7 @@ namespace LegendaryClientConsole
 
 		private static async ValueTask CreateTeams(GameServiceClient client)
 		{
-			Console.WriteLine("Creating teams");
+			ConsoleUtility.WriteLine("Creating teams");
 			var teams = new[]
 			{
 				new Team { Name = "Avengers", ImagePath = "https://qme89g.dm.files.1drv.com/y4mDSjXgLHHwe7E8-y3_Vegi7yhygfTEXtJRkEblsOBVBu_HeB9VKRgOVyXPH9H_HKjAONo5IHf7avPYUab3sRKouqDV1UdxLfR0r05XvAAqJNxUnbySUgeEMgG3hq6zoPJKrz7Bm6J9axLmHvqpqlADlFwV9tM744ByeMZHg4WNxVo6jvPq6YB5jLv8Rd6lknPyJw1v4eZ1JJKr3CRb-nzCg?width=78&height=81&cropmode=none" },
@@ -56,12 +57,12 @@ namespace LegendaryClientConsole
 
 			var reply = await client.CreateTeamsAsync(request);
 			if (reply.Status.Code != 200)
-				Console.WriteLine($"Failed to create teams: '{reply.Status.Message}'");
+				ConsoleUtility.WriteLine($"Failed to create teams: '{reply.Status.Message}'");
 		}
 
 		private static async ValueTask CreateAbilities(GameServiceClient client, IReadOnlyList<GamePackage> packages)
 		{
-			Console.WriteLine("Creating abilities");
+			ConsoleUtility.WriteLine("Creating abilities");
 			var doc = XDocument.Load(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\Abilities\Abilities.xml");
 
 			var request = new CreateAbilitiesRequest();
@@ -72,7 +73,7 @@ namespace LegendaryClientConsole
 			}));
 
 			var result = await client.CreateAbilitiesAsync(request);
-			Console.WriteLine($"Status: {result.Status.Code}: {result.Status.Message}");
+			ConsoleUtility.WriteLine($"Status: {result.Status.Code}: {result.Status.Message}");
 		}
 
 		private static async ValueTask CreateGamePackages(GameServiceClient client)
@@ -116,7 +117,7 @@ namespace LegendaryClientConsole
 
 				var createResponse = await client.CreateGamePackageAsync(createRequest);
 
-				Console.WriteLine($"{set.Name} - {createResponse.Id} : {createResponse.Status?.Code}");
+				ConsoleUtility.WriteLine($"{set.Name} - {createResponse.Id} : {createResponse.Status?.Code}");
 			}
 		}
 	}
