@@ -72,26 +72,6 @@ create table teams (
     unique index teams_Name (Name)
 ) engine=INNODB;
 
-insert into teams (Name, ImagePath) values
-	("Avengers", ""),
-	("Brotherhood", ""),
-	("Cabal", ""),
-	("Crime Syndicate", ""),
-	("Fantastic Four", ""),
-	("Foes of Asgard", ""),
-	("Guardians of the Galaxy", ""),
-	("Hydra", ""),
-	("Illuminati", ""),
-	("Marvel Knights", ""),
-	("Mercs for Money", ""),
-	("New Warriors", ""),
-	("None", ""),
-	("Sheild", ""),
-	("Sinister Six", ""),
-	("Spider Friends", ""),
-	("X-Force", ""),
-	("X-Men", "");
-
 -- Create the allies table (requires `teams`)
 create table allies (
 	AllyId int auto_increment primary key,
