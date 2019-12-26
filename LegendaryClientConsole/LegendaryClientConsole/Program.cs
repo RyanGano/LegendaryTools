@@ -5,6 +5,8 @@ using Grpc.Net.Client;
 using System.Linq;
 using static LegendaryService.GameService;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using Faithlife.Utility;
 
 namespace LegendaryClientConsole
 {
@@ -20,7 +22,7 @@ namespace LegendaryClientConsole
 
 			while (appStatus == AppStatus.Continue)
 			{
-				string input = GetUserInput("What do you want to do? ('h' for Help): ");
+				string input = GetUserInput("What do you want to do? ('?' for Help): ");
 
 				appStatus = HandleInput(input, client);
 			}
@@ -42,7 +44,7 @@ namespace LegendaryClientConsole
 
 			Func<GameServiceClient, AppStatus> handler = splitInput[0] switch
 			{
-				"h" => (GameServiceClient client) => { WriteHelp(); return AppStatus.Continue; },
+				"?" => (GameServiceClient client) => { WriteHelp(); return AppStatus.Continue; },
 				"help" => (GameServiceClient client) => { WriteHelp(); return AppStatus.Continue; },
 				"gp" => (GameServiceClient client) => { DisplayGamePackagesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"gamepackages" => (GameServiceClient client) => { DisplayGamePackagesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
@@ -50,6 +52,8 @@ namespace LegendaryClientConsole
 				"abilities" => (GameServiceClient client) => { DisplayAbilitiesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"t" => (GameServiceClient client) => { DisplayTeamsAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"teams" => (GameServiceClient client) => { DisplayTeamsAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
+				"h" => (GameServiceClient client) => { DisplayHenchmenAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
+				"henchmen" => (GameServiceClient client) => { DisplayHenchmenAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"c" => (GameServiceClient client) => { CreateItemAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"create" => (GameServiceClient client) => { CreateItemAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"i" => (GameServiceClient client) => {	 InitializeDatabase(client).Wait(); return AppStatus.Continue; },
@@ -184,12 +188,41 @@ namespace LegendaryClientConsole
 					Console.WriteLine($"{team}");
 		}
 
+		private static async Task DisplayHenchmenAsync(GameServiceClient client, string[] args)
+		{
+			if (args.FirstOrDefault() == null)
+				await DisplayHenchmenAsync(client);
+			else if (int.TryParse(args.FirstOrDefault(), out int id))
+				await DisplayHenchmenAsync(client, henchmanIds: args.Select(x => int.Parse(x)).ToList());
+			else
+				await DisplayHenchmenAsync(client, name: args.FirstOrDefault(), allowCloseNameMatches: true);
+		}
+
+		private static async Task DisplayHenchmenAsync(GameServiceClient client, IReadOnlyList<int> henchmanIds = null, string name = null, bool allowCloseNameMatches = false)
+		{
+			var request = new GetHenchmenRequest();
+
+			if (henchmanIds != null && henchmanIds.Count() != 0)
+				request.HenchmenIds.AddRange(henchmanIds);
+			else if (!string.IsNullOrWhiteSpace(name))
+				request.Name = name;
+
+			request.AllowCloseNameMatches = allowCloseNameMatches;
+
+			var henchmen = await client.GetHenchmenAsync(request);
+
+			foreach (var henchman in henchmen.Henchmen)
+				Console.WriteLine($"{henchman}");
+		}
+
 		private static async Task CreateItemAsync(GameServiceClient client, string[] args)
 		{
 			if (args.FirstOrDefault() == null)
-				Console.WriteLine("Must supply the type of item you want to create. (t)");
+				Console.WriteLine("Must supply the type of item you want to create. (t|h)");
 			else if (args.FirstOrDefault() == "t")
 				await CreateTeamAsync(client);
+			else if (args.FirstOrDefault() == "h")
+				await CreateHenchmanAsync(client);
 		}
 
 		private static async Task CreateTeamAsync(GameServiceClient client)
@@ -209,17 +242,191 @@ namespace LegendaryClientConsole
 				Console.WriteLine($"Team '{reply.Teams.First().Name}' was created with Id '{reply.Teams.First().Id}'");
 		}
 
+		private static async Task CreateHenchmanAsync(GameServiceClient client)
+		{
+			var henchman = new Henchman();
+			henchman.Name = GetUserInput("Henchman Name: ");
+			henchman.GamePackageId = await GetGamePackageId(client);
+			henchman.AbilityIds.AddRange(await GetAbilityIds(client));
+
+			if (!ShouldContinue($"Creating Henchman: '{henchman.Name}', in gamePackage '{henchman.GamePackageId}' with abilities [{henchman.AbilityIds.Select(x => x.ToString()).Join(", ")}]"))
+			{
+				await CreateHenchmanAsync(client);
+				return;
+			}
+
+			var createRequest = new CreateHenchmenRequest();
+			createRequest.Henchmen.Add(henchman);
+			var createReply = await client.CreateHenchmenAsync(createRequest);
+			
+			if (createReply.Status.Code != 200)
+				Console.WriteLine($"Failed to create henchman: {createReply.Status.Message}");
+			else
+				Console.WriteLine($"Team '{createReply.Henchmen.First().Name}' was created with Id '{createReply.Henchmen.First().Id}'");
+		}
+
+		private static async ValueTask<int> GetGamePackageId(GameServiceClient client)
+		{
+			var gamePackageId = 0;
+			IReadOnlyList<GamePackage> gamePackages = null;
+
+			while (gamePackageId == 0)
+			{
+				var input = GetUserInput("What game package is this entry associated with (? to see listing): ");
+				if (input == "?")
+				{
+					gamePackages = await DisplayGamePackagesAsync(client, gamePackages);
+				}
+				else if (!string.IsNullOrWhiteSpace(input))
+				{
+					gamePackages = await GetGamePackagesAsync(client, gamePackages);
+
+					if (int.TryParse(input, out int id))
+					{
+						gamePackageId = gamePackages.Select(x => x.Id).FirstOrDefault(x => x == id, 0);
+						if (gamePackageId == 0)
+							Console.WriteLine($"Game Package Id '{input}' was not found");
+					}
+					else
+					{
+						var matchingGamePackages = gamePackages.Where(x => Regex.IsMatch(x.Name.ToLower(), input.ToLower())).ToList();
+						if (matchingGamePackages.Count == 0)
+							Console.WriteLine($"Game Package Name '{input}' was not found");
+						else if (matchingGamePackages.Count != 1)
+							Console.WriteLine($"Game Package Name '{input}' matched multiple GamePackages ({matchingGamePackages.Select(x => x.Name).Join(", ")})");
+						else
+							gamePackageId = matchingGamePackages.First().Id;
+					}
+				}
+
+				if (gamePackageId != 0)
+				{
+					var gamePackage = gamePackages.First(x => x.Id == gamePackageId);
+					if (!ShouldContinue($"Adding entry to game package '{gamePackage.Id}: {gamePackage.Name}':"))
+						gamePackageId = 0;
+				}
+			}
+
+			return gamePackageId;
+		}
+
+		private static async ValueTask<IReadOnlyList<GamePackage>> DisplayGamePackagesAsync(GameServiceClient client, IReadOnlyList<GamePackage> gamePackages)
+		{
+			gamePackages = await GetGamePackagesAsync(client, gamePackages);
+
+			foreach (var gamePackage in gamePackages)
+				Console.WriteLine($"{gamePackage.Id}: {gamePackage.Name}");
+
+			return gamePackages;
+		}
+
+		private static async Task<IReadOnlyList<GamePackage>> GetGamePackagesAsync(GameServiceClient client, IReadOnlyList<GamePackage> gamePackages)
+		{
+			if (gamePackages == null)
+			{
+				var request = new GetGamePackagesRequest();
+				request.Fields.AddRange(new[] { GamePackageField.Id, GamePackageField.Name });
+				gamePackages = (await client.GetGamePackagesAsync(request)).Packages.ToList();
+			}
+
+			return gamePackages;
+		}
+
+		private static async ValueTask<IReadOnlyList<int>> GetAbilityIds(GameServiceClient client)
+		{
+			List<int> abilityIds = new List<int>();
+			IReadOnlyList<Ability> abilities = null;
+
+			while (true)
+			{
+				int abilityId = 0;
+				
+				var input = GetUserInput("What ability is this entry associated with (? to see listing, empty to finish): ");
+
+				if (input == "")
+				{
+					if (ShouldContinue($"Adding entry to abilities [{abilityIds.Select(x => x.ToString()).Join(", ")}]:"))
+						return abilityIds;
+
+					return await GetAbilityIds(client);
+				}
+
+				if (input == "?")
+				{
+					abilities = await DisplayAbilitiesAsync(client, abilities);
+				}
+				else if (!string.IsNullOrWhiteSpace(input))
+				{
+					abilities = await GetAbilitiesAsync(client, abilities);
+
+					if (int.TryParse(input, out int id))
+					{
+						abilityId = abilities.Select(x => x.Id).FirstOrDefault(x => x == id, 0);
+						if (abilityId == 0)
+							Console.WriteLine($"Ability Id '{input}' was not found");
+					}
+					else
+					{
+						var matchingAbilities = abilities.Where(x => Regex.IsMatch(x.Name.ToLower(), input.ToLower())).ToList();
+						if (matchingAbilities.Count == 0)
+							Console.WriteLine($"Ability Name '{input}' was not found");
+						else if (matchingAbilities.Count != 1)
+							Console.WriteLine($"Ability Name '{input}' matched multiple Abilities({matchingAbilities.Select(x => x.Name).Join(", ")})");
+						else
+							abilityId = matchingAbilities.First().Id;
+					}
+				}
+
+				if (abilityId != 0)
+				{
+					var ability = abilities.First(x => x.Id == abilityId);
+					if (ShouldContinue($"Adding entry to ability '{ability.Id}: {ability.Name}':"))
+						abilityIds.Add(abilityId);
+				}
+			}
+		}
+
+		private static async ValueTask<IReadOnlyList<Ability>> DisplayAbilitiesAsync(GameServiceClient client, IReadOnlyList<Ability> abilities)
+		{
+			abilities = await GetAbilitiesAsync(client, abilities);
+
+			foreach (var ability in abilities)
+				Console.WriteLine($"{ability.Id}: {ability.Name}");
+
+			return abilities;
+		}
+
+		private static async Task<IReadOnlyList<Ability>> GetAbilitiesAsync(GameServiceClient client, IReadOnlyList<Ability> abilities)
+		{
+			if (abilities == null)
+			{
+				var request = new GetAbilitiesRequest();
+				request.AbilityFields.AddRange(new[] { AbilityField.Id, AbilityField.Name });
+				abilities = (await client.GetAbilitiesAsync(request)).Abilities.ToList();
+			}
+
+			return abilities;
+		}
+
+		private static bool ShouldContinue(string message)
+		{
+			Console.WriteLine(message);
+			var input = GetUserInput($"Continue? (Y/n): ");
+			return input == "" || input.ToLower() == "y";
+		}
+
 		private static void WriteHelp()
 		{
 			Console.WriteLine("Legendary Client");
 			Console.WriteLine("");
 			Console.WriteLine("Use this client to get information about cards in the Legendary Deck Building Game");
 			Console.WriteLine("");
-			Console.WriteLine("  help (h) - Display command help.");
+			Console.WriteLine("  help (?) - Display command help.");
 			Console.WriteLine("  abilities (a) [id/name] - Display all abilities (or limit to id/name matches).");
 			Console.WriteLine("  gamepackages (gp) [id/name] - Display all Game Packages (or limit to id/name matches).");
 			Console.WriteLine("  teams (t) [id/name] - Display all teams (or limit to id/name matches).");
-			Console.WriteLine("  create (c) t - Create a new team.");
+			Console.WriteLine("  henchmen (h) [id/name] - Display all henchmen (or limit to id/name matches).");
+			Console.WriteLine("  create (c) t|h - Create a new team|henchman.");
 			Console.WriteLine("  quit (q) - Quit application.");
 			Console.WriteLine("");
 		}

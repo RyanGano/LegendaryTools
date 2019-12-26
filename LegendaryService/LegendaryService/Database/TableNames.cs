@@ -8,5 +8,8 @@
 		public const string BaseMaps = "basemaps";
 		public const string GamePackageAllies = "gamepackageallies";
 		public const string Teams = "teams";
+		public const string Henchmen = "henchmen";
+		public const string GamePackageHenchmen = "gamepackagehenchmen";
+		public const string HenchmanAbilities = "henchmanabilities";
 	}
 }
