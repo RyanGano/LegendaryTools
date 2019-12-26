@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -21,7 +22,10 @@ namespace LegendaryClientConsole
 			request.Fields.AddRange(new[] { GamePackageField.Id, GamePackageField.Name, GamePackageField.CoverImage, GamePackageField.PackageType, GamePackageField.Allies });
 			var basePackages = await client.GetGamePackagesAsync(request);
 
-			await CreateAbilities(client, basePackages.Packages.ToList());
+			var supportedPackages = basePackages.Packages.ToList();
+
+			var abilities = await CreateAbilities(client, supportedPackages);
+			var henchmen = await CreateHenchmen(client, supportedPackages, abilities);
 		}
 
 		private static async ValueTask CreateTeams(GameServiceClient client)
@@ -60,7 +64,7 @@ namespace LegendaryClientConsole
 				ConsoleUtility.WriteLine($"Failed to create teams: '{reply.Status.Message}'");
 		}
 
-		private static async ValueTask CreateAbilities(GameServiceClient client, IReadOnlyList<GamePackage> packages)
+		private static async ValueTask<IReadOnlyList<Ability>> CreateAbilities(GameServiceClient client, IReadOnlyList<GamePackage> packages)
 		{
 			ConsoleUtility.WriteLine("Creating abilities");
 			var doc = XDocument.Load(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\Abilities\Abilities.xml");
@@ -74,6 +78,66 @@ namespace LegendaryClientConsole
 
 			var result = await client.CreateAbilitiesAsync(request);
 			ConsoleUtility.WriteLine($"Status: {result.Status.Code}: {result.Status.Message}");
+
+			return result.Abilities;
+		}
+
+		private static async ValueTask<IReadOnlyList<Henchman>> CreateHenchmen(GameServiceClient client, IReadOnlyList<GamePackage> packages, IReadOnlyList<Ability> abilities)
+		{
+			ConsoleUtility.WriteLine("Creating henchmen");
+			List<Henchman> result = new List<Henchman>();
+			
+			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", "*.xml"))
+			{
+				var doc = XDocument.Load(file);
+
+				var name = doc.Element("Set").Attribute("Name").Value;
+				var activeGamePackage = packages.FirstOrDefault(x => x.Name == name);
+				if (activeGamePackage == null)
+					ConsoleUtility.WriteLine($"Failed to find matching game package for {file}");
+
+				foreach (var henchmanElement in doc.Element("Set").Element("Cards").Elements("Card").Where(x => x?.Attribute("Area").Value == "Henchman"))
+				{
+					var request = new CreateHenchmenRequest();
+					request.CreateOptions.Add(CreateOptions.ErrorOnDuplicates);
+
+					var henchman = new Henchman();
+					henchman.Name = henchmanElement.Attribute("Name").Value;
+					henchman.GamePackageId = activeGamePackage.Id;
+					henchman.AbilityIds.AddRange(GetMatchingItems(henchmanElement.Attribute("Abliities")?.Value, name => abilities.First(x => x.Name == name)).Select(x => x.Id));
+					
+					request.Henchmen.Add(henchman);
+
+					var reply = await client.CreateHenchmenAsync(request);
+					if (reply.Status.Code != 200)
+						ConsoleUtility.WriteLine($"Failed to create '{henchman.Name}': {reply.Status.Message}");
+					else
+						ConsoleUtility.WriteLine($"Success: '{henchman.Name}'");
+
+					result.AddRange(request.Henchmen);
+				}
+			}
+
+			return result;
+		}
+
+		private static IReadOnlyList<T> GetMatchingItems<T>(string input, Func<string, T> lookup)
+		{
+			List<T> foundItems = new List<T>();
+
+			if (!string.IsNullOrWhiteSpace(input))
+			{
+				foreach (var item in input.Split('|'))
+				{
+					var foundItem = lookup(item);
+					if (foundItem == null)
+						throw new Exception($"Couldn't find item '{item}'");
+
+					foundItems.Add(foundItem);
+				}
+			}
+
+			return foundItems;
 		}
 
 		private static async ValueTask CreateGamePackages(GameServiceClient client)
