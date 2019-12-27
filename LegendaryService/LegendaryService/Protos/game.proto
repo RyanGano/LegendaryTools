@@ -19,6 +19,8 @@ service GameService {
   rpc CreateHenchmen (CreateHenchmenRequest) returns (CreateHenchmenReply);
   rpc GetAdversaries (GetAdversariesRequest) returns (GetAdversariesReply);
   rpc CreateAdversaries (CreateAdversariesRequest) returns (CreateAdversariesReply);
+  rpc GetNeutrals (GetNeutralsRequest) returns (GetNeutralsReply);
+  rpc CreateNeutrals (CreateNeutralsRequest) returns (CreateNeutralsReply);
 }
 
 message GetGamePackagesRequest {
@@ -187,6 +189,33 @@ enum AdversaryField {
 	AdversaryGamePackageId = 3;
 }
 
+message GetNeutralsRequest {
+	repeated NeutralField fields = 1;
+	repeated int32 neutralIds = 2;
+	string name = 3;
+	NameMatchStyle nameMatchStyle = 4;
+}
+
+message GetNeutralsReply {
+	Status status = 1;
+	repeated Neutral neutrals = 2;
+}
+
+message CreateNeutralsRequest {
+	repeated Neutral neutrals = 1;
+	repeated CreateOptions createOptions = 2;
+}
+
+message CreateNeutralsReply {
+	Status status = 1;
+	repeated Neutral neutrals = 2;
+}
+
+enum NeutralField {
+	NeutralId = 0;
+	NeutralName = 1;
+	NeutralGamePackageId = 2;
+}
 
 message GamePackage {
 	int32 id = 1;
@@ -241,7 +270,9 @@ message Scheme {
 }
 
 message Neutral {
-	string name = 1;
+	int32 id = 1;
+	string name = 2;
+	int32 gamePackageId = 3;
 }
 
 message SchemeTwistRequirement {

@@ -16,6 +16,8 @@ namespace LegendaryClientConsole.Utility
 				await CreateTeamAsync(client);
 			else if (args.FirstOrDefault() == "h")
 				await CreateHenchmanAsync(client);
+			else if (args.FirstOrDefault() == "n")
+				await CreateNeutralAsync(client);
 		}
 
 		public static async Task CreateTeamAsync(GameServiceClient client)
@@ -56,6 +58,28 @@ namespace LegendaryClientConsole.Utility
 				ConsoleUtility.WriteLine($"Failed to create henchman: {createReply.Status.Message}");
 			else
 				ConsoleUtility.WriteLine($"Team '{createReply.Henchmen.First().Name}' was created with Id '{createReply.Henchmen.First().Id}'");
+		}
+
+		public static async Task CreateNeutralAsync(GameServiceClient client)
+		{
+			var neutral = new Neutral();
+			neutral.Name = ConsoleUtility.GetUserInput("Neutral Name: ");
+			neutral.GamePackageId = await GamePackageUtility.SelectGamePackageId(client);
+
+			if (!ConsoleUtility.ShouldContinue($"Creating Neutral: '{neutral.Name}', in gamePackage '{neutral.GamePackageId}'"))
+			{
+				await CreateNeutralAsync(client);
+				return;
+			}
+
+			var createRequest = new CreateNeutralsRequest();
+			createRequest.Neutrals.Add(neutral);
+			var createReply = await client.CreateNeutralsAsync(createRequest);
+
+			if (createReply.Status.Code != 200)
+				ConsoleUtility.WriteLine($"Failed to create neutral: {createReply.Status.Message}");
+			else
+				ConsoleUtility.WriteLine($"Team '{createReply.Neutrals.First().Name}' was created with Id '{createReply.Neutrals.First().Id}'");
 		}
 	}
 }

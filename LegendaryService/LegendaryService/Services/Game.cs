@@ -21,7 +21,7 @@ namespace LegendaryService
 
 		public override async Task<CreateGamePackageReply> CreateGamePackage(CreateGamePackageRequest request, ServerCallContext context)
 		{
-			return await GamePackageUtility.CreateGamePackageAsync(request, context);			
+			return await GamePackageUtility.CreateGamePackageAsync(request, context);
 		}
 
 		public override async Task<GetAbilitiesReply> GetAbilities(GetAbilitiesRequest request, ServerCallContext context)
@@ -63,7 +63,7 @@ namespace LegendaryService
 		{
 			return await HenchmanUtility.GetHenchmenAsync(request, context);
 		}
-		
+
 		public override async Task<CreateAdversariesReply> CreateAdversaries(CreateAdversariesRequest request, ServerCallContext context)
 		{
 			return await AdversaryUtility.CreateAdversariesAsync(request, context);
@@ -72,6 +72,16 @@ namespace LegendaryService
 		public override async Task<GetAdversariesReply> GetAdversaries(GetAdversariesRequest request, ServerCallContext context)
 		{
 			return await AdversaryUtility.GetAdversariesAsync(request, context);
+		}
+
+		public override async Task<GetNeutralsReply> GetNeutrals(GetNeutralsRequest request, ServerCallContext context)
+		{
+			return await NeutralUtility.GetNeutralsAsync(request, context);
+		}
+
+		public override async Task<CreateNeutralsReply> CreateNeutrals(CreateNeutralsRequest request, ServerCallContext context)
+		{
+			return await NeutralUtility.CreateNeutralsAsync(request, context);
 		}
 	}
 }

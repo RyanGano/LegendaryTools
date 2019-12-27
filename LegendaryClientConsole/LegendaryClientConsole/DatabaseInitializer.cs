@@ -26,6 +26,7 @@ namespace LegendaryClientConsole
 			var supportedPackages = basePackages.Packages.ToList();
 
 			var abilities = await CreateAbilities(client, supportedPackages);
+			var neutrals = await CreateNeutrals(client, supportedPackages);
 			var henchmen = await CreateHenchmen(client, supportedPackages, abilities);
 			var adversaries = await CreateAdversaries(client, supportedPackages, abilities);
 		}
@@ -105,6 +106,44 @@ namespace LegendaryClientConsole
 			return result.Abilities;
 		}
 
+		private static async ValueTask<IReadOnlyList<Neutral>> CreateNeutrals(GameServiceClient client, IReadOnlyList<GamePackage> packages)
+		{
+			ConsoleUtility.WriteLine("Creating neutrals");
+			List<Neutral> result = new List<Neutral>();
+			
+			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", "*.xml"))
+			{
+				var doc = XDocument.Load(file);
+
+				var name = doc.Element("Set").Attribute("Name").Value;
+				var activeGamePackage = packages.FirstOrDefault(x => x.Name == name);
+				if (activeGamePackage == null)
+					ConsoleUtility.WriteLine($"Failed to find matching game package for {file}");
+
+				foreach (var neutralElement in doc.Element("Set").Element("Cards").Elements("Card").Where(x => x?.Attribute("Area").Value == "Neutral"))
+				{
+					var request = new CreateNeutralsRequest();
+					request.CreateOptions.Add(CreateOptions.ErrorOnDuplicates);
+
+					var neutral = new Neutral();
+					neutral.Name = neutralElement.Attribute("Name").Value;
+					neutral.GamePackageId = activeGamePackage.Id;
+					
+					request.Neutrals.Add(neutral);
+
+					var reply = await client.CreateNeutralsAsync(request);
+					if (reply.Status.Code != 200)
+						ConsoleUtility.WriteLine($"Failed to create '{neutral.Name}': {reply.Status.Message}");
+					else
+						ConsoleUtility.WriteLine($"Success: '{neutral.Name}'");
+
+					result.AddRange(reply.Neutrals);
+				}
+			}
+
+			return result;
+		}
+
 		private static async ValueTask<IReadOnlyList<Henchman>> CreateHenchmen(GameServiceClient client, IReadOnlyList<GamePackage> packages, IReadOnlyList<Ability> abilities)
 		{
 			ConsoleUtility.WriteLine("Creating henchmen");
@@ -137,7 +176,7 @@ namespace LegendaryClientConsole
 					else
 						ConsoleUtility.WriteLine($"Success: '{henchman.Name}'");
 
-					result.AddRange(request.Henchmen);
+					result.AddRange(reply.Henchmen);
 				}
 			}
 
@@ -176,7 +215,7 @@ namespace LegendaryClientConsole
 					else
 						ConsoleUtility.WriteLine($"Success: '{adversary.Name}'");
 
-					result.AddRange(request.Adversaries);
+					result.AddRange(reply.Adversaries);
 				}
 			}
 
