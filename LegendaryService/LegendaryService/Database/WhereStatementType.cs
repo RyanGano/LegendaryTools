@@ -5,6 +5,7 @@
 		NotEquals,
 		Equals,
 		Includes,
-		Like
+		Like,
+		BinaryEquals
 	}
 }

@@ -15,10 +15,10 @@ namespace LegendaryClientConsole.Utility
 			else if (int.TryParse(args.FirstOrDefault(), out int id))
 				await DisplayClassesAsync(client, classIds: args.Select(x => int.Parse(x)).ToList());
 			else
-				await DisplayClassesAsync(client, name: args.FirstOrDefault(), allowCloseNameMatches: true);
+				await DisplayClassesAsync(client, name: args.FirstOrDefault(), nameMatchStyle: NameMatchStyle.Similar);
 		}
 
-		public static async Task DisplayClassesAsync(GameServiceClient client, IReadOnlyList<int> classIds = null, string name = null, bool allowCloseNameMatches = false)
+		public static async Task DisplayClassesAsync(GameServiceClient client, IReadOnlyList<int> classIds = null, string name = null, NameMatchStyle nameMatchStyle = NameMatchStyle.MixedCase)
 		{
 			var request = new GetClassesRequest();
 
@@ -27,7 +27,7 @@ namespace LegendaryClientConsole.Utility
 			else if (!string.IsNullOrWhiteSpace(name))
 				request.Name = name;
 
-			request.AllowCloseNameMatches = allowCloseNameMatches;
+			request.NameMatchStyle = nameMatchStyle;
 
 			var classes = await client.GetClassesAsync(request);
 

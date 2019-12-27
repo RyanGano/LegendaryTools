@@ -15,10 +15,10 @@ namespace LegendaryClientConsole.Utility
 			else if (int.TryParse(args.FirstOrDefault(), out int id))
 				await DisplayHenchmenAsync(client, henchmanIds: args.Select(x => int.Parse(x)).ToList());
 			else
-				await DisplayHenchmenAsync(client, name: args.FirstOrDefault(), allowCloseNameMatches: true);
+				await DisplayHenchmenAsync(client, name: args.FirstOrDefault(), nameMatchStyle: NameMatchStyle.Similar);
 		}
 
-		public static async Task DisplayHenchmenAsync(GameServiceClient client, IReadOnlyList<int> henchmanIds = null, string name = null, bool allowCloseNameMatches = false)
+		public static async Task DisplayHenchmenAsync(GameServiceClient client, IReadOnlyList<int> henchmanIds = null, string name = null, NameMatchStyle nameMatchStyle = NameMatchStyle.MixedCase)
 		{
 			var request = new GetHenchmenRequest();
 
@@ -27,7 +27,7 @@ namespace LegendaryClientConsole.Utility
 			else if (!string.IsNullOrWhiteSpace(name))
 				request.Name = name;
 
-			request.AllowCloseNameMatches = allowCloseNameMatches;
+			request.NameMatchStyle = nameMatchStyle;
 
 			var henchmen = await client.GetHenchmenAsync(request);
 

@@ -38,6 +38,8 @@ namespace LegendaryService.Database
 				return $"{GetWhereStatement(field)} != @{GetSelectResult(field)}";
 			if (type == WhereStatementType.Equals)
 				return $"{GetWhereStatement(field)} = @{GetSelectResult(field)}";
+			if (type == WhereStatementType.BinaryEquals)
+				return $"binary {GetWhereStatement(field)} = @{GetSelectResult(field)}";
 			if (type == WhereStatementType.Like)
 				return $"{GetWhereStatement(field)} like @{GetSelectResult(field)}";
 			else

@@ -70,7 +70,7 @@ message CreateAbilitiesReply {
 message GetTeamsRequest {
 	repeated int32 teamIds = 1;
 	string name = 2;
-	bool allowCloseNameMatches = 3;
+	NameMatchStyle nameMatchStyle = 3;
 	repeated TeamField fields = 4;
 }
 
@@ -98,7 +98,7 @@ enum TeamField {
 message GetClassesRequest {
 	repeated int32 classIds = 1;
 	string name = 2;
-	bool allowCloseNameMatches = 3;
+	NameMatchStyle nameMatchStyle = 3;
 	repeated ClassField fields = 4;
 }
 
@@ -133,7 +133,7 @@ message GetHenchmenRequest {
 	repeated HenchmanField fields = 1;
 	repeated int32 henchmanIds = 2;
 	string name = 3;
-	bool allowCloseNameMatches = 4;
+	NameMatchStyle nameMatchStyle = 4;
 }
 
 message GetHenchmenReply {
@@ -162,7 +162,7 @@ message GetAdversariesRequest {
 	repeated AdversaryField fields = 1;
 	repeated int32 adversaryIds = 2;
 	string name = 3;
-	bool allowCloseNameMatches = 4;
+	NameMatchStyle nameMatchStyle = 4;
 }
 
 message GetAdversariesReply {
@@ -318,6 +318,12 @@ enum AbilityField {
 	Description = 2;
 	GamePackageId = 3;
 	GamePackageName = 4;
+}
+
+enum NameMatchStyle {
+	MixedCase = 0;
+	Exact = 1;
+	Similar = 2;
 }
 
 message Status {

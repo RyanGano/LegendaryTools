@@ -274,7 +274,7 @@ namespace LegendaryService
 
 			var teams = await GetTeams(new GetTeamsRequest(), context);
 
-			var teamsToAdd = request.Teams.Where(x => !teams.Teams.Any(y => y.Name == x.Name)).ToList();
+			var teamsToAdd = request.Teams.Where(x => !teams.Teams.Any(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase))).ToList();
 
 			if (teamsToAdd.Count != request.Teams.Count() && request.CreateOptions.Contains(CreateOptions.ErrorOnDuplicates))
 			{
@@ -362,7 +362,7 @@ namespace LegendaryService
 
 			var classes = await GetClasses(new GetClassesRequest(), context);
 
-			var classesToAdd = request.Classes.Where(x => !classes.Classes.Any(y => y.Name == x.Name)).ToList();
+			var classesToAdd = request.Classes.Where(x => !classes.Classes.Any(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase))).ToList();
 
 			if (classesToAdd.Count != request.Classes.Count() && request.CreateOptions.Contains(CreateOptions.ErrorOnDuplicates))
 			{
@@ -448,7 +448,7 @@ namespace LegendaryService
 				var henchmanRequest = new GetHenchmenRequest();
 				henchmanRequest.Name  = henchman.Name;
 				henchmanRequest.Fields.AddRange(new[] { HenchmanField.HenchmanId, HenchmanField.HenchmanName, HenchmanField.HenchmanGamePackageId });
-				henchmanRequest.AllowCloseNameMatches = false;
+				henchmanRequest.NameMatchStyle = NameMatchStyle.MixedCase;
 				var henchmanReply = await GetHenchmen(henchmanRequest, context);
 				if (henchmanReply.Status.Code == 200 && henchmanReply.Henchmen.Any())
 				{
@@ -523,13 +523,13 @@ namespace LegendaryService
 			var joins = m_henchmanDatabaseDefinition.BuildRequiredJoins(request.Fields);
 
 			var where = !string.IsNullOrWhiteSpace(request.Name) ?
-					$"where { m_henchmanDatabaseDefinition.BuildWhereStatement(HenchmanField.HenchmanName, request.AllowCloseNameMatches ? WhereStatementType.Like : WhereStatementType.Equals)}" :
+					$"where { m_henchmanDatabaseDefinition.BuildWhereStatement(HenchmanField.HenchmanName, GetWhereComparisonType(request.NameMatchStyle))}" :
 					request.HenchmanIds.Count() != 0 ?
 						$"where { m_henchmanDatabaseDefinition.BuildWhereStatement(HenchmanField.HenchmanId, WhereStatementType.Includes)}" :
 						"";
 
 			var whereMatch = !string.IsNullOrWhiteSpace(request.Name) ?
-					new (string, object)[] { (m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanName), request.AllowCloseNameMatches ? $"%{request.Name}%" : request.Name) } :
+					new (string, object)[] { (m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanName), request.NameMatchStyle == NameMatchStyle.Similar ? $"%{request.Name}%" : request.Name) } :
 					request.HenchmanIds.Count() != 0 ?
 						new (string, object)[] { (m_henchmanDatabaseDefinition.GetSelectResult(HenchmanField.HenchmanId), request.HenchmanIds.ToArray()) } :
 						new (string, object)[] { };
@@ -551,6 +551,15 @@ namespace LegendaryService
 			}
 
 			return reply;
+		}
+
+		private static WhereStatementType GetWhereComparisonType(NameMatchStyle matchStyle)
+		{
+			return matchStyle == NameMatchStyle.Similar ?
+				WhereStatementType.Like :
+				matchStyle == NameMatchStyle.MixedCase ? 
+					WhereStatementType.Equals :
+					WhereStatementType.BinaryEquals;
 		}
 
 		private Henchman MapHenchman(IDataRecord data, IReadOnlyList<HenchmanField> fields)
@@ -608,7 +617,7 @@ namespace LegendaryService
 				var adversaryRequest = new GetAdversariesRequest();
 				adversaryRequest.Name = adversary.Name;
 				adversaryRequest.Fields.AddRange(new[] { AdversaryField.AdversaryId, AdversaryField.AdversaryName, AdversaryField.AdversaryGamePackageId });
-				adversaryRequest.AllowCloseNameMatches = false;
+				adversaryRequest.NameMatchStyle = NameMatchStyle.MixedCase;
 				var adversaryReply = await GetAdversaries(adversaryRequest, context);
 				if (adversaryReply.Status.Code == 200 && adversaryReply.Adversaries.Any())
 				{
@@ -683,13 +692,13 @@ namespace LegendaryService
 			var joins = m_adversaryDatabaseDefinition.BuildRequiredJoins(request.Fields);
 
 			var where = !string.IsNullOrWhiteSpace(request.Name) ?
-					$"where { m_adversaryDatabaseDefinition.BuildWhereStatement(AdversaryField.AdversaryName, request.AllowCloseNameMatches ? WhereStatementType.Like : WhereStatementType.Equals)}" :
+					$"where { m_adversaryDatabaseDefinition.BuildWhereStatement(AdversaryField.AdversaryName, GetWhereComparisonType(request.NameMatchStyle))}" :
 					request.AdversaryIds.Count() != 0 ?
 						$"where { m_adversaryDatabaseDefinition.BuildWhereStatement(AdversaryField.AdversaryId, WhereStatementType.Includes)}" :
 						"";
 
 			var whereMatch = !string.IsNullOrWhiteSpace(request.Name) ?
-					new (string, object)[] { (m_adversaryDatabaseDefinition.GetSelectResult(AdversaryField.AdversaryName), request.AllowCloseNameMatches ? $"%{request.Name}%" : request.Name) } :
+					new (string, object)[] { (m_adversaryDatabaseDefinition.GetSelectResult(AdversaryField.AdversaryName), request.NameMatchStyle == NameMatchStyle.Similar ? $"%{request.Name}%" : request.Name) } :
 					request.AdversaryIds.Count() != 0 ?
 						new (string, object)[] { (m_adversaryDatabaseDefinition.GetSelectResult(AdversaryField.AdversaryId), request.AdversaryIds.ToArray()) } :
 						new (string, object)[] { };

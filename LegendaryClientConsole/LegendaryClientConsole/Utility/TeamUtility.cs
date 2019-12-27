@@ -15,10 +15,10 @@ namespace LegendaryClientConsole.Utility
 			else if (int.TryParse(args.FirstOrDefault(), out int id))
 				await DisplayTeamsAsync(client, teamIds: args.Select(x => int.Parse(x)).ToList());
 			else
-				await DisplayTeamsAsync(client, name: args.FirstOrDefault(), allowCloseNameMatches: true);
+				await DisplayTeamsAsync(client, name: args.FirstOrDefault(), nameMatchStyle: NameMatchStyle.Similar);
 		}
 
-		public static async Task DisplayTeamsAsync(GameServiceClient client, IReadOnlyList<int> teamIds = null, string name = null, bool allowCloseNameMatches = false)
+		public static async Task DisplayTeamsAsync(GameServiceClient client, IReadOnlyList<int> teamIds = null, string name = null, NameMatchStyle nameMatchStyle = NameMatchStyle.MixedCase)
 		{
 			var request = new GetTeamsRequest();
 
@@ -27,7 +27,7 @@ namespace LegendaryClientConsole.Utility
 			else if (!string.IsNullOrWhiteSpace(name))
 				request.Name = name;
 
-			request.AllowCloseNameMatches = allowCloseNameMatches;
+			request.NameMatchStyle = nameMatchStyle;
 
 			var teams = await client.GetTeamsAsync(request);
 
