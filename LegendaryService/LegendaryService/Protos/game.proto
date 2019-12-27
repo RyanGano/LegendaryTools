@@ -13,6 +13,8 @@ service GameService {
   rpc CreateAbilities (CreateAbilitiesRequest) returns (CreateAbilitiesReply);
   rpc GetTeams (GetTeamsRequest) returns (GetTeamsReply);
   rpc CreateTeams (CreateTeamsRequest) returns (CreateTeamsReply);
+  rpc GetClasses (GetClassesRequest) returns (GetClassesReply);
+  rpc CreateClasses (CreateClassesRequest) returns (CreateClassesReply);
   rpc GetHenchmen (GetHenchmenRequest) returns (GetHenchmenReply);
   rpc CreateHenchmen (CreateHenchmenRequest) returns (CreateHenchmenReply);
   rpc GetAdversaries (GetAdversariesRequest) returns (GetAdversariesReply);
@@ -91,6 +93,40 @@ enum TeamField {
 	TeamId = 0;
 	TeamName = 1;
 	TeamImagePath = 2;
+}
+
+message GetClassesRequest {
+	repeated int32 classIds = 1;
+	string name = 2;
+	bool allowCloseNameMatches = 3;
+	repeated ClassField fields = 4;
+}
+
+message GetClassesReply {
+	Status status = 1;
+	repeated Class classes = 2;
+}
+
+message CreateClassesRequest {
+	repeated Class classes = 1;
+	repeated CreateOptions createOptions = 2;
+}
+
+message CreateClassesReply {
+	Status status = 1;
+	repeated Class classes = 2;
+}
+
+message Class {
+	int32 id = 1;
+	string name = 2;
+	string imagePath = 3;
+}
+
+enum ClassField {
+	ClassId = 0;
+	ClassName = 1;
+	ClassImagePath = 2;
 }
 
 message GetHenchmenRequest {
@@ -172,7 +208,7 @@ message Ally {
 	string name = 1;
 	Team team = 2;
 	string requires = 3;
-	repeated AllyClass classes = 4;
+	repeated Class classes = 4;
 	repeated Ability abilities = 5;
 }
 
@@ -240,15 +276,6 @@ message Ability {
 	string name = 2;
 	string description = 3;
 	GamePackage gamePackage = 4;
-}
-
-enum AllyClass {
-	UnknownAllyClass = 0;
-	Covert = 1;
-	Strength = 2;
-	Tech = 3;
-	Ranged = 4;
-	Instinct = 5;
 }
 
 enum GamePackageType {

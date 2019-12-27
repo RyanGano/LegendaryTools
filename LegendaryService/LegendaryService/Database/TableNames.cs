@@ -14,5 +14,6 @@
 		public const string Adversaries = "adversaries";
 		public const string GamePackageAdversaries = "gamepackageadversaries";
 		public const string AdversaryAbilities = "adversaryabilities";
+		public const string Classes = "classes";
 	}
 }

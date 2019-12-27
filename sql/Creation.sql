@@ -54,15 +54,8 @@ insert into basemaps (Name) values ("Legendary"), ("Villains");
 create table classes (
 	ClassId int auto_increment primary key,
     Name varchar(50) not null,
-    ImagePath varchar(250) not null
+    ImagePath varchar(500) not null
 ) engine=INNODB;
-
-insert into classes (Name, ImagePath) values
-	("Covert", ""),
-	("Strength", ""),
-	("Tech", ""),
-	("Ranged", ""),
-	("Instinct", "");
 
 -- Create the teams table
 create table teams (

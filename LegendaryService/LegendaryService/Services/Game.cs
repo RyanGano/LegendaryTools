@@ -23,6 +23,7 @@ namespace LegendaryService
 			m_abilityDatabaseDefinition = new AbilityDatabaseDefinition();
 			m_gamePackageDatabaseDefinition = new GamePackageDatabaseDefinition();
 			m_teamDatabaseDefinition = new TeamDatabaseDefinition();
+			m_classDatabaseDefinition = new ClassDatabaseDefinition();
 			m_henchmanDatabaseDefinition = new HenchmanDatabaseDefinition();
 			m_adversaryDatabaseDefinition = new AdversaryDatabaseDefinition();
 		}
@@ -283,7 +284,7 @@ namespace LegendaryService
 			}
 
 			List<int> insertIds = request.Teams.Except(teamsToAdd).Select(x => x.Id).ToList();
-			
+
 			foreach (var team in teamsToAdd)
 			{
 				insertIds.Add((int)(await connector.Command($@"
@@ -320,6 +321,94 @@ namespace LegendaryService
 				team.ImagePath = data.Get<string>(m_teamDatabaseDefinition.GetSelectResult(TeamField.TeamImagePath));
 
 			return team;
+		}
+
+		public override async Task<GetClassesReply> GetClasses(GetClassesRequest request, ServerCallContext context)
+		{
+			using var db = new LegendaryDatabase();
+			var connector = DbConnector.Create(db.Connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
+
+			var reply = new GetClassesReply { Status = new Status { Code = 200 } };
+
+			var select = m_classDatabaseDefinition.BuildSelectStatement(request.Fields);
+			var joins = m_classDatabaseDefinition.BuildRequiredJoins(request.Fields);
+
+			var where = !string.IsNullOrWhiteSpace(request.Name) ?
+					$"where { m_classDatabaseDefinition.BuildWhereStatement(ClassField.ClassName, WhereStatementType.Like)}" :
+					request.ClassIds.Count() != 0 ?
+						$"where { m_classDatabaseDefinition.BuildWhereStatement(ClassField.ClassId, WhereStatementType.Includes)}" :
+						"";
+
+			var whereMatch = !string.IsNullOrWhiteSpace(request.Name) ?
+					new (string, object)[] { (m_classDatabaseDefinition.GetSelectResult(ClassField.ClassName), $"%{request.Name}%") } :
+					request.ClassIds.Count() != 0 ?
+						new (string, object)[] { (m_classDatabaseDefinition.GetSelectResult(ClassField.ClassId), request.ClassIds.ToArray()) } :
+						new (string, object)[] { };
+
+			reply.Classes.AddRange(await db.RunCommand(connector,
+				$@"select {select} from {m_classDatabaseDefinition.DefaultTableName} {joins} {where};",
+				whereMatch,
+				x => MapClass(x, request.Fields)));
+
+			return reply;
+		}
+
+		public override async Task<CreateClassesReply> CreateClasses(CreateClassesRequest request, ServerCallContext context)
+		{
+			using var db = new LegendaryDatabase();
+			var connector = DbConnector.Create(db.Connection, new DbConnectorSettings { AutoOpen = true, LazyOpen = true });
+
+			var reply = new CreateClassesReply { Status = new Status { Code = 200 } };
+
+			var classes = await GetClasses(new GetClassesRequest(), context);
+
+			var classesToAdd = request.Classes.Where(x => !classes.Classes.Any(y => y.Name == x.Name)).ToList();
+
+			if (classesToAdd.Count != request.Classes.Count() && request.CreateOptions.Contains(CreateOptions.ErrorOnDuplicates))
+			{
+				reply.Status.Code = 400;
+				reply.Status.Message = $"Cannot add duplicate classes ({request.Classes.Except(classesToAdd).Select(x => x.Name).Join(", ")}).";
+				return reply;
+			}
+
+			List<int> insertIds = request.Classes.Except(classesToAdd).Select(x => x.Id).ToList();
+
+			foreach (var @class in classesToAdd)
+			{
+				insertIds.Add((int)(await connector.Command($@"
+					insert
+						into {m_classDatabaseDefinition.DefaultTableName}
+							({m_classDatabaseDefinition.ColumnName[ClassField.ClassName]}, {m_classDatabaseDefinition.ColumnName[ClassField.ClassImagePath]})
+						values (@ClassName, @ImagePath);
+					select last_insert_id();",
+					("ClassName", @class.Name),
+					("ImagePath", @class.ImagePath))
+					.QuerySingleAsync<ulong>()));
+			}
+
+			var finalClassesList = new GetClassesRequest();
+			finalClassesList.ClassIds.AddRange(insertIds);
+			var createdClasses = await GetClasses(finalClassesList, context);
+
+			reply.Classes.AddRange(createdClasses.Classes);
+			return reply;
+		}
+
+		private Class MapClass(IDataRecord data, IReadOnlyList<ClassField> fields)
+		{
+			var @class = new Class();
+
+			if (fields.Count == 0)
+				fields = m_classDatabaseDefinition.BasicFields;
+
+			if (fields.Contains(ClassField.ClassId))
+				@class.Id = data.Get<int>(m_classDatabaseDefinition.GetSelectResult(ClassField.ClassId));
+			if (fields.Contains(ClassField.ClassName))
+				@class.Name = data.Get<string>(m_classDatabaseDefinition.GetSelectResult(ClassField.ClassName));
+			if (fields.Contains(ClassField.ClassImagePath))
+				@class.ImagePath = data.Get<string>(m_classDatabaseDefinition.GetSelectResult(ClassField.ClassImagePath));
+
+			return @class;
 		}
 
 		public override async Task<CreateHenchmenReply> CreateHenchmen(CreateHenchmenRequest request, ServerCallContext context)
@@ -644,6 +733,7 @@ namespace LegendaryService
 		IDatabaseDefinition<AbilityField> m_abilityDatabaseDefinition;
 		IDatabaseDefinition<GamePackageField> m_gamePackageDatabaseDefinition;
 		IDatabaseDefinition<TeamField> m_teamDatabaseDefinition;
+		IDatabaseDefinition<ClassField> m_classDatabaseDefinition;
 		IDatabaseDefinition<HenchmanField> m_henchmanDatabaseDefinition;
 		IDatabaseDefinition<AdversaryField> m_adversaryDatabaseDefinition;
 	}

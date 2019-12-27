@@ -16,6 +16,7 @@ namespace LegendaryClientConsole
 		{
 			// The order of this creation is important because later items depend on earlier items already existing.
 			await CreateTeams(client);
+			await CreateClasses(client);
 			await CreateGamePackages(client);
 
 			var request = new GetGamePackagesRequest();
@@ -63,6 +64,27 @@ namespace LegendaryClientConsole
 			var reply = await client.CreateTeamsAsync(request);
 			if (reply.Status.Code != 200)
 				ConsoleUtility.WriteLine($"Failed to create teams: '{reply.Status.Message}'");
+		}
+
+		private static async ValueTask CreateClasses(GameServiceClient client)
+		{
+			ConsoleUtility.WriteLine("Creating classes");
+			var classes = new[]
+			{
+				new Class { Name = "Covert", ImagePath = "https://ajpzgq.dm.files.1drv.com/y4mXvnkneQVHhJCM2Thk1pl4Cx5baH-wl7L5-6otZ7lOBj6dmZxjWzitVFLHbvRGTWhoq36lDHHFGBf96betGJQ8J5Mjc5agn37dMu4Mih-dgeYZDTYu-eLudNDy-Ntq-U0ryaGtmFeS6vCo0nxA7_yba_6XhsfqpVq_tsKm7QWGIeeUaD6zFy38QRISl5F-og5aOAE5iRFdmlHfJcJOYQJng?width=70&height=71&cropmode=none" },
+				new Class { Name = "Strength", ImagePath = "https://nfekpa.dm.files.1drv.com/y4mr6RzK0c1UnrqMTzd2hKAPVazy8uSmlsD_PgJ3TMh4x49A1qmggJEPYzDnXztatHkz-JFdQP6C7E6M-NwJ3cHlu6D8h6Fv-6P2XIlFH1JAqKhPWscJVqO1zVXeyh176wUliaSrVIspBFdsaxVkZQE2synKMSCt-2-yoxZXCKJhU9KP6amVgqOXYE3vWPtOWm74KTHcMwWNXntrzpmsaeqFw?width=73&height=71&cropmode=none" },
+				new Class { Name = "Tech", ImagePath = "https://z8wx3g.dm.files.1drv.com/y4mktwH5rgCyBejw6Ib8MMp7-eiZMBEC_xnF3jmW8Jdbt-sqPSoDVIyvmWFNGLbGgENZn9I_mdRPBCF7eB5RPy5hFtl5lELNBrqBkgRUjXH1AnHfyCLlV2XTY_QV_KMqN8wc8_RgSIstZSuY291fLIcL8zisH9rDaewt3NknxopBfqbxD908Cn8HXdl8oG1IIYwQkVhfHW03jD7UlZ-wIhAHg?width=58&height=71&cropmode=none" },
+				new Class { Name = "Ranged", ImagePath = "https://z8wx3g.dm.files.1drv.com/y4mktwH5rgCyBejw6Ib8MMp7-eiZMBEC_xnF3jmW8Jdbt-sqPSoDVIyvmWFNGLbGgENZn9I_mdRPBCF7eB5RPy5hFtl5lELNBrqBkgRUjXH1AnHfyCLlV2XTY_QV_KMqN8wc8_RgSIstZSuY291fLIcL8zisH9rDaewt3NknxopBfqbxD908Cn8HXdl8oG1IIYwQkVhfHW03jD7UlZ-wIhAHg?width=58&height=71&cropmode=none" },
+				new Class { Name = "Instinct", ImagePath = "https://mdximq.dm.files.1drv.com/y4mT3HV9mjGjRn_aO8yNjtoj_GnsZhZwdXMT6Jt3to6Xsm3TlKphA0iLI6zIjCAm3bBrmubC97eY4HK6p6JL8mZ_XGGk_wZo7gJphFcLNjqyT3TNcRV1rPlu33sEatJIYwWvRL5oAU1rF0RcpMR7G1M7as7VhaFnomuAteXI0ypCDZ3-tG72q-bAnwJu__GeDnc0KVFM03eiT4Yt6GBUq99fg?width=66&height=71&cropmode=none" },
+			};
+
+			var request = new CreateClassesRequest();
+			request.Classes.AddRange(classes);
+			request.CreateOptions.Add(CreateOptions.ErrorOnDuplicates);
+
+			var reply = await client.CreateClassesAsync(request);
+			if (reply.Status.Code != 200)
+				ConsoleUtility.WriteLine($"Failed to create classes: '{reply.Status.Message}'");
 		}
 
 		private static async ValueTask<IReadOnlyList<Ability>> CreateAbilities(GameServiceClient client, IReadOnlyList<GamePackage> packages)
