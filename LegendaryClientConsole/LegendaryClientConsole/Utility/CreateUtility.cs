@@ -18,8 +18,10 @@ namespace LegendaryClientConsole.Utility
 				await CreateNeutralAsync(client);
 			else if (args.FirstOrDefault() == "al")
 				await CreateAllyAsync(client);
+			else if (args.FirstOrDefault() == "ad")
+				await CreateAdversaryAsync(client);
 			else
-				ConsoleUtility.WriteLine("Must supply the type of item you want to create. (t|h|n|al)");
+				ConsoleUtility.WriteLine("Must supply the type of item you want to create. (t|h|ad|n|al)");
 		}
 
 		public static async Task CreateTeamAsync(GameServiceClient client)
@@ -107,6 +109,29 @@ namespace LegendaryClientConsole.Utility
 				ConsoleUtility.WriteLine($"Failed to create ally: {createReply.Status.Message}");
 			else
 				ConsoleUtility.WriteLine($"Ally '{createReply.Allies.First().Name}' was created with Id '{createReply.Allies.First().Id}'");
+		}
+
+		public static async Task CreateAdversaryAsync(GameServiceClient client)
+		{
+			var adversary = new Adversary();
+			adversary.Name = ConsoleUtility.GetUserInput("Adversary Name: ");
+			adversary.GamePackageId = await GamePackageUtility.SelectGamePackageId(client);
+			adversary.AbilityIds.AddRange(await AbilityUtility.SelectAbilityIds(client));
+
+			if (!ConsoleUtility.ShouldContinue($"Creating Adversary: '{adversary.Name}', in gamePackage '{adversary.GamePackageId}' with abilities [{adversary.AbilityIds.Select(x => x.ToString()).Join(", ")}]"))
+			{
+				await CreateAdversaryAsync(client);
+				return;
+			}
+
+			var createRequest = new CreateAdversariesRequest();
+			createRequest.Adversaries.Add(adversary);
+			var createReply = await client.CreateAdversariesAsync(createRequest);
+
+			if (createReply.Status.Code != 200)
+				ConsoleUtility.WriteLine($"Failed to create adversary: {createReply.Status.Message}");
+			else
+				ConsoleUtility.WriteLine($"Adversary '{createReply.Adversaries.First().Name}' was created with Id '{createReply.Adversaries.First().Id}'");
 		}
 	}
 }
