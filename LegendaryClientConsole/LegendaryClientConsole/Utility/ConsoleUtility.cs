@@ -23,5 +23,16 @@ namespace LegendaryClientConsole.Utility
 			var input = GetUserInput($"Continue? (Y/n): ");
 			return input == "" || input.ToLower() == "y";
 		}
+
+		internal static int GetUserInputInt(string message)
+		{
+			string input = "";
+			int result;
+
+			while (!int.TryParse(input, out result))
+				input = GetUserInput(message);
+
+			return result;
+		}
 	}
 }

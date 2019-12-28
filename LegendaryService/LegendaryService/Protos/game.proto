@@ -21,6 +21,8 @@ service GameService {
   rpc CreateAdversaries (CreateAdversariesRequest) returns (CreateAdversariesReply);
   rpc GetNeutrals (GetNeutralsRequest) returns (GetNeutralsReply);
   rpc CreateNeutrals (CreateNeutralsRequest) returns (CreateNeutralsReply);
+  rpc GetAllies (GetAlliesRequest) returns (GetAlliesReply);
+  rpc CreateAllies (CreateAlliesRequest) returns (CreateAlliesReply);
 }
 
 message GetGamePackagesRequest {
@@ -217,6 +219,37 @@ enum NeutralField {
 	NeutralGamePackageId = 2;
 }
 
+message GetAlliesRequest {
+	repeated AllyField fields = 1;
+	repeated int32 allyIds = 2;
+	string name = 3;
+	NameMatchStyle nameMatchStyle = 4;
+}
+
+message GetAlliesReply {
+	Status status = 1;
+	repeated Ally allies = 2;
+}
+
+message CreateAlliesRequest {
+	repeated Ally allies = 1;
+	repeated CreateOptions createOptions = 2;
+}
+
+message CreateAlliesReply {
+	Status status = 1;
+	repeated Ally allies = 2;
+}
+
+enum AllyField {
+	AllyId = 0;
+	AllyName = 1;
+	AllyAbilityIds = 2;
+	AllyGamePackageId = 3;
+	AllyClassInfo = 4;
+	AllyTeamId = 5;
+}
+
 message GamePackage {
 	int32 id = 1;
 	string name = 2;
@@ -234,11 +267,17 @@ message GamePackage {
 }
 
 message Ally {
-	string name = 1;
-	Team team = 2;
-	string requires = 3;
-	repeated Class classes = 4;
-	repeated Ability abilities = 5;
+	int32 id = 1;
+	string name = 2;
+	int32 teamId = 3;
+	repeated ClassInfo classes = 4;
+	repeated int32 abilityIds = 5;
+	int32 gamePackageId = 6;
+}
+
+message ClassInfo {
+	int32 classId = 1;
+	int32 count = 2;
 }
 
 message Henchman {

@@ -58,7 +58,6 @@ namespace LegendaryClientConsole.Utility
 				ConsoleUtility.WriteLine($"{ability.GamePackage.Name} - {ability.Name} - {ability.Description}");
 		}
 
-
 		public static async ValueTask<IReadOnlyList<int>> SelectAbilityIds(GameServiceClient client)
 		{
 			List<int> abilityIds = new List<int>();

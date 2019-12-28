@@ -83,5 +83,15 @@ namespace LegendaryService
 		{
 			return await NeutralUtility.CreateNeutralsAsync(request, context);
 		}
+
+		public override async Task<GetAlliesReply> GetAllies(GetAlliesRequest request, ServerCallContext context)
+		{
+			return await AllyUtility.GetAlliesAsync(request, context);
+		}
+
+		public override async Task<CreateAlliesReply> CreateAllies(CreateAlliesRequest request, ServerCallContext context)
+		{
+			return await AllyUtility.CreateAlliesAsync(request, context);
+		}
 	}
 }

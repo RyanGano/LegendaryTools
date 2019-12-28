@@ -164,7 +164,8 @@ create table allyabilities (
 create table allyclasses (
     AllyId int not null,
     ClassId int not null,
-    primary key (AllyId, ClassId),
+    CardCount int not null,
+    primary key (AllyId, ClassId, CardCount),
     constraint allyclasses_AllyId foreign key (AllyId) references allies(AllyId) on update cascade on delete cascade,
     constraint allyclasses_ClassId foreign key (ClassId) references classes(ClassId) on update cascade on delete cascade
 ) engine=INNODB;

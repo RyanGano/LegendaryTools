@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Faithlife.Utility;
 using LegendaryClientConsole.Utility;
 using LegendaryService;
 using static LegendaryService.GameService;
@@ -15,8 +16,8 @@ namespace LegendaryClientConsole
 		internal static async ValueTask InitializeDatabase(GameServiceClient client)
 		{
 			// The order of this creation is important because later items depend on earlier items already existing.
-			await CreateTeams(client);
-			await CreateClasses(client);
+			var teams = await CreateTeams(client);
+			var classes = await CreateClasses(client);
 			await CreateGamePackages(client);
 
 			var request = new GetGamePackagesRequest();
@@ -29,9 +30,10 @@ namespace LegendaryClientConsole
 			var neutrals = await CreateNeutrals(client, supportedPackages);
 			var henchmen = await CreateHenchmen(client, supportedPackages, abilities);
 			var adversaries = await CreateAdversaries(client, supportedPackages, abilities);
+			var allies = await CreateAllies(client, supportedPackages, abilities, teams, classes);
 		}
 
-		private static async ValueTask CreateTeams(GameServiceClient client)
+		private static async ValueTask<IReadOnlyList<Team>> CreateTeams(GameServiceClient client)
 		{
 			ConsoleUtility.WriteLine("Creating teams");
 			var teams = new[]
@@ -65,9 +67,11 @@ namespace LegendaryClientConsole
 			var reply = await client.CreateTeamsAsync(request);
 			if (reply.Status.Code != 200)
 				ConsoleUtility.WriteLine($"Failed to create teams: '{reply.Status.Message}'");
+
+			return reply.Teams;
 		}
 
-		private static async ValueTask CreateClasses(GameServiceClient client)
+		private static async ValueTask<IReadOnlyList<Class>> CreateClasses(GameServiceClient client)
 		{
 			ConsoleUtility.WriteLine("Creating classes");
 			var classes = new[]
@@ -86,6 +90,8 @@ namespace LegendaryClientConsole
 			var reply = await client.CreateClassesAsync(request);
 			if (reply.Status.Code != 200)
 				ConsoleUtility.WriteLine($"Failed to create classes: '{reply.Status.Message}'");
+
+			return reply.Classes;
 		}
 
 		private static async ValueTask<IReadOnlyList<Ability>> CreateAbilities(GameServiceClient client, IReadOnlyList<GamePackage> packages)
@@ -134,8 +140,6 @@ namespace LegendaryClientConsole
 					var reply = await client.CreateNeutralsAsync(request);
 					if (reply.Status.Code != 200)
 						ConsoleUtility.WriteLine($"Failed to create '{neutral.Name}': {reply.Status.Message}");
-					else
-						ConsoleUtility.WriteLine($"Success: '{neutral.Name}'");
 
 					result.AddRange(reply.Neutrals);
 				}
@@ -173,11 +177,11 @@ namespace LegendaryClientConsole
 					var reply = await client.CreateHenchmenAsync(request);
 					if (reply.Status.Code != 200)
 						ConsoleUtility.WriteLine($"Failed to create '{henchman.Name}': {reply.Status.Message}");
-					else
-						ConsoleUtility.WriteLine($"Success: '{henchman.Name}'");
 
 					result.AddRange(reply.Henchmen);
 				}
+
+				ConsoleUtility.WriteLine($"Completed: {name}");
 			}
 
 			return result;
@@ -187,7 +191,7 @@ namespace LegendaryClientConsole
 		{
 			ConsoleUtility.WriteLine("Creating adversaries");
 			List<Adversary> result = new List<Adversary>();
-			
+
 			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", "*.xml"))
 			{
 				var doc = XDocument.Load(file);
@@ -206,20 +210,70 @@ namespace LegendaryClientConsole
 					adversary.Name = adversaryElement.Attribute("Name").Value;
 					adversary.GamePackageId = activeGamePackage.Id;
 					adversary.AbilityIds.AddRange(GetMatchingItems(adversaryElement.Attribute("Abliities")?.Value, name => abilities.First(x => x.Name == name)).Select(x => x.Id));
-					
+
 					request.Adversaries.Add(adversary);
 
 					var reply = await client.CreateAdversariesAsync(request);
 					if (reply.Status.Code != 200)
 						ConsoleUtility.WriteLine($"Failed to create '{adversary.Name}': {reply.Status.Message}");
-					else
-						ConsoleUtility.WriteLine($"Success: '{adversary.Name}'");
 
 					result.AddRange(reply.Adversaries);
 				}
+
+				ConsoleUtility.WriteLine($"Completed: {name}");
 			}
 
 			return result;
+		}
+
+		private static async ValueTask<IReadOnlyList<Ally>> CreateAllies(GameServiceClient client, IReadOnlyList<GamePackage> packages, IReadOnlyList<Ability> abilities, IReadOnlyList<Team> teams, IReadOnlyList<Class> classes)
+		{
+			ConsoleUtility.WriteLine("Creating allies");
+			List<Ally> result = new List<Ally>();
+
+			var noTeam = teams.First(x => x.Name == "None");
+
+			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", "*.xml"))
+			{
+				var doc = XDocument.Load(file);
+
+				var name = doc.Element("Set").Attribute("Name").Value;
+				var activeGamePackage = packages.FirstOrDefault(x => x.Name == name);
+				if (activeGamePackage == null)
+					ConsoleUtility.WriteLine($"Failed to find matching game package for {file}");
+
+				foreach (var allyElement in doc.Element("Set").Element("Cards").Elements("Card").Where(x => x?.Attribute("Area").Value == "Ally"))
+				{
+					var request = new CreateAlliesRequest();
+					request.CreateOptions.Add(CreateOptions.ErrorOnDuplicates);
+
+					var ally = new Ally();
+					ally.Name = allyElement.Attribute("Name").Value;
+					ally.GamePackageId = activeGamePackage.Id;
+					ally.AbilityIds.AddRange(GetMatchingItems(allyElement.Attribute("Abliities")?.Value, name => abilities.First(x => x.Name == name)).Select(x => x.Id));
+					ally.TeamId = GetMatchingItems(allyElement.Attribute("Team")?.Value, name => teams.FirstOrDefault(x => x.Name == name, noTeam)).First().Id;
+					ally.Classes.AddRange(GetMatchingItems(allyElement.Attribute("Classes")?.Value, name => ParseClassInfo(classes, name)));
+
+					request.Allies.Add(ally);
+
+					var reply = await client.CreateAlliesAsync(request);
+					if (reply.Status.Code != 200)
+						ConsoleUtility.WriteLine($"Failed to create '{ally.Name}': {reply.Status.Message}");
+					
+					result.AddRange(reply.Allies);
+				}
+
+				ConsoleUtility.WriteLine($"Completed: {name}");
+			}
+
+			return result;
+		}
+
+		private static ClassInfo ParseClassInfo(IReadOnlyList<Class> classes, string data)
+		{
+			var splitData = data.Split('/');
+			 var count = int.Parse(splitData[1]);
+			return new ClassInfo { ClassId = classes.First(x => x.Name == splitData[0]).Id, Count = count };
 		}
 
 		private static IReadOnlyList<T> GetMatchingItems<T>(string input, Func<string, T> lookup)
