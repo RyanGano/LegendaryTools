@@ -20,7 +20,8 @@ drop table allyabilities;
 drop table abilities; 
 drop table gamepackages; 
 drop table twistrequirements; 
-drop table cardrequirements; 
+drop table cardrequirements;
+drop table cardsettypes; 
 drop table neutrals; 
 drop table schemes; 
 drop table masterminds; 
@@ -92,7 +93,7 @@ create table adversaries (
 create table masterminds (
     MastermindId int auto_increment primary key,
     Name varchar(50) not null,
-    HasEpicSide bool,
+    HasEpicSide bool not null,
     unique index masterminds_Name (Name)
 ) engine=INNODB;
 
@@ -109,18 +110,25 @@ create table neutrals (
     Name varchar(50) not null
 ) engine=INNODB;
 
+
+-- Create the cardsettypes table
+create table cardsettypes (
+    CardSetTypeId int auto_increment primary key,
+    Name varchar(50) not null
+) engine=INNODB;
+
+insert into cardsettypes (Name) values ("Adversary"), ("Ally"), ("Mastermind"), ("Neutral"), ("Bystander"), ("Henchmen"), ("Scheme");
+
 -- Create the cardrequirements table
 create table cardrequirements (
     CardRequirementId int auto_increment primary key,
-    NumberOfPlayers int,
-    AdditionalAllyCount int default 0,
-    AdditionalHenchmanCount int default 0,
-    AdditionalAdversaryCount int default 0,
-    AdditionalMastermindCount int default 0,
-    AdditionalBystanderCount int default 0,
-    ExactNamedAllyName varchar(50),
-    ExactNamedAllyCount int default 0
+    AdditionalCardSetCount int default 0,
+    AdditionalCardSetId int default 0,
+    AdditionalCardSetName varchar(50) default null,
+    CardSetTypeId int not null,
+    constraint cardrequirement_CardSetTypeId foreign key (CardSetTypeId) references cardsettypes(CardSetTypeId) on update cascade on delete cascade
 ) engine=INNODB;
+
 
 -- Create the twistrequirements table
 create table twistrequirements (
@@ -210,7 +218,8 @@ create table schemeabilities (
 create table allycardrequirements (
     AllyId int not null,
     CardRequirementId int not null,
-    primary key (AllyId, CardRequirementId),
+    NumberOfPlayers int,
+    primary key (AllyId, CardRequirementId, NumberOfPlayers),
     constraint allycardrequirements_AllyId foreign key (AllyId) references allies(AllyId) on update cascade on delete cascade,
     constraint allycardrequirements_CardRequirementId foreign key (CardRequirementId) references cardrequirements(CardRequirementId) on update cascade on delete cascade
 ) engine=INNODB;
@@ -219,7 +228,8 @@ create table allycardrequirements (
 create table henchmancardrequirements (
     HenchmanId int not null,
     CardRequirementId int not null,
-    primary key (HenchmanId, CardRequirementId),
+    NumberOfPlayers int,
+    primary key (HenchmanId, CardRequirementId, NumberOfPlayers),
     constraint henchmancardrequirements_HenchmanId foreign key (HenchmanId) references henchmen(HenchmanId) on update cascade on delete cascade,
     constraint henchmancardrequirements_CardRequirementId foreign key (CardRequirementId) references cardrequirements(CardRequirementId) on update cascade on delete cascade
 ) engine=INNODB;
@@ -228,7 +238,8 @@ create table henchmancardrequirements (
 create table adversarycardrequirements (
     AdversaryId int not null,
     CardRequirementId int not null,
-    primary key (AdversaryId, CardRequirementId),
+    NumberOfPlayers int,
+    primary key (AdversaryId, CardRequirementId, NumberOfPlayers),
     constraint adversarycardrequirements_AdversaryId foreign key (AdversaryId) references adversaries(AdversaryId) on update cascade on delete cascade,
     constraint adversarycardrequirements_CardRequirementId foreign key (CardRequirementId) references cardrequirements(CardRequirementId) on update cascade on delete cascade
 ) engine=INNODB;
@@ -237,7 +248,8 @@ create table adversarycardrequirements (
 create table mastermindcardrequirements (
     MastermindId int not null,
     CardRequirementId int not null,
-    primary key (MastermindId, CardRequirementId),
+    NumberOfPlayers int,
+    primary key (MastermindId, CardRequirementId, NumberOfPlayers),
     constraint mastermindcardrequirements_MastermindId foreign key (MastermindId) references masterminds(MastermindId) on update cascade on delete cascade,
     constraint mastermindcardrequirements_CardRequirementId foreign key (CardRequirementId) references cardrequirements(CardRequirementId) on update cascade on delete cascade
 ) engine=INNODB;
@@ -246,7 +258,8 @@ create table mastermindcardrequirements (
 create table neutralcardrequirements (
     NeutralId int not null,
     CardRequirementId int not null,
-    primary key (NeutralId, CardRequirementId),
+    NumberOfPlayers int,
+    primary key (NeutralId, CardRequirementId, NumberOfPlayers),
     constraint neutralcardrequirements_NeutralId foreign key (NeutralId) references neutrals(NeutralId) on update cascade on delete cascade,
     constraint neutralcardrequirements_CardRequirementId foreign key (CardRequirementId) references cardrequirements(CardRequirementId) on update cascade on delete cascade
 ) engine=INNODB;

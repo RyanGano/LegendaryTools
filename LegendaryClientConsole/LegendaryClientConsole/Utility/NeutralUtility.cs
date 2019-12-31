@@ -20,6 +20,12 @@ namespace LegendaryClientConsole.Utility
 
 		public static async Task DisplayNeutralsAsync(GameServiceClient client, IReadOnlyList<int> neutralIds = null, string name = null, NameMatchStyle nameMatchStyle = NameMatchStyle.MixedCase)
 		{
+			foreach (var neutral in await GetNeutralsAsync(client, neutralIds, name, nameMatchStyle))
+				ConsoleUtility.WriteLine($"{neutral}");
+		}
+
+		public static async Task<IReadOnlyList<Neutral>> GetNeutralsAsync(GameServiceClient client, IReadOnlyList<int> neutralIds = null, string name = null, NameMatchStyle nameMatchStyle = NameMatchStyle.MixedCase)
+		{
 			var request = new GetNeutralsRequest();
 
 			if (neutralIds != null && neutralIds.Count() != 0)
@@ -29,10 +35,7 @@ namespace LegendaryClientConsole.Utility
 
 			request.NameMatchStyle = nameMatchStyle;
 
-			var neutrals = await client.GetNeutralsAsync(request);
-
-			foreach (var neutral in neutrals.Neutrals)
-				ConsoleUtility.WriteLine($"{neutral}");
+			return (await client.GetNeutralsAsync(request)).Neutrals;
 		}
 	}
 }

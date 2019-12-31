@@ -20,6 +20,12 @@ namespace LegendaryClientConsole.Utility
 
 		public static async Task DisplayAdversariesAsync(GameServiceClient client, IReadOnlyList<int> adversaryIds = null, string name = null, NameMatchStyle nameMatchStyle = NameMatchStyle.MixedCase)
 		{
+			foreach (var adversary in await GetAdversariesAsync(client, adversaryIds, name, nameMatchStyle))
+				ConsoleUtility.WriteLine($"{adversary}");
+		}
+
+		public static async Task<IReadOnlyList<Adversary>> GetAdversariesAsync(GameServiceClient client, IReadOnlyList<int> adversaryIds = null, string name = null, NameMatchStyle nameMatchStyle = NameMatchStyle.MixedCase)
+		{
 			var request = new GetAdversariesRequest();
 
 			if (adversaryIds != null && adversaryIds.Count() != 0)
@@ -29,10 +35,7 @@ namespace LegendaryClientConsole.Utility
 
 			request.NameMatchStyle = nameMatchStyle;
 
-			var adversaries = await client.GetAdversariesAsync(request);
-
-			foreach (var adversary in adversaries.Adversaries)
-				ConsoleUtility.WriteLine($"{adversary}");
+			return (await client.GetAdversariesAsync(request)).Adversaries;
 		}
 	}
 }

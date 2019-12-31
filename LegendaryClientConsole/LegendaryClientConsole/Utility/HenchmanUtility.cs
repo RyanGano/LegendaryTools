@@ -20,6 +20,12 @@ namespace LegendaryClientConsole.Utility
 
 		public static async Task DisplayHenchmenAsync(GameServiceClient client, IReadOnlyList<int> henchmanIds = null, string name = null, NameMatchStyle nameMatchStyle = NameMatchStyle.MixedCase)
 		{
+			foreach (var henchman in await GetHenchmenAsync(client, henchmanIds, name, nameMatchStyle))
+				ConsoleUtility.WriteLine($"{henchman}");
+		}
+
+		public static async Task<IReadOnlyList<Henchman>> GetHenchmenAsync(GameServiceClient client, IReadOnlyList<int> henchmanIds = null, string name = null, NameMatchStyle nameMatchStyle = NameMatchStyle.MixedCase)
+		{
 			var request = new GetHenchmenRequest();
 
 			if (henchmanIds != null && henchmanIds.Count() != 0)
@@ -29,10 +35,7 @@ namespace LegendaryClientConsole.Utility
 
 			request.NameMatchStyle = nameMatchStyle;
 
-			var henchmen = await client.GetHenchmenAsync(request);
-
-			foreach (var henchman in henchmen.Henchmen)
-				ConsoleUtility.WriteLine($"{henchman}");
+			return (await client.GetHenchmenAsync(request)).Henchmen;
 		}
 	}
 }

@@ -20,8 +20,10 @@ namespace LegendaryClientConsole.Utility
 				await CreateAllyAsync(client);
 			else if (args.FirstOrDefault() == "ad")
 				await CreateAdversaryAsync(client);
+			else if (args.FirstOrDefault() == "m")
+				await MastermindUtility.CreateMastermindAsync(client);
 			else
-				ConsoleUtility.WriteLine("Must supply the type of item you want to create. (t|h|ad|n|al)");
+				ConsoleUtility.WriteLine("Must supply the type of item you want to create. (t|h|ad|n|al|m)");
 		}
 
 		public static async Task CreateTeamAsync(GameServiceClient client)

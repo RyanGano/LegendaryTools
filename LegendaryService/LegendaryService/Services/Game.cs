@@ -93,5 +93,15 @@ namespace LegendaryService
 		{
 			return await AllyUtility.CreateAlliesAsync(request, context);
 		}
+
+		public override async Task<GetMastermindsReply> GetMasterminds(GetMastermindsRequest request, ServerCallContext context)
+		{
+			return await MastermindUtility.GetMastermindsAsync(request, context);
+		}
+
+		public override async Task<CreateMastermindsReply> CreateMasterminds(CreateMastermindsRequest request, ServerCallContext context)
+		{
+			return await MastermindUtility.CreateMastermindsAsync(request, context);
+		}
 	}
 }

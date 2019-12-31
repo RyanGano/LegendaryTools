@@ -20,6 +20,12 @@ namespace LegendaryClientConsole.Utility
 
 		public static async Task DisplayAlliesAsync(GameServiceClient client, IReadOnlyList<int> allyIds = null, string name = null, NameMatchStyle nameMatchStyle = NameMatchStyle.MixedCase)
 		{
+			foreach (var ally in await GetAlliesAsync(client, allyIds, name, nameMatchStyle))
+				ConsoleUtility.WriteLine($"{ally}");
+		}
+
+		public static async Task<IReadOnlyList<Ally>> GetAlliesAsync(GameServiceClient client, IReadOnlyList<int> allyIds = null, string name = null, NameMatchStyle nameMatchStyle = NameMatchStyle.MixedCase)
+		{
 			var request = new GetAlliesRequest();
 
 			if (allyIds != null && allyIds.Count() != 0)
@@ -29,10 +35,7 @@ namespace LegendaryClientConsole.Utility
 
 			request.NameMatchStyle = nameMatchStyle;
 
-			var allies = await client.GetAlliesAsync(request);
-
-			foreach (var ally in allies.Allies)
-				ConsoleUtility.WriteLine($"{ally}");
+			return (await client.GetAlliesAsync(request)).Allies;
 		}
 	}
 }

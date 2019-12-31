@@ -20,5 +20,11 @@
 		public const string Allies = "allies";
 		public const string AllyAbilities = "allyabilities";
 		public const string AllyClasses = "allyclasses";
+		public const string Masterminds = "masterminds";
+		public const string CardRequirements = "cardrequirements";
+		public const string MastermindAbilities = "mastermindabilities";
+		public const string MastermindCardRequirements = "mastermindcardrequirements";
+		public const string GamePackageMasterminds = "gamepackagemasterminds";
+		public const string CardSetTypes = "cardsettypes";
 	}
 }

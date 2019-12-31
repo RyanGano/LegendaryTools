@@ -50,6 +50,8 @@ namespace LegendaryClientConsole
 				"henchmen" => (GameServiceClient client) => { HenchmanUtility.DisplayHenchmenAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"ad" => (GameServiceClient client) => { AdversaryUtility.DisplayAdversariesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"adversaries" => (GameServiceClient client) => { AdversaryUtility.DisplayAdversariesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
+				"m" => (GameServiceClient client) => { MastermindUtility.DisplayMastermindsAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
+				"masterminds" => (GameServiceClient client) => { MastermindUtility.DisplayMastermindsAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"al" => (GameServiceClient client) => { AllyUtility.DisplayAlliesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"allies" => (GameServiceClient client) => { AllyUtility.DisplayAlliesAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
 				"c" => (GameServiceClient client) => { CreateUtility.CreateItemAsync(client, splitInput[1..]).Wait(); return AppStatus.Continue; },
@@ -84,6 +86,7 @@ namespace LegendaryClientConsole
 			ConsoleUtility.WriteLine("  classes (cl) [id/name] - Display all classes (or limit to id/name matches).");
 			ConsoleUtility.WriteLine("  henchmen (h) [id/name] - Display all henchmen (or limit to id/name matches).");
 			ConsoleUtility.WriteLine("  adversaries (ad) [id/name] - Display all adversaries (or limit to id/name matches).");
+			ConsoleUtility.WriteLine("  masterminds (m) [id/name] - Display all masterminds (or limit to id/name matches).");
 			ConsoleUtility.WriteLine("  allies (al) [id/name] - Display all allies (or limit to id/name matches).");
 			ConsoleUtility.WriteLine("  create (c) t|h|ad|n|al - Create a new team|henchman|adversary|neutral|ally.");
 			ConsoleUtility.WriteLine("  quit (q) - Quit application.");

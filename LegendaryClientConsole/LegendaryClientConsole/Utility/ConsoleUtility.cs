@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Faithlife.Utility;
+using System;
+using System.Linq;
 using System.Text;
 
 namespace LegendaryClientConsole.Utility
@@ -20,8 +21,7 @@ namespace LegendaryClientConsole.Utility
 		public static bool ShouldContinue(string message)
 		{
 			Console.WriteLine(message);
-			var input = GetUserInput($"Continue? (Y/n): ");
-			return input == "" || input.ToLower() == "y";
+			return GetUserInputBool("Continue?", true);
 		}
 
 		internal static int GetUserInputInt(string message)
@@ -33,6 +33,39 @@ namespace LegendaryClientConsole.Utility
 				input = GetUserInput(message);
 
 			return result;
+		}
+
+		internal static bool GetUserInputBool(string message, bool? defaultOption = null)
+		{
+			string hint = !defaultOption.HasValue ? "(y/n)" : defaultOption.Value ? "(Y/n)" : "(y/N)";
+			var input = GetUserInput($"{message} {hint}: ");
+
+			bool? enteredValue =
+				input.StartsWith("y", StringComparison.OrdinalIgnoreCase) ?
+					true :
+					input.StartsWith("n", StringComparison.OrdinalIgnoreCase) ?
+						false :
+						(bool?)null;
+
+			if (enteredValue.HasValue)
+				return enteredValue.Value;
+
+			if (defaultOption.HasValue && string.IsNullOrWhiteSpace(input))
+				return defaultOption.Value;
+
+			return GetUserInputBool(message, defaultOption);
+		}
+
+		internal static string GetUserInputRequiredValue(string message, params string[] options)
+		{
+			string input = null;
+
+			var messageWithOptions = $"{message} ({options.Join("|")}): ";
+
+			while (string.IsNullOrWhiteSpace(input) || options.Count(x => x.StartsWith(input, StringComparison.OrdinalIgnoreCase)) != 1)
+				input = GetUserInput(messageWithOptions);
+
+			return options.First(x => x.StartsWith(input, StringComparison.OrdinalIgnoreCase));
 		}
 	}
 }

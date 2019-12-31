@@ -23,6 +23,8 @@ service GameService {
   rpc CreateNeutrals (CreateNeutralsRequest) returns (CreateNeutralsReply);
   rpc GetAllies (GetAlliesRequest) returns (GetAlliesReply);
   rpc CreateAllies (CreateAlliesRequest) returns (CreateAlliesReply);
+  rpc GetMasterminds (GetMastermindsRequest) returns (GetMastermindsReply);
+  rpc CreateMasterminds (CreateMastermindsRequest) returns (CreateMastermindsReply);
 }
 
 message GetGamePackagesRequest {
@@ -250,6 +252,37 @@ enum AllyField {
 	AllyTeamId = 5;
 }
 
+message GetMastermindsRequest {
+	repeated MastermindField fields = 1;
+	repeated int32 mastermindIds = 2;
+	string name = 3;
+	NameMatchStyle nameMatchStyle = 4;
+}
+
+message GetMastermindsReply {
+	Status status = 1;
+	repeated Mastermind masterminds = 2;
+}
+
+message CreateMastermindsRequest {
+	repeated Mastermind masterminds = 1;
+	repeated CreateOptions createOptions = 2;
+}
+
+message CreateMastermindsReply {
+	Status status = 1;
+	repeated Mastermind masterminds = 2;
+}
+
+enum MastermindField {
+	MastermindId = 0;
+	MastermindName = 1;
+	MastermindAbilityIds = 2;
+	MastermindGamePackageId = 3;
+	MastermindCardRequirements = 5;
+	MastermindEpicInformation = 6;
+}
+
 message GamePackage {
 	int32 id = 1;
 	string name = 2;
@@ -295,10 +328,12 @@ message Adversary {
 }
 
 message Mastermind {
-	string name = 1;
-	repeated CardRequirement cardRequirements = 2;
-	bool hasEpicSide = 3;
-	repeated Ability abilities = 4;
+	int32 id = 1;
+	string name = 2;
+	repeated CardRequirement cardRequirements = 3;
+	bool hasEpicSide = 4;
+	repeated int32 abilityIds = 5;
+	int32 gamePackageId = 6;
 }
 
 message Scheme {
@@ -320,19 +355,23 @@ message SchemeTwistRequirement {
 }
 
 message CardRequirement {
-	repeated Ally requiredAllies = 1;
-	repeated Henchman requiredHenchmen = 2;
-	repeated Adversary requiredAdversaries = 3;
-	repeated Mastermind requiredMasterminds = 4;
-	repeated Neutral requiredNeutrals = 5;
-	int32 additionalAllyCount = 6;
-	int32 additionalHenchmanCount = 7;
-	int32 additionalAdversaryCount = 8;
-	int32 additionalMastermindCount = 9;
-	int32 additionalBystanderCount = 10;
-	string exactNamedAllyName = 11;
-	int32 exactNamedAllyCount = 12;
-	repeated Henchman requireSingleHenchman = 13;
+	int32 cardRequirementId = 1;
+	int32 requiredSetId = 2;
+	int32 additionalSetCount = 3;
+	string	requiredSetName = 4;
+	NameMatchStyle nameMatchStyle = 5;
+	CardSetType cardSetType = 6;
+	int32 playerCount = 7;
+}
+
+enum CardSetType {
+	CardSetAdversary = 0;
+	CardSetAlly = 1;
+	CardSetHenchman = 2;
+	CardSetBystander = 3;
+	CardSetMastermind = 4;
+	CardSetNeutral = 5;
+	CardSetScheme = 6;
 }
 
 message Team {

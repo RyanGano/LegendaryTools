@@ -1,0 +1,503 @@
+{
+	"name": "Revelations",
+	"packageType": "LargeExpansion",
+	"baseMap": "Legendary",
+	"coverImage": "",
+	"allies": [
+		{
+			"name": "Amadeus Cho",
+			"team": "Champions",
+			"classes": [
+				"Tech",
+				"Strength",
+				"Instinct"
+			],
+			"abilities": [
+				"Outwit",
+				"Transforms"
+			]
+		},
+		{
+			"name": "Bruce Banner",
+			"team": "Avengers",
+			"classes": [
+				"Tech",
+				"Strength"
+			],
+			"abilities": [
+				"Transforms",
+				"Outwit",
+				"Smash"
+			]
+		},
+		{
+			"name": "Caiera",
+			"team": "Warbound",
+			"classes": [
+				"Covert",
+				"Strength",
+				"Instinct"
+			],
+			"abilities": [
+				"Smash",
+				"Outwit",
+				"Transforms"
+			]
+		},
+		{
+			"name": "Gladiator Hulk",
+			"team": "Warbound",
+			"classes": [
+				"Strength",
+				"Instinct"
+			],
+			"abilities": [
+				"Transforms",
+				"Smash",
+				"Cross-Dimensional Rampage",
+				"Wounded Fury"
+			]
+		},
+		{
+			"name": "Hiroim",
+			"team": "Warbound",
+			"classes": [
+				"Covert",
+				"Strength",
+				"Instinct"
+			],
+			"abilities": [
+				"Transforms"
+			]
+		},
+		{
+			"name": "Hulkbuster Iron Man",
+			"team": "Avengers",
+			"classes": [
+				"Tech",
+				"Strength"
+			],
+			"abilities": [
+				"Transforms",
+				"Outwit",
+				"Smash"
+			]
+		},
+		{
+			"name": "Joe Fixit, Grey Hulk",
+			"team": "CrimeSyndicate",
+			"classes": [
+				"Strength",
+				"Covert",
+				"Instinct"
+			],
+			"abilities": [
+				"Transforms",
+				"Smash"
+			]
+		},
+		{
+			"name": "Korg",
+			"team": "Warbound",
+			"classes": [
+				"Strength",
+				"Covert"
+			],
+			"abilities": [
+				"Smash",
+				"Outwit",
+				"Transforms"
+			]
+		},
+		{
+			"name": "Miek the Unhived",
+			"team": "Warbound",
+			"classes": [
+				"Instinct",
+				"Covert"
+			],
+			"abilities": [
+				"Feast",
+				"Smash",
+				"Transforms"
+			]
+		},
+		{
+			"name": "Namora",
+			"team": "Champions",
+			"classes": [
+				"Ranged",
+				"Instinct",
+				"Strength"
+			],
+			"abilities": [
+				"Smash",
+				"Transforms"
+			]
+		},
+		{
+			"name": "No-Name, Brood Queen",
+			"team": "Warbound",
+			"classes": [
+				"Covert",
+				"Strength",
+				"Instinct"
+			],
+			"abilities": [
+				"Feast",
+				"Transforms"
+			]
+		},
+		{
+			"name": "Rick Jones",
+			"team": "Shield|Avengers",
+			"classes": [
+				"Instinct",
+				"Ranged",
+				"Tech",
+				"Strength",
+				"Covert"
+			],
+			"abilities": [
+				"Transforms",
+				"Smash"
+			]
+		},
+		{
+			"name": "Sentry",
+			"team": "Avengers",
+			"classes": [
+				"Strength",
+				"Covert",
+				"Ranged"
+			],
+			"abilities": [
+				"Transforms",
+				"Feast"
+			]
+		},
+		{
+			"name": "She-Hulk",
+			"team": "Avengers",
+			"classes": [
+				"Strength",
+				"Instinct"
+			],
+			"abilities": [
+				"Transforms",
+				"Smash",
+				"Outwit"
+			]
+		},
+		{
+			"name": "Skaar, Son of Hulk",
+			"team": "Avengers",
+			"classes": [
+				"Strength",
+				"Instinct"
+			],
+			"abilities": [
+				"Transforms",
+				"Wounded Fury",
+				"Smash"
+			]
+		}
+	],
+	"henchmen": [
+		{
+			"name": "Cytoplasm Spikes",
+			"abilities": [
+				"Feast"
+			]
+		},
+		{
+			"name": "Death's Heads",
+			"abilities": [
+				"Outwit"
+			]
+		},
+		{
+			"name": "Sakaaran Hivelings",
+			"abilities": [
+				"Feast"
+			]
+		}
+	],
+	"adversaries": [
+		{
+			"name": "Aspects of the Void",
+			"abilities": [
+				"Trap",
+				"Feast",
+				"Wounded Fury"
+			]
+		},
+		{
+			"name": "Code Red",
+			"abilities": [
+				"Trap",
+				"Feast",
+				"Wounded Fury"
+			]
+		},
+		{
+			"name": "Illuminati",
+			"abilities": [
+				"Trap",
+				"Cross-Dimensional Rampage",
+				"Outwit"
+			]
+		},
+		{
+			"name": "Intelligencia",
+			"abilities": [
+				"Trap",
+				"Outwit",
+				"Wounded Fury"
+			]
+		},
+		{
+			"name": "Sakaar Imperial Guard",
+			"abilities": [
+				"Trap",
+				"Outwit",
+				"Feast"
+			]
+		},
+		{
+			"name": "U-Foes",
+			"abilities": [
+				"Trap"
+			]
+		},
+		{
+			"name": "Warbound",
+			"abilities": [
+				"Trap",
+				"Feast",
+				"Wounded Fury"
+			]
+		}
+	],
+	"masterminds": [
+		{
+			"name": "\"General \"Thunderbolt\" Ross\"",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Code Red"
+					]
+				}
+			],
+			"hasEpicSide": false,
+			"abilities": [
+				"Transforms",
+				"Cross-Dimensional Rampage"
+			]
+		},
+		{
+			"name": "Illuminati, Secret Society",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Illuminati"
+					]
+				}
+			],
+			"hasEpicSide": false,
+			"abilities": [
+				"Transforms",
+				"Outwit"
+			]
+		},
+		{
+			"name": "King Hulk, Sakaarson",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Warbound"
+					]
+				}
+			],
+			"hasEpicSide": false,
+			"abilities": [
+				"Transforms",
+				"Cross-Dimensional Rampage"
+			]
+		},
+		{
+			"name": "M.O.D.O.K.",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Intelligencia"
+					]
+				}
+			],
+			"hasEpicSide": false,
+			"abilities": [
+				"Transforms",
+				"Outwit",
+				"Cross-Dimensional Rampage"
+			]
+		},
+		{
+			"name": "The Red King",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Sakaar Imperial Guard"
+					]
+				}
+			],
+			"hasEpicSide": false,
+			"abilities": [
+				"Transforms"
+			]
+		},
+		{
+			"name": "The Sentry",
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Aspects of the Void"
+					]
+				}
+			],
+			"hasEpicSide": false,
+			"abilities": [
+				"Transforms",
+				"Feast",
+				"Cross-Dimensional Rampage"
+			]
+		}
+	],
+	"schemes": [
+		{
+			"name": "Break the Planet Asunder",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 9
+				}
+			],
+			"cardRequirements": [
+				{
+					"playerCount": 1,
+					"additionalAllyCount": 4
+				},
+				{
+					"playerCount": 2,
+					"additionalAllyCount": 2
+				},
+				{
+					"playerCount": 3,
+					"additionalAllyCount": 2
+				},
+				{
+					"playerCount": 4,
+					"additionalAllyCount": 2
+				},
+				{
+					"playerCount": 5,
+					"additionalAllyCount": 1
+				}
+			]
+		},
+		{
+			"name": "Cytoplasm Spike Invasion",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 10
+				}
+			],
+			"cardRequirements": [
+				{
+					"requiredAdversaries": [
+						"Cytoplasm Spikes"
+					],
+					"additionalHenchmanCount": 1,
+					"additionalBystanderCount": 20
+				}
+			]
+		},
+		{
+			"name": "Fall of the Hulks",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 10
+				}
+			],
+			"cardRequirements": [
+				{
+					"exactNamedAllyCount": 2,
+					"exactNamedAllyName": "Hulk"
+				}
+			],
+			"abilities": [
+				"Cross-Dimensional Rampage"
+			]
+		},
+		{
+			"name": "Gladiator Pits of Sakaar",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 6
+				}
+			]
+		},
+		{
+			"name": "Mutating Gamma Rays",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 7
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalAllyCount": 1,
+					"exactNamedAllyName": "Hulk"
+				}
+			]
+		},
+		{
+			"name": "Shoot Hulk into Space",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 8
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalAllyCount": 1,
+					"exactNamedAllyName": "Hulk"
+				}
+			]
+		},
+		{
+			"name": "Subjugate with Obedience Disks",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 11
+				}
+			]
+		},
+		{
+			"name": "World War Hulk",
+			"schemeTwistRequirements": [
+				{
+					"schemeTwistCount": 9
+				}
+			],
+			"cardRequirements": [
+				{
+					"additionalMastermindCount": 3
+				}
+			]
+		}
+	],
+	"neutral": [
+		{
+			"name": "Special Bystanders"
+		}
+	]
+}

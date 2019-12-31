@@ -31,6 +31,7 @@ namespace LegendaryClientConsole
 			var henchmen = await CreateHenchmen(client, supportedPackages, abilities);
 			var adversaries = await CreateAdversaries(client, supportedPackages, abilities);
 			var allies = await CreateAllies(client, supportedPackages, abilities, teams, classes);
+			var masterminds = await CreateMasterminds(client, abilities, supportedPackages);
 		}
 
 		private static async ValueTask<IReadOnlyList<Team>> CreateTeams(GameServiceClient client)
@@ -65,10 +66,11 @@ namespace LegendaryClientConsole
 			request.CreateOptions.Add(CreateOptions.ErrorOnDuplicates);
 
 			var reply = await client.CreateTeamsAsync(request);
-			if (reply.Status.Code != 200)
-				ConsoleUtility.WriteLine($"Failed to create teams: '{reply.Status.Message}'");
+			if (reply.Status.Code == 200)
+				return reply.Teams;
 
-			return reply.Teams;
+			ConsoleUtility.WriteLine($"Failed to create teams: '{reply.Status.Message}'");
+			return await TeamUtility.GetTeamsAsync(client, null);
 		}
 
 		private static async ValueTask<IReadOnlyList<Class>> CreateClasses(GameServiceClient client)
@@ -88,10 +90,11 @@ namespace LegendaryClientConsole
 			request.CreateOptions.Add(CreateOptions.ErrorOnDuplicates);
 
 			var reply = await client.CreateClassesAsync(request);
-			if (reply.Status.Code != 200)
-				ConsoleUtility.WriteLine($"Failed to create classes: '{reply.Status.Message}'");
-
-			return reply.Classes;
+			if (reply.Status.Code == 200)
+				return reply.Classes;
+			
+			ConsoleUtility.WriteLine($"Failed to create classes: '{reply.Status.Message}'");
+			return await ClassUtility.GetClassesAsync(client, null);
 		}
 
 		private static async ValueTask<IReadOnlyList<Ability>> CreateAbilities(GameServiceClient client, IReadOnlyList<GamePackage> packages)
@@ -117,7 +120,7 @@ namespace LegendaryClientConsole
 			ConsoleUtility.WriteLine("Creating neutrals");
 			List<Neutral> result = new List<Neutral>();
 			
-			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", "*.xml"))
+			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", s_fileMask))
 			{
 				var doc = XDocument.Load(file);
 
@@ -153,7 +156,7 @@ namespace LegendaryClientConsole
 			ConsoleUtility.WriteLine("Creating henchmen");
 			List<Henchman> result = new List<Henchman>();
 			
-			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", "*.xml"))
+			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", s_fileMask))
 			{
 				var doc = XDocument.Load(file);
 
@@ -170,7 +173,7 @@ namespace LegendaryClientConsole
 					var henchman = new Henchman();
 					henchman.Name = henchmanElement.Attribute("Name").Value;
 					henchman.GamePackageId = activeGamePackage.Id;
-					henchman.AbilityIds.AddRange(GetMatchingItems(henchmanElement.Attribute("Abliities")?.Value, name => abilities.First(x => x.Name == name)).Select(x => x.Id));
+					henchman.AbilityIds.AddRange(GetMatchingItems(henchmanElement.Attribute("Abilities")?.Value, name => abilities.First(x => x.Name == name)).Select(x => x.Id));
 					
 					request.Henchmen.Add(henchman);
 
@@ -192,7 +195,7 @@ namespace LegendaryClientConsole
 			ConsoleUtility.WriteLine("Creating adversaries");
 			List<Adversary> result = new List<Adversary>();
 
-			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", "*.xml"))
+			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", s_fileMask))
 			{
 				var doc = XDocument.Load(file);
 
@@ -209,7 +212,7 @@ namespace LegendaryClientConsole
 					var adversary = new Adversary();
 					adversary.Name = adversaryElement.Attribute("Name").Value;
 					adversary.GamePackageId = activeGamePackage.Id;
-					adversary.AbilityIds.AddRange(GetMatchingItems(adversaryElement.Attribute("Abliities")?.Value, name => abilities.First(x => x.Name == name)).Select(x => x.Id));
+					adversary.AbilityIds.AddRange(GetMatchingItems(adversaryElement.Attribute("Abilities")?.Value, name => abilities.First(x => x.Name == name)).Select(x => x.Id));
 
 					request.Adversaries.Add(adversary);
 
@@ -233,7 +236,7 @@ namespace LegendaryClientConsole
 
 			var noTeam = teams.First(x => x.Name == "None");
 
-			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", "*.xml"))
+			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", s_fileMask))
 			{
 				var doc = XDocument.Load(file);
 
@@ -250,7 +253,7 @@ namespace LegendaryClientConsole
 					var ally = new Ally();
 					ally.Name = allyElement.Attribute("Name").Value;
 					ally.GamePackageId = activeGamePackage.Id;
-					ally.AbilityIds.AddRange(GetMatchingItems(allyElement.Attribute("Abliities")?.Value, name => abilities.First(x => x.Name == name)).Select(x => x.Id));
+					ally.AbilityIds.AddRange(GetMatchingItems(allyElement.Attribute("Abilities")?.Value, name => abilities.First(x => x.Name == name)).Select(x => x.Id));
 					ally.TeamId = GetMatchingItems(allyElement.Attribute("Team")?.Value, name => teams.FirstOrDefault(x => x.Name == name, noTeam)).First().Id;
 					ally.Classes.AddRange(GetMatchingItems(allyElement.Attribute("Classes")?.Value, name => ParseClassInfo(classes, name)));
 
@@ -267,6 +270,112 @@ namespace LegendaryClientConsole
 			}
 
 			return result;
+		}
+
+		private static async ValueTask<IReadOnlyList<Mastermind>> CreateMasterminds(GameServiceClient client, IReadOnlyList<Ability> abilities, IReadOnlyList<GamePackage> packages)
+		{
+			ConsoleUtility.WriteLine("Creating masterminds");
+			List<Mastermind> result = new List<Mastermind>();
+
+			foreach (var file in Directory.EnumerateFiles(@"C:\Users\Ryan\SkyDrive\code\LegendaryGameStarter\LegendaryGameModel2\GameSets", s_fileMask))
+			{
+				var doc = XDocument.Load(file);
+
+				var name = doc.Element("Set").Attribute("Name").Value;
+				var activeGamePackage = packages.FirstOrDefault(x => x.Name == name);
+				if (activeGamePackage == null)
+					ConsoleUtility.WriteLine($"Failed to find matching game package for {file}");
+
+				foreach (var mastermindElement in doc.Element("Set").Element("Cards").Elements("Card").Where(x => x?.Attribute("Area").Value == "Mastermind"))
+				{
+					var request = new CreateMastermindsRequest();
+					request.CreateOptions.Add(CreateOptions.ErrorOnDuplicates);
+
+					var mastermind = new Mastermind();
+					mastermind.Name = mastermindElement.Attribute("Name").Value;
+					mastermind.GamePackageId = activeGamePackage.Id;
+					mastermind.AbilityIds.AddRange(GetMatchingItems(mastermindElement.Attribute("Abilities")?.Value, name => abilities.First(x => x.Name == name)).Select(x => x.Id));
+					mastermind.CardRequirements.AddRange(GetCardRequirements(client, mastermindElement, activeGamePackage.Id));
+					mastermind.HasEpicSide = (mastermindElement.Attribute("HasEpicSide")?.Value.ToLower() ?? "false") == "true";
+					ConsoleUtility.WriteLine(mastermind.ToString());
+
+					request.Masterminds.Add(mastermind);
+
+					var reply = await client.CreateMastermindsAsync(request);
+					if (reply.Status.Code != 200)
+						ConsoleUtility.WriteLine($"Failed to create '{mastermind.Name}': {reply.Status.Message}");
+
+					result.AddRange(reply.Masterminds);
+				}
+
+				ConsoleUtility.WriteLine($"Completed: {name}");
+			}
+
+			return result;
+		}
+
+		private static IEnumerable<CardRequirement> GetCardRequirements(GameServiceClient client, XElement element, int gamePackageId)
+		{
+			foreach (var attribute in element.Attributes())
+			{
+				var cardRequirements = attribute.Name.LocalName switch
+				{
+					"Name" => null,
+					"Area" => null,
+					"Abilities" => null,
+					"HasEpicSide" => null,
+					"RequiresAllOf" => attribute.Value.Split('|').Select(x => GetCardSetRequirement(client, x, gamePackageId)),
+					"RequiresHenchmenNamed" => GetCardGroupRequirement(client, attribute.Value, gamePackageId),
+					_ => throw new Exception($"Don't know how to handle {attribute.Name}")
+				};
+
+				foreach (var cardRequirement in cardRequirements ?? new CardRequirement[] { } )
+					yield return cardRequirement;
+			}
+		}
+
+		private static CardRequirement GetCardSetRequirement(GameServiceClient client, string cardName, int gamePackageId)
+		{
+			var adversaries = AdversaryUtility.GetAdversariesAsync(client, name: cardName, nameMatchStyle: NameMatchStyle.Exact).Result;
+			if (adversaries.Count() != 0)
+			{
+				return new CardRequirement
+				{
+					RequiredSetId = adversaries.FirstOrDefault(x => x.GamePackageId == gamePackageId, adversaries.First()).Id,
+					CardSetType = CardSetType.CardSetAdversary
+				};
+			}
+
+			var henchmen = HenchmanUtility.GetHenchmenAsync(client, name: cardName, nameMatchStyle: NameMatchStyle.Exact).Result;
+			if (henchmen.Count() != 0)
+			{
+				return new CardRequirement
+				{
+					RequiredSetId = henchmen.FirstOrDefault(x => x.GamePackageId == gamePackageId, henchmen.First()).Id,
+					CardSetType = CardSetType.CardSetHenchman
+				};
+			}
+
+			var neutrals = NeutralUtility.GetNeutralsAsync(client, name: cardName, nameMatchStyle: NameMatchStyle.Exact).Result;
+			if (neutrals.Count() != 0)
+			{
+				return new CardRequirement
+				{
+					RequiredSetId = neutrals.FirstOrDefault(x => x.GamePackageId == gamePackageId, neutrals.First()).Id,
+					CardSetType = CardSetType.CardSetNeutral
+				};
+			}
+
+			throw new Exception($"Coudn't figure out how to handle {cardName}");
+		}
+
+		private static IEnumerable<CardRequirement> GetCardGroupRequirement(GameServiceClient client, string cardNameMatch, int gamePackageId)
+		{
+			yield return new CardRequirement
+			{
+				RequiredSetName = cardNameMatch,
+				CardSetType = CardSetType.CardSetHenchman
+			};
 		}
 
 		private static ClassInfo ParseClassInfo(IReadOnlyList<Class> classes, string data)
@@ -339,5 +448,7 @@ namespace LegendaryClientConsole
 				ConsoleUtility.WriteLine($"{set.Name} - {createResponse.Id} : {createResponse.Status?.Code}");
 			}
 		}
+
+		private readonly static string s_fileMask = "*.xml";
 	}
 }
