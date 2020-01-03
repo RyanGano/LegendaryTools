@@ -23,8 +23,13 @@
 		public const string Masterminds = "masterminds";
 		public const string CardRequirements = "cardrequirements";
 		public const string MastermindAbilities = "mastermindabilities";
-		public const string MastermindCardRequirements = "mastermindcardrequirements";
 		public const string GamePackageMasterminds = "gamepackagemasterminds";
 		public const string CardSetTypes = "cardsettypes";
+		public const string Schemes = "schemes";
+		public const string TwistRequirements = "twistrequirements";
+		public const string SchemeTwistRequirements = "schemetwistrequirements";
+		public const string MatchedCardRequirements = "matchedcardrequirements";
+		public const string GamePackageSchemes = "gamepackageschemes";
+		public const string SchemeAbilities = "schemeabilities";
 	}
 }

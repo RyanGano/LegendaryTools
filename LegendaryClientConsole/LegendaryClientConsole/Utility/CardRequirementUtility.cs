@@ -16,7 +16,7 @@ namespace LegendaryClientConsole.Utility
 			if (ConsoleUtility.GetUserInputBool("Add card requirements:", defaultOption))
 				cardRequirements.AddRange(await GetSingleCardRequirement(client, currentGamePackageId));
 
-			while (ConsoleUtility.GetUserInputBool("Add another requirement?", false))
+			while (cardRequirements.Count != 0 && ConsoleUtility.GetUserInputBool("Add another requirement?", false))
 				cardRequirements.AddRange(await GetSingleCardRequirement(client, currentGamePackageId));
 
 			return cardRequirements;
@@ -119,7 +119,7 @@ namespace LegendaryClientConsole.Utility
 				}
 			}
 
-			requirement.CardRequirementId = allyInGamePackage.Id;
+			requirement.RequiredSetId = allyInGamePackage.Id;
 			requirement.CardSetType = CardSetType.CardSetAlly;
 			ConsoleUtility.WriteLine($"Adding specific requirement for Ally: {allyInGamePackage}");
 
@@ -150,7 +150,7 @@ namespace LegendaryClientConsole.Utility
 				}
 			}
 
-			requirement.CardRequirementId = adversaryInGamePackage.Id;
+			requirement.RequiredSetId = adversaryInGamePackage.Id;
 			requirement.CardSetType = CardSetType.CardSetAdversary;
 			ConsoleUtility.WriteLine($"Adding specific requirement for Adversary: {adversaryInGamePackage}");
 
@@ -181,7 +181,7 @@ namespace LegendaryClientConsole.Utility
 				}
 			}
 
-			requirement.CardRequirementId = henchmanInGamePackage.Id;
+			requirement.RequiredSetId = henchmanInGamePackage.Id;
 			requirement.CardSetType = CardSetType.CardSetHenchman;
 			ConsoleUtility.WriteLine($"Adding specific requirement for Henchman: {henchmanInGamePackage}");
 
@@ -212,7 +212,7 @@ namespace LegendaryClientConsole.Utility
 				}
 			}
 
-			requirement.CardRequirementId = mastermindInGamePackage.Id;
+			requirement.RequiredSetId = mastermindInGamePackage.Id;
 			requirement.CardSetType = CardSetType.CardSetMastermind;
 			ConsoleUtility.WriteLine($"Adding specific requirement for Mastermind: {mastermindInGamePackage}");
 
@@ -229,21 +229,14 @@ namespace LegendaryClientConsole.Utility
 
 				var neutral = await NeutralUtility.GetNeutralsAsync(client, name: itemName, nameMatchStyle: NameMatchStyle.Similar);
 
-				if (neutral.Count == 1)
+				if (neutral.Count >= 1)
 					neutralInGamePackage = neutral.First();
 
 				if (neutral.Count == 0)
 					ConsoleUtility.WriteLine($"Neutral '{itemName}' was not found.");
-
-				if (neutral.Count > 1)
-				{
-					neutralInGamePackage = neutral.FirstOrDefault(x => x.GamePackageId == currentGamePackageId);
-					if (neutralInGamePackage == null)
-						ConsoleUtility.WriteLine($"Too many Neutrals match '{itemName}' and none were in the current GamePackage.");
-				}
 			}
 
-			requirement.CardRequirementId = neutralInGamePackage.Id;
+			requirement.RequiredSetId = neutralInGamePackage.Id;
 			requirement.CardSetType = CardSetType.CardSetNeutral;
 			ConsoleUtility.WriteLine($"Adding specific requirement for Neutral: {neutralInGamePackage}");
 

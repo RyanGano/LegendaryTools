@@ -21,6 +21,8 @@ namespace LegendaryService.Utility
 
 			List<int> newMastermindIds = new List<int>();
 
+			var cardSetTypeInfo = await CardRequirementUtility.GetInsertCardTypeValue(CardSetType.CardSetMastermind, connector);
+
 			foreach (var mastermind in request.Masterminds)
 			{
 				// Validate the GamePackageId
@@ -97,21 +99,22 @@ namespace LegendaryService.Utility
 				// Add card requirements
 				foreach (var requirement in mastermind.CardRequirements)
 				{
-					var cardRequirementId = await CardRequirementUtility.AddCardRequirement(requirement, TableNames.MastermindCardRequirements, newMastermindId);
+					var cardRequirementId = await CardRequirementUtility.AddCardRequirement(requirement);
 
 					await connector.Command(
 						$@"
 						insert
-							into {TableNames.MastermindCardRequirements}
-								({DatabaseDefinition.ColumnName[MastermindField.MastermindId]}, {CardRequirementUtility.DatabaseDefinition.ColumnName[CardRequirement.CardRequirementIdFieldNumber]}, NumberOfPlayers)
-							values (@MastermindId, @CardRequirementId, @NumberOfPlayers);",
-						("MastermindId", newMastermindId),
+							into {TableNames.MatchedCardRequirements}
+								({CardRequirementUtility.DatabaseDefinition.ColumnName[CardRequirement.OwnerIdFieldNumber]}, {CardRequirementUtility.DatabaseDefinition.ColumnName[CardRequirement.CardRequirementIdFieldNumber]}, NumberOfPlayers, {cardSetTypeInfo.Name})
+							values (@OwnerId, @CardRequirementId, @NumberOfPlayers, @{cardSetTypeInfo.Name});",
+						("OwnerId", newMastermindId),
 						("CardRequirementId", cardRequirementId),
-						("NumberOfPlayers", requirement.PlayerCount))
+						("NumberOfPlayers", requirement.PlayerCount),
+						(cardSetTypeInfo.Name, cardSetTypeInfo.Value))
 					.ExecuteAsync();
 				}
 
-				newMastermindIds.Add(newMastermindId);
+			newMastermindIds.Add(newMastermindId);
 			}
 
 			// Get all of the created masterminds
@@ -174,7 +177,7 @@ namespace LegendaryService.Utility
 			{
 				// Lookup the card requirements for each mastermind
 				foreach (var mastermind in reply.Masterminds)
-					mastermind.CardRequirements.AddRange(await CardRequirementUtility.GetCardRequirementsAsync(mastermind));
+					mastermind.CardRequirements.AddRange(await CardRequirementUtility.GetCardRequirementsAsync(mastermind.Id));
 			}
 
 			return reply;

@@ -22,8 +22,10 @@ namespace LegendaryClientConsole.Utility
 				await CreateAdversaryAsync(client);
 			else if (args.FirstOrDefault() == "m")
 				await MastermindUtility.CreateMastermindAsync(client);
+			else if (args.FirstOrDefault() == "s")
+				await SchemeUtility.CreateSchemeAsync(client);
 			else
-				ConsoleUtility.WriteLine("Must supply the type of item you want to create. (t|h|ad|n|al|m)");
+				ConsoleUtility.WriteLine("Must supply the type of item you want to create. (t|h|ad|n|al|m|s)");
 		}
 
 		public static async Task CreateTeamAsync(GameServiceClient client)

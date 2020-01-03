@@ -25,6 +25,8 @@ service GameService {
   rpc CreateAllies (CreateAlliesRequest) returns (CreateAlliesReply);
   rpc GetMasterminds (GetMastermindsRequest) returns (GetMastermindsReply);
   rpc CreateMasterminds (CreateMastermindsRequest) returns (CreateMastermindsReply);
+  rpc GetSchemes (GetSchemesRequest) returns (GetSchemesReply);
+  rpc CreateSchemes (CreateSchemesRequest) returns (CreateSchemesReply);
 }
 
 message GetGamePackagesRequest {
@@ -279,8 +281,40 @@ enum MastermindField {
 	MastermindName = 1;
 	MastermindAbilityIds = 2;
 	MastermindGamePackageId = 3;
-	MastermindCardRequirements = 5;
-	MastermindEpicInformation = 6;
+	MastermindCardRequirements = 4;
+	MastermindEpicInformation = 5;
+}
+
+message GetSchemesRequest {
+	repeated SchemeField fields = 1;
+	repeated int32 schemeIds = 2;
+	string name = 3;
+	NameMatchStyle nameMatchStyle = 4;
+}
+
+message GetSchemesReply {
+	Status status = 1;
+	repeated Scheme schemes = 2;
+}
+
+message CreateSchemesRequest {
+	repeated Scheme schemes = 1;
+	repeated CreateOptions createOptions = 2;
+}
+
+message CreateSchemesReply {
+	Status status = 1;
+	repeated Scheme schemes = 2;
+}
+
+enum SchemeField {
+	SchemeId = 0;
+	SchemeName = 1;
+	SchemeAbilityIds = 2;
+	SchemeGamePackageId = 3;
+	SchemeCardRequirements = 4;
+	SchemeTwistRequirements = 5;
+	SchemeEpicInformation = 6;
 }
 
 message GamePackage {
@@ -337,10 +371,13 @@ message Mastermind {
 }
 
 message Scheme {
-	string name = 1;
-	repeated SchemeTwistRequirement schemeTwistRequirements = 2;
-	repeated CardRequirement cardRequirements = 3;
-	repeated Ability abilities = 4;
+	int32 id = 1;
+	string name = 2;
+	repeated SchemeTwistRequirement twistRequirements = 3;
+	repeated CardRequirement cardRequirements = 4;
+	repeated int32 abilityIds = 5;
+	int32 gamePackageId = 6;
+	bool hasEpicSide = 7;
 }
 
 message Neutral {
@@ -350,18 +387,30 @@ message Neutral {
 }
 
 message SchemeTwistRequirement {
-	int32 playerCount = 1;
-	int32 schemeTwistCount = 2;
+	int32 id = 1;
+	int32 playerCount = 2;
+	int32 schemeTwistCount = 3;
+	bool allowed = 4;
+	int32 schemeId = 5;
 }
 
 message CardRequirement {
 	int32 cardRequirementId = 1;
-	int32 requiredSetId = 2;
-	int32 additionalSetCount = 3;
-	string	requiredSetName = 4;
-	NameMatchStyle nameMatchStyle = 5;
+	CardRequirementType cardRequirementType = 2;
+	int32 requiredSetId = 3;
+	int32 additionalSetCount = 4;
+	string	requiredSetName = 5;
+	// NameMatchStyle nameMatchStyle = 6;
 	CardSetType cardSetType = 6;
 	int32 playerCount = 7;
+	int32 ownerId = 8;
+}
+
+enum CardRequirementType {
+	Unset = 0;
+	SpecificRequiredSet = 1;
+	AdditionalSetCount = 2;
+	NamedSet = 3;
 }
 
 enum CardSetType {

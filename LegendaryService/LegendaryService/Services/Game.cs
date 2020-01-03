@@ -103,5 +103,15 @@ namespace LegendaryService
 		{
 			return await MastermindUtility.CreateMastermindsAsync(request, context);
 		}
+
+		public override async Task<GetSchemesReply> GetSchemes(GetSchemesRequest request, ServerCallContext context)
+		{
+			return await SchemeUtility.GetSchemesAsync(request, context);
+		}
+
+		public override async Task<CreateSchemesReply> CreateSchemes(CreateSchemesRequest request, ServerCallContext context)
+		{
+			return await SchemeUtility.CreateSchemesAsync(request, context);
+		}
 	}
 }

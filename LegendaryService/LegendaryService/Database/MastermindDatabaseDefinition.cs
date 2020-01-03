@@ -42,8 +42,8 @@ namespace LegendaryService.Database
 					inner join {TableNames.GamePackageMasterminds} on {TableNames.GamePackageMasterminds}.MastermindId = {TableNames.Masterminds}.MastermindId
 					inner join {TableNames.GamePackages} on {TableNames.GamePackages}.GamePackageId = {TableNames.GamePackageMasterminds}.GamePackageId" },					
 			{ MastermindField.MastermindCardRequirements, $@"
-					inner join {TableNames.MastermindCardRequirements} on {TableNames.MastermindCardRequirements}.CardRequirementId = {TableNames.CardRequirements}.CardRequirementId
-					inner join {TableNames.Masterminds} on {TableNames.Masterminds}.MastermindId = {TableNames.MastermindCardRequirements}.MastermindId" }
+					inner join {TableNames.MatchedCardRequirements} on {TableNames.MatchedCardRequirements}.CardRequirementId = {TableNames.CardRequirements}.CardRequirementId
+					inner join {TableNames.Masterminds} on {TableNames.Masterminds}.MastermindId = {TableNames.MatchedCardRequirements}.OwnerId" }
 		};
 	}
 }
